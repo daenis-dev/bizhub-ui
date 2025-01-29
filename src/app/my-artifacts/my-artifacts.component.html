@@ -1,5 +1,6 @@
+<h3 style="text-align: center;">Checkers Antivirus</h3>
+<h1 style="text-align: center;">File Integrity Management</h1>
 <div class="container">
-    <!-- Breadcrumb Navigation -->
     <div class="header">
       <nav class="breadcrumb">
         <ng-container *ngFor="let part of breadcrumbPaths; let i = index">
@@ -15,12 +16,8 @@
           <span *ngIf="i !== breadcrumbPaths.length - 1"> / </span>
         </ng-container>
       </nav>
-      <button mat-button class="back-btn" (click)="goBack()" *ngIf="currentPath !== '/'">
-        ← Back
-      </button>
     </div>
   
-    <!-- File/Directory Grid -->
     <mat-grid-list cols="3" rowHeight="120px" gutterSize="16px">
       <mat-grid-tile *ngFor="let item of displayedItems">
         <mat-card class="file-card">
@@ -32,5 +29,9 @@
         </mat-card>
       </mat-grid-tile>
     </mat-grid-list>
+  
+    <div class="back-container" *ngIf="currentPath !== '/'">
+      <button mat-button class="back-btn" (click)="goBack()">← Back</button>
+    </div>
   </div>
   
