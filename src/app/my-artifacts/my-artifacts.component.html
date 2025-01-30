@@ -4,6 +4,9 @@
   <mat-icon>settings</mat-icon>
 </div>
 <div class="container">
+    <div style="padding-bottom: 2%;">
+      <button mat-button (click)="openArtifactForm()">New Artifact</button>
+    </div>
     <div class="header">
       <nav class="breadcrumb">
         <ng-container *ngFor="let part of breadcrumbPaths; let i = index">

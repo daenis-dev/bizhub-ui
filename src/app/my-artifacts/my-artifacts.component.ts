@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BrowserModule } from '@angular/platform-browser';
 import { AccountDialogComponent } from '../account-dialog/account-dialog.component';
+import { ArtifactFormComponent } from '../artifact-form/artifact-form.component';
 
 interface FileItem {
   id: number;
@@ -45,18 +46,26 @@ export class MyArtifactsComponent implements OnInit {
   }
 
   fetchFiles(): void {
-    this.http.get<FileItem[]>('https://localhost:8080/v1/artifacts', { headers: new HttpHeaders({'Authorization': this.auth.getToken()}) }).subscribe({
-      next: (data) => {
-        this.files = data;
-        this.updateDisplayedItems();
-      },
-      error: (error) => {
-        console.error('Error fetching files:', error);
-      },
-      complete: () => {
-        console.log('File fetch completed');
-      }
-    });
+    // this.http.get<FileItem[]>('https://localhost:8080/v1/artifacts', { headers: new HttpHeaders({'Authorization': this.auth.getToken()}) }).subscribe({
+    //   next: (data) => {
+    //     this.files = data;
+    //     this.updateDisplayedItems();
+    //   },
+    //   error: (error) => {
+    //     console.error('Error fetching files:', error);
+    //   },
+    //   complete: () => {
+    //     console.log('File fetch completed');
+    //   }
+    // });
+    this.files = [
+      { id: 1, name: 'Task One', filePath: '/Windows/Scheduled/task1.json' },
+      { id: 2, name: 'Task Two', filePath: '/Windows/Scheduled/task2.json' },
+      { id: 3, name: 'Sys Config', filePath: '/Windows/System32/conf.json' },
+      { id: 4, name: 'Sys Requierments', filePath: '/Windows/System32/usr/bin/requirements.txt' },
+      { id: 5, name: 'Test File', filePath: '/Windows/test.txt' }
+    ];
+    this.updateDisplayedItems();
   }
 
   updateDisplayedItems(): void {
@@ -106,6 +115,13 @@ export class MyArtifactsComponent implements OnInit {
     this.dialog.open(AccountDialogComponent, {
       width: '800px',
       height: '225px'
+    });
+  }
+
+  openArtifactForm() {
+    this.dialog.open(ArtifactFormComponent, {
+      width: '800px',
+      height: '400px'
     });
   }
 }
