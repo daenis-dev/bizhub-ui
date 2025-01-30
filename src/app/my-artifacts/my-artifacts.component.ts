@@ -4,6 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 interface FileItem {
   filePath: string;
@@ -20,7 +21,8 @@ interface FileItem {
     MatGridListModule,
     MatCardModule,
     MatButtonModule
-  ]
+  ],
+  providers: 
 })
 export class MyArtifactsComponent implements OnInit {
   files: FileItem[] = [
