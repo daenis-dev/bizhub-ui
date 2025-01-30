@@ -6,6 +6,10 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { BrowserModule } from '@angular/platform-browser';
+import { AccountDialogComponent } from '../account-dialog/account-dialog.component';
 
 interface FileItem {
   id: number;
@@ -23,7 +27,9 @@ interface FileItem {
     MatButtonModule,
     MatGridListModule,
     MatCardModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule,
+    MatDialogModule
   ]
 })
 export class MyArtifactsComponent implements OnInit {
@@ -32,7 +38,7 @@ export class MyArtifactsComponent implements OnInit {
   displayedItems: Set<string> = new Set();
   breadcrumbPaths: string[] = [];
 
-  constructor(private http: HttpClient, private auth: AuthService) {}
+  constructor(private http: HttpClient, private auth: AuthService, private dialog: MatDialog) {}
 
   ngOnInit() {
     this.fetchFiles();
@@ -94,5 +100,12 @@ export class MyArtifactsComponent implements OnInit {
 
   generateBreadcrumbs(): void {
     this.breadcrumbPaths = this.currentPath === '/' ? ['/'] : this.currentPath.split('/').filter(p => p);
+  }
+
+  openAccountDialog() {
+    this.dialog.open(AccountDialogComponent, {
+      width: '800px',
+      height: '225px'
+    });
   }
 }

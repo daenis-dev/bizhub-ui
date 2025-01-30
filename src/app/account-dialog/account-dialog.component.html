@@ -1,0 +1,8 @@
+<h1 mat-dialog-title style="text-align: center;">My Account</h1>
+<div mat-dialog-content style="display: flex; flex-direction: column;">
+    <button mat-button tabindex="-1" (click)="resetPassword()">Reset Password</button>
+    <button mat-button tabindex="-1" (click)="logout()">Logout</button>
+</div>
+<mat-dialog-actions>
+    <button mat-raised-button [mat-dialog-close]="true" color="secondary">Close</button>
+</mat-dialog-actions>
