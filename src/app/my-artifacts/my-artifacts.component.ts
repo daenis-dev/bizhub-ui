@@ -24,8 +24,7 @@ interface FileItem {
     MatGridListModule,
     MatCardModule,
     MatButtonModule
-  ],
-  providers: 
+  ]
 })
 export class MyArtifactsComponent implements OnInit {
   files: FileItem[] = [];
