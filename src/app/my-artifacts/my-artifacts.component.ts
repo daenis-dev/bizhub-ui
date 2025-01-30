@@ -4,9 +4,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AuthService } from '../services/auth.service';
 
 interface FileItem {
+  id: number;
+  name: string;
   filePath: string;
 }
 
@@ -25,20 +28,30 @@ interface FileItem {
   providers: 
 })
 export class MyArtifactsComponent implements OnInit {
-  files: FileItem[] = [
-    { filePath: '/Windows/Scheduled/task1.json' },
-    { filePath: '/Windows/Scheduled/task2.json' },
-    { filePath: '/Windows/System32/conf.json' },
-    { filePath: '/Windows/System32/usr/bin/requirements.txt' },
-    { filePath: '/Windows/test.txt' }
-  ];
-
+  files: FileItem[] = [];
   currentPath: string = '/';
   displayedItems: Set<string> = new Set();
   breadcrumbPaths: string[] = [];
 
+  constructor(private http: HttpClient, private auth: AuthService) {}
+
   ngOnInit() {
-    this.updateDisplayedItems();
+    this.fetchFiles();
+  }
+
+  fetchFiles(): void {
+    this.http.get<FileItem[]>('https://localhost:8080/v1/artifacts', { headers: new HttpHeaders({'Authorization': this.auth.getToken()}) }).subscribe({
+      next: (data) => {
+        this.files = data;
+        this.updateDisplayedItems();
+      },
+      error: (error) => {
+        console.error('Error fetching files:', error);
+      },
+      complete: () => {
+        console.log('File fetch completed');
+      }
+    });
   }
 
   updateDisplayedItems(): void {
