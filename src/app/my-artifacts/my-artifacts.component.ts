@@ -55,19 +55,34 @@ export class MyArtifactsComponent implements OnInit {
 
   async registerSystemFiles() {
     try {
-      // Open directory picker
-      const dirHandle = await (window as any).showDirectoryPicker();
+      // Open file picker for multiple file selection
+      const fileHandles = await (window as any).showOpenFilePicker({
+        multiple: true
+      });
+  
+      if (!fileHandles.length) {
+        this.showErrorMessage('No files selected.');
+        return;
+      }
+  
       const artifactRequests: ArtifactRequest[] = [];
   
-      // Recursively scan directory for files
-      await this.scanDirectory(dirHandle, artifactRequests);
+      for (const handle of fileHandles) {
+        const file = await handle.getFile();
+        const filePath = file.name;
+  
+        if (this.commonTargetFilePaths.includes(`C:/Windows/${filePath}`)) {
+          const hash = await this.computeSHA256(file);
+          artifactRequests.push({ filePath: `C:/Windows/${filePath}`, hash });
+        }
+      }
   
       if (artifactRequests.length === 0) {
         this.showErrorMessage('No matching system files found.');
         return;
       }
   
-      // Send to backend
+      // Send selected files to backend
       this.http.post<void>('https://localhost:8080/v1/artifacts', artifactRequests, {
         headers: new HttpHeaders({ 'Authorization': this.auth.getToken() })
       }).subscribe({
@@ -80,31 +95,9 @@ export class MyArtifactsComponent implements OnInit {
       });
   
     } catch (error) {
-      this.showErrorMessage('Directory selection was canceled or failed.');
+      this.showErrorMessage('File selection was canceled or failed.');
     }
   }
-  
-  /**
-   * Recursively scans the directory for matching files
-   */
-  private async scanDirectory(dirHandle: FileSystemDirectoryHandle, artifactRequests: ArtifactRequest[]) {
-    for await (const entry of dirHandle.values()) {
-      if (entry.kind === 'file') {
-        const fileHandle = entry as FileSystemFileHandle; // Explicitly cast to FileSystemFileHandle
-        const file = await fileHandle.getFile();
-        const filePath = file.name;
-  
-        if (this.commonTargetFilePaths.includes(`C:/Windows/${filePath}`)) {
-          const hash = await this.computeSHA256(file);
-          artifactRequests.push({ filePath: `C:/Windows/${filePath}`, hash });
-        }
-      } else if (entry.kind === 'directory') {
-        const subDirHandle = entry as FileSystemDirectoryHandle;
-        await this.scanDirectory(subDirHandle, artifactRequests); // Recursively process subdirectories
-      }
-    }
-  }
-  
   
   /**
    * Computes the SHA-256 hash of a file
