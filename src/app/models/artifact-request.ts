@@ -1,9 +1,9 @@
 export class ArtifactRequest {
-    name: string;
+    hash: string;
     filePath: string;
 
-    constructor(name: string, filePath: string) {
-        this.name = name;
+    constructor(hash: string, filePath: string) {
+        this.hash = hash;
         this.filePath = filePath;
     }
 }

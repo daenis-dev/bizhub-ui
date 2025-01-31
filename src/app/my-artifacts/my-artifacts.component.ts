@@ -10,13 +10,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BrowserModule } from '@angular/platform-browser';
 import { AccountDialogComponent } from '../account-dialog/account-dialog.component';
-import { ArtifactFormComponent } from '../artifact-form/artifact-form.component';
-
-interface FileItem {
-  id: number;
-  name: string;
-  filePath: string;
-}
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ArtifactRequest } from '../models/artifact-request';
 
 @Component({
   selector: 'app-my-artifacts',
@@ -26,89 +21,29 @@ interface FileItem {
   imports: [
     CommonModule,
     MatButtonModule,
-    MatGridListModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSnackBarModule
   ]
 })
 export class MyArtifactsComponent implements OnInit {
-  files: FileItem[] = [];
-  currentPath: string = '/';
-  displayedItems: Set<string> = new Set();
-  breadcrumbPaths: string[] = [];
+  commonTargetFilePaths: String[] = [];
 
-  constructor(private http: HttpClient, private auth: AuthService, private dialog: MatDialog) {}
+  constructor(private http: HttpClient, private auth: AuthService, private dialog: MatDialog, private snackBar: MatSnackBar) {}
 
   ngOnInit() {
-    this.fetchFiles();
-  }
-
-  fetchFiles(): void {
-    // this.http.get<FileItem[]>('https://localhost:8080/v1/artifacts', { headers: new HttpHeaders({'Authorization': this.auth.getToken()}) }).subscribe({
-    //   next: (data) => {
-    //     this.files = data;
-    //     this.updateDisplayedItems();
-    //   },
-    //   error: (error) => {
-    //     console.error('Error fetching files:', error);
-    //   },
-    //   complete: () => {
-    //     console.log('File fetch completed');
-    //   }
-    // });
-    this.files = [
-      { id: 1, name: 'Task One', filePath: '/Windows/Scheduled/task1.json' },
-      { id: 2, name: 'Task Two', filePath: '/Windows/Scheduled/task2.json' },
-      { id: 3, name: 'Sys Config', filePath: '/Windows/System32/conf.json' },
-      { id: 4, name: 'Sys Requierments', filePath: '/Windows/System32/usr/bin/requirements.txt' },
-      { id: 5, name: 'Test File', filePath: '/Windows/test.txt' }
-    ];
-    this.updateDisplayedItems();
-  }
-
-  updateDisplayedItems(): void {
-    this.displayedItems.clear();
-
-    for (const file of this.files) {
-      const relativePath = file.filePath.startsWith(this.currentPath)
-        ? file.filePath.substring(this.currentPath.length)
-        : file.filePath;
-      const topLevelItem = relativePath.split('/')[0];
-
-      if (topLevelItem) this.displayedItems.add(topLevelItem);
-    }
-
-    this.generateBreadcrumbs();
-  }
-
-  traverse(directory: string): void {
-    this.currentPath = this.currentPath === '/' ? `/${directory}/` : `${this.currentPath}${directory}/`;
-    this.updateDisplayedItems();
-  }
-
-  scanArtifact(file: string): void {
-    console.log(`Scanning ${this.currentPath}${file}`);
-  }
-
-  goBack(): void {
-    if (this.currentPath === '/') return;
-
-    const parts = this.currentPath.split('/').filter(p => p);
-    parts.pop();
-    this.currentPath = parts.length ? `/${parts.join('/')}/` : '/';
-
-    this.updateDisplayedItems();
-  }
-
-  navigateToPath(index: number): void {
-    this.currentPath = index === 0 ? '/' : '/' + this.breadcrumbPaths.slice(0, index + 1).join('/') + '/';
-    this.updateDisplayedItems();
-  }
-
-  generateBreadcrumbs(): void {
-    this.breadcrumbPaths = this.currentPath === '/' ? ['/'] : this.currentPath.split('/').filter(p => p);
+    this.http.get<String[]>('https://localhost:8080/v1/common-target-file-paths/windows', { headers: new HttpHeaders({'Authorization': this.auth.getToken()}) }).subscribe({
+      next: (data) => {
+        this.commonTargetFilePaths = data;
+      },
+      error: (error) => {
+        this.showErrorMessage('An error occurred while retrieving the file paths to check for');
+      },
+      complete: () => {
+      }
+    });
   }
 
   openAccountDialog() {
@@ -118,10 +53,84 @@ export class MyArtifactsComponent implements OnInit {
     });
   }
 
-  openArtifactForm() {
-    this.dialog.open(ArtifactFormComponent, {
-      width: '800px',
-      height: '400px'
+  async registerSystemFiles() {
+    try {
+      // Open directory picker
+      const dirHandle = await (window as any).showDirectoryPicker();
+      const artifactRequests: ArtifactRequest[] = [];
+  
+      // Recursively scan directory for files
+      await this.scanDirectory(dirHandle, artifactRequests);
+  
+      if (artifactRequests.length === 0) {
+        this.showErrorMessage('No matching system files found.');
+        return;
+      }
+  
+      // Send to backend
+      this.http.post<void>('https://localhost:8080/v1/artifacts', artifactRequests, {
+        headers: new HttpHeaders({ 'Authorization': this.auth.getToken() })
+      }).subscribe({
+        next: () => {
+          this.showSuccessMessage(`${artifactRequests.length} system files successfully registered`);
+        },
+        error: () => {
+          this.showErrorMessage('An error occurred while registering system files');
+        }
+      });
+  
+    } catch (error) {
+      this.showErrorMessage('Directory selection was canceled or failed.');
+    }
+  }
+  
+  /**
+   * Recursively scans the directory for matching files
+   */
+  private async scanDirectory(dirHandle: FileSystemDirectoryHandle, artifactRequests: ArtifactRequest[]) {
+    for await (const entry of dirHandle.values()) {
+      if (entry.kind === 'file') {
+        const fileHandle = entry as FileSystemFileHandle; // Explicitly cast to FileSystemFileHandle
+        const file = await fileHandle.getFile();
+        const filePath = file.name;
+  
+        if (this.commonTargetFilePaths.includes(`C:/Windows/${filePath}`)) {
+          const hash = await this.computeSHA256(file);
+          artifactRequests.push({ filePath: `C:/Windows/${filePath}`, hash });
+        }
+      } else if (entry.kind === 'directory') {
+        const subDirHandle = entry as FileSystemDirectoryHandle;
+        await this.scanDirectory(subDirHandle, artifactRequests); // Recursively process subdirectories
+      }
+    }
+  }
+  
+  
+  /**
+   * Computes the SHA-256 hash of a file
+   */
+  private async computeSHA256(file: File): Promise<string> {
+    const arrayBuffer = await file.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+    return Array.from(new Uint8Array(hashBuffer))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+  }
+
+  private showSuccessMessage(message: string) {
+    this.snackBar.open(message, 'Close', {
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['mat-snackbar-success']
     });
   }
+
+  private showErrorMessage(message: string) {
+    this.snackBar.open(message, 'Close', {
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['mat-snackbar-error']
+    });
+  }
+
 }
