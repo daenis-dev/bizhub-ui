@@ -71,6 +71,7 @@ export class MyArtifactsComponent implements OnInit {
         const file = await handle.getFile();
         const filePath = file.name;
   
+        // Inform users and check if the file is from the C:/Windows directory
         if (this.commonTargetFilePaths.includes(`C:/Windows/${filePath}`)) {
           const hash = await this.computeSHA256(file);
           artifactRequests.push({ filePath: `C:/Windows/${filePath}`, hash });
