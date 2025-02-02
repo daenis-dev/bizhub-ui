@@ -103,6 +103,7 @@ export class MyBackupsComponent implements OnInit {
     
           this.http.get(url, { headers, responseType: 'blob' }).subscribe({
             next: (blob) => {
+              console.log('Sending request for blob URL');
               const blobUrl = window.URL.createObjectURL(blob);
               const anchor = document.createElement('a');
               anchor.href = blobUrl;
