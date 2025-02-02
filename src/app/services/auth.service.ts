@@ -24,7 +24,7 @@ export class AuthService {
     .subscribe({
       next: () => {
         this.displaySuccess("Account registered successfully");
-        this.router.navigateByUrl('/my-artifacts'); // TODO: Create component and configure routing
+        this.router.navigateByUrl('/my-backups');
       },
       error: () => this.displayError("Error occurred while registering for an account")
     });
@@ -39,7 +39,7 @@ export class AuthService {
           localStorage.setItem(this.tokenKey, response.accessToken);
           let expDate: any = new Date(new Date().setDate(new Date().getDate() + 1));
           localStorage.setItem(this.tokenExpDateKey, expDate);
-          this.router.navigateByUrl('/my-artifacts');
+          this.router.navigateByUrl('/my-backups');
         }
       },
       error: () => this.displayError("Login attempt failed")

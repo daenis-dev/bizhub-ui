@@ -53,7 +53,7 @@ describe('AuthService', () => {
     expect(service.isAuthenticated()).toBeFalse();
   });
 
-  it('should register account and navigate to /my-artifacts', () => {
+  it('should register account and navigate to /my-backups', () => {
     const params = new HttpParams()
       .set('email-address', 'john.doe@example.com')
       .set('password', 'password123')
@@ -66,10 +66,10 @@ describe('AuthService', () => {
     
     req.flush({});
     expect(snackBarSpy.open).toHaveBeenCalledWith("Account registered successfully", 'Close', jasmine.any(Object));
-    expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/my-artifacts');
+    expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/my-backups');
   });
 
-  it('should log in and navigate to /my-artifacts', () => {
+  it('should log in and navigate to /my-backups', () => {
     const email = 'john.doe@example.com';
     const password = 'password123';
 
@@ -82,7 +82,7 @@ describe('AuthService', () => {
     
     expect(localStorage.getItem('token')).toBe('mockAccessToken');
     expect(localStorage.getItem('token-exp')).toBeTruthy();
-    expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/my-artifacts');
+    expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/my-backups');
   });
 
   it('should display error message on login failure', () => {
