@@ -97,36 +97,29 @@ export class MyBackupsComponent implements OnInit {
     
       dialogRef.afterClosed().subscribe((selectedFiles: string[] | undefined) => {
         if (selectedFiles && selectedFiles.length > 0) {
-          selectedFiles.forEach((fileName: string) => {
-            const url = `https://localhost:8080/v1/backups?file-name=${encodeURIComponent(fileName)}`;
-            const headers = new HttpHeaders({ Authorization: this.auth.getToken() });
+          const fileNamesParam = selectedFiles.join(',');
+          const url = `https://localhost:8080/v1/backups/all?file-names=${encodeURIComponent(fileNamesParam)}`;
+          const headers = new HttpHeaders({ Authorization: this.auth.getToken() });
     
-            this.http.get(url, { headers, responseType: 'blob' }).subscribe({
-              next: (blob) => {
-                const fileType = blob.type;
-                const blobUrl = window.URL.createObjectURL(blob);
-    
-                const anchor = document.createElement('a');
-                anchor.href = blobUrl;
-                anchor.download = fileName;
-    
-                if (fileType.includes('pdf') || fileType.includes('image') || fileType.includes('text')) {
-                  const url = URL.createObjectURL(blob);
-                  window.open(url, '_blank');
-                } else {
-                  document.body.appendChild(anchor);
-                  anchor.click();
-                  document.body.removeChild(anchor);
-                }
-              },
-              error: () => {
-                this.showErrorMessage(`Failed to download ${fileName}`);
-              }
-            });
+          this.http.get(url, { headers, responseType: 'blob' }).subscribe({
+            next: (blob) => {
+              const blobUrl = window.URL.createObjectURL(blob);
+              const anchor = document.createElement('a');
+              anchor.href = blobUrl;
+              anchor.download = 'checkers-backup.zip';
+              document.body.appendChild(anchor);
+              anchor.click();
+              document.body.removeChild(anchor);
+              window.URL.revokeObjectURL(blobUrl);
+            },
+            error: () => {
+              this.showErrorMessage('Failed to download the ZIP file.');
+            }
           });
         }
       });
-    }    
+    }
+     
 
     private showSuccessMessage(message: string) {
       this.snackBar.open(message, 'Close', {
