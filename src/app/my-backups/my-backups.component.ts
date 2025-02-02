@@ -101,39 +101,36 @@ export class MyBackupsComponent implements OnInit {
             const url = `https://localhost:8080/v1/backups?file-name=${encodeURIComponent(fileName)}`;
             const headers = new HttpHeaders({ Authorization: this.auth.getToken() });
     
-            const anchor = document.createElement('a');
-            anchor.href = url;
-            anchor.download = fileName;
+            this.http.get(url, { headers, responseType: 'blob' }).subscribe({
+              next: (blob) => {
+                const fileType = blob.type;
+                const blobUrl = window.URL.createObjectURL(blob);
     
-            const newTab = window.open('', '_blank');
-            if (newTab) {
-              this.http.get(url, { headers, responseType: 'blob' }).subscribe({
-                next: (blob) => {
-                  const fileType = blob.type;
-                  const blobUrl = window.URL.createObjectURL(blob);
-                  
-                  if (fileType.includes('pdf') || fileType.includes('image') || fileType.includes('text')) {
+                const anchor = document.createElement('a');
+                anchor.href = blobUrl;
+                anchor.download = fileName;
+    
+                if (fileType.includes('pdf') || fileType.includes('image') || fileType.includes('text')) {
+                  const newTab = window.open('', '_blank');
+                  if (newTab) {
                     newTab.location.href = blobUrl;
                   } else {
-                    anchor.href = blobUrl;
-                    document.body.appendChild(anchor);
-                    anchor.click();
-                    document.body.removeChild(anchor);
-                    newTab.close();
+                    this.showErrorMessage('Failed to open new tab for download');
                   }
-                },
-                error: () => {
-                  this.showErrorMessage(`Failed to download ${fileName}`);
-                  if (newTab) newTab.close();
+                } else {
+                  document.body.appendChild(anchor);
+                  anchor.click();
+                  document.body.removeChild(anchor);
                 }
-              });
-            } else {
-              this.showErrorMessage('Failed to open new tab for download');
-            }
+              },
+              error: () => {
+                this.showErrorMessage(`Failed to download ${fileName}`);
+              }
+            });
           });
         }
       });
-    }
+    }    
 
     private showSuccessMessage(message: string) {
       this.snackBar.open(message, 'Close', {
