@@ -117,6 +117,7 @@ export class MyBackupsComponent implements OnInit {
                   document.body.appendChild(anchor);
                   anchor.click();
                   document.body.removeChild(anchor);
+                  newTab!.close();
                 }
               },
               error: () => {
@@ -127,7 +128,7 @@ export class MyBackupsComponent implements OnInit {
           });
         }
       });
-    }
+    }    
     
     
   
