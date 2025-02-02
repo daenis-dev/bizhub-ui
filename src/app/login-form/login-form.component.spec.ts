@@ -93,13 +93,13 @@ describe('LoginFormComponent', () => {
     expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/register');
   });
 
-  it('should navigate to /my-artifacts if the user is authenticated', () => {
+  it('should navigate to /my-backups if the user is authenticated', () => {
     authServiceSpy.isAuthenticated.and.returnValue(true);
     fixture = TestBed.createComponent(LoginFormComponent);
 
     component = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/my-artifacts');
+    expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/my-backups');
   });
 });

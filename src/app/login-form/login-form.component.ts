@@ -37,7 +37,7 @@ export class LoginFormComponent {
 
   constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router, private dialog: MatDialog) {
     if (this.authService.isAuthenticated()) {
-      this.router.navigateByUrl('/my-artifacts');
+      this.router.navigateByUrl('/my-backups');
     }
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],

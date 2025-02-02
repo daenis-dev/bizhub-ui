@@ -102,29 +102,31 @@ export class MyBackupsComponent implements OnInit {
             const headers = new HttpHeaders({ Authorization: this.auth.getToken() });
     
             const newTab = window.open('', '_blank');
-    
-            this.http.get(url, { headers, responseType: 'blob' }).subscribe({
-              next: (blob) => {
-                const fileType = blob.type;
-                const blobUrl = window.URL.createObjectURL(blob);
-    
-                if (fileType.includes('pdf') || fileType.includes('image') || fileType.includes('text')) {
-                  newTab!.location.href = blobUrl;
-                } else {
-                  const anchor = document.createElement('a');
-                  anchor.href = blobUrl;
-                  anchor.download = fileName;
-                  document.body.appendChild(anchor);
-                  anchor.click();
-                  document.body.removeChild(anchor);
-                  newTab!.close();
+            if (newTab) {
+              this.http.get(url, { headers, responseType: 'blob' }).subscribe({
+                next: (blob) => {
+                  const fileType = blob.type;
+                  const blobUrl = window.URL.createObjectURL(blob);
+                  if (fileType.includes('pdf') || fileType.includes('image') || fileType.includes('text')) {
+                    newTab.location.href = blobUrl;
+                  } else {
+                    const anchor = document.createElement('a');
+                    anchor.href = blobUrl;
+                    anchor.download = fileName;
+                    document.body.appendChild(anchor);
+                    anchor.click();
+                    document.body.removeChild(anchor);
+                    newTab.close(); // Close the new tab only if it's not null
+                  }
+                },
+                error: () => {
+                  this.showErrorMessage(`Failed to download ${fileName}`);
+                  if (newTab) newTab.close(); // Ensure we only attempt to close if the tab is open
                 }
-              },
-              error: () => {
-                this.showErrorMessage(`Failed to download ${fileName}`);
-                newTab!.close();
-              }
-            });
+              });
+            } else {
+              this.showErrorMessage('Failed to open new tab for download');
+            }
           });
         }
       });
