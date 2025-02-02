@@ -101,27 +101,30 @@ export class MyBackupsComponent implements OnInit {
             const url = `https://localhost:8080/v1/backups?file-name=${encodeURIComponent(fileName)}`;
             const headers = new HttpHeaders({ Authorization: this.auth.getToken() });
     
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = fileName;
+    
             const newTab = window.open('', '_blank');
             if (newTab) {
               this.http.get(url, { headers, responseType: 'blob' }).subscribe({
                 next: (blob) => {
                   const fileType = blob.type;
                   const blobUrl = window.URL.createObjectURL(blob);
+                  
                   if (fileType.includes('pdf') || fileType.includes('image') || fileType.includes('text')) {
                     newTab.location.href = blobUrl;
                   } else {
-                    const anchor = document.createElement('a');
                     anchor.href = blobUrl;
-                    anchor.download = fileName;
                     document.body.appendChild(anchor);
                     anchor.click();
                     document.body.removeChild(anchor);
-                    newTab.close(); // Close the new tab only if it's not null
+                    newTab.close();
                   }
                 },
                 error: () => {
                   this.showErrorMessage(`Failed to download ${fileName}`);
-                  if (newTab) newTab.close(); // Ensure we only attempt to close if the tab is open
+                  if (newTab) newTab.close();
                 }
               });
             } else {
@@ -130,10 +133,8 @@ export class MyBackupsComponent implements OnInit {
           });
         }
       });
-    }    
-    
-    
-  
+    }
+
     private showSuccessMessage(message: string) {
       this.snackBar.open(message, 'Close', {
         horizontalPosition: 'end',
