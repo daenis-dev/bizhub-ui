@@ -111,12 +111,8 @@ export class MyBackupsComponent implements OnInit {
                 anchor.download = fileName;
     
                 if (fileType.includes('pdf') || fileType.includes('image') || fileType.includes('text')) {
-                  const newTab = window.open('', '_blank');
-                  if (newTab) {
-                    newTab.location.href = blobUrl;
-                  } else {
-                    this.showErrorMessage('Failed to open new tab for download');
-                  }
+                  const url = URL.createObjectURL(blob);
+                  window.open(url, '_blank');
                 } else {
                   document.body.appendChild(anchor);
                   anchor.click();
