@@ -70,6 +70,7 @@ export class MyBackupsComponent implements OnInit {
         for (const handle of fileHandles) {
           const file = await handle.getFile();
           formData.append('files', file); 
+          // TODO: add file name to list of backup file names
         }
     
         this.http.post<void>('https://localhost:8080/v1/backups', formData, {
@@ -102,8 +103,21 @@ export class MyBackupsComponent implements OnInit {
     
             this.http.get(url, { headers, responseType: 'blob' }).subscribe({
               next: (blob) => {
+                const fileType = blob.type; // Get MIME type
                 const blobUrl = window.URL.createObjectURL(blob);
-                window.open(blobUrl, '_blank');
+    
+                // Open in a new tab for supported file types (PDF, images, etc.)
+                if (fileType.includes('pdf') || fileType.includes('image') || fileType.includes('text')) {
+                  window.open(blobUrl, '_blank');
+                } else {
+                  // For Word, Excel, and other formats, trigger a download
+                  const anchor = document.createElement('a');
+                  anchor.href = blobUrl;
+                  anchor.download = fileName;
+                  document.body.appendChild(anchor);
+                  anchor.click();
+                  document.body.removeChild(anchor);
+                }
               },
               error: () => {
                 this.showErrorMessage(`Failed to download ${fileName}`);
