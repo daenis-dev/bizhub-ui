@@ -70,7 +70,7 @@ export class MyBackupsComponent implements OnInit {
         for (const handle of fileHandles) {
           const file = await handle.getFile();
           formData.append('files', file); 
-          // TODO: add file name to list of backup file names
+          this.backupFileNames.push(file.name);
         }
     
         this.http.post<void>('https://localhost:8080/v1/backups', formData, {
