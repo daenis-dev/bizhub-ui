@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Select Files to Download</h2>
+<mat-dialog-content>
+  <mat-list>
+    <mat-list-item *ngFor="let file of data.fileNames" (click)="toggleSelection(file)">
+      <mat-checkbox [checked]="selectedFiles.includes(file)">{{ file }}</mat-checkbox>
+    </mat-list-item>
+  </mat-list>
+</mat-dialog-content>
+<mat-dialog-actions fxLayoutAlign="end center">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-button color="primary" (click)="confirmSelection()">Download</button>
+</mat-dialog-actions>

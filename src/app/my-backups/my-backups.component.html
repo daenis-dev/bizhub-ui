@@ -1,12 +1,12 @@
-<h3 style="text-align: center; padding-top: 1%;">Checkers Antivirus</h3>
-<h1 style="text-align: center; padding-top: 1%;">File Backup</h1>
+<h1 style="font-size: 50px; text-align: center; padding-top: 1%;">Checkers File Backup</h1>
 <div class="settings-wheel" (click)="openAccountDialog()">
   <mat-icon>settings</mat-icon>
 </div>
 <div class="container">
-  <p style="text-align: center; font-size: 18px;">
-    Please select files.
-  </p>
-
-  <button mat-button tabindex="-1" (click)="selectFiles()" style="font-size: 40px; padding: 40px 80px;">Select Files</button>
+  <div style="padding-bottom: 5%;">
+    <button mat-button tabindex="-1" (click)="selectFilesAndUpload()" style="font-size: 40px; padding: 40px 80px;">Upload Files</button>
+  </div>
+  <div>
+    <button mat-button tabindex="-1" (click)="selectFilesAndDownload()" style="font-size: 40px; padding: 40px 80px;">Download Files</button>
+  </div>
 </div>

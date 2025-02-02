@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +9,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AccountDialogComponent } from '../account-dialog/account-dialog.component';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
+import { FileSelectionDialogComponent } from '../file-selection-dialog/file-selection-dialog.component';
 
 @Component({
   selector: 'app-my-backups',
@@ -25,10 +26,25 @@ import { AuthService } from '../services/auth.service';
     MatSnackBarModule
   ]
 })
-export class MyBackupsComponent {
+export class MyBackupsComponent implements OnInit {
+
+  private backupFileNames: String[] = [];
 
   constructor(private dialog: MatDialog, private http: HttpClient, private auth: AuthService, private snackBar: MatSnackBar) {
 
+  }
+
+  ngOnInit() {
+    this.http.get<String[]>('https://localhost:8080/v1/backups/file-names', {
+      headers: new HttpHeaders({ 'Authorization': this.auth.getToken() })
+    }).subscribe({
+      next: (data: String[]) => {
+        this.backupFileNames = data;
+      },
+      error: () => {
+        this.showErrorMessage('An error occurred while getting the backup file names');
+      }
+    });
   }
 
   openAccountDialog() {
@@ -38,7 +54,7 @@ export class MyBackupsComponent {
       });
   }
 
-  async selectFiles() {
+  async selectFilesAndUpload() {
       try {
         const fileHandles = await (window as any).showOpenFilePicker({
           multiple: true
@@ -71,6 +87,33 @@ export class MyBackupsComponent {
         this.showErrorMessage('File selection was canceled or failed.');
       }
     }
+
+    async selectFilesAndDownload() {
+      const dialogRef = this.dialog.open(FileSelectionDialogComponent, {
+        width: '400px',
+        data: { fileNames: this.backupFileNames }
+      });
+    
+      dialogRef.afterClosed().subscribe((selectedFiles: string[] | undefined) => {
+        if (selectedFiles && selectedFiles.length > 0) {
+          selectedFiles.forEach((fileName: string) => {
+            const url = `https://localhost:8080/v1/backups?file-name=${encodeURIComponent(fileName)}`;
+            const headers = new HttpHeaders({ Authorization: this.auth.getToken() });
+    
+            this.http.get(url, { headers, responseType: 'blob' }).subscribe({
+              next: (blob) => {
+                const blobUrl = window.URL.createObjectURL(blob);
+                window.open(blobUrl, '_blank');
+              },
+              error: () => {
+                this.showErrorMessage(`Failed to download ${fileName}`);
+              }
+            });
+          });
+        }
+      });
+    }
+    
   
     private showSuccessMessage(message: string) {
       this.snackBar.open(message, 'Close', {
