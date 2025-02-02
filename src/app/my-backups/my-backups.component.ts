@@ -101,16 +101,16 @@ export class MyBackupsComponent implements OnInit {
             const url = `https://localhost:8080/v1/backups?file-name=${encodeURIComponent(fileName)}`;
             const headers = new HttpHeaders({ Authorization: this.auth.getToken() });
     
+            const newTab = window.open('', '_blank');
+    
             this.http.get(url, { headers, responseType: 'blob' }).subscribe({
               next: (blob) => {
-                const fileType = blob.type; // Get MIME type
+                const fileType = blob.type;
                 const blobUrl = window.URL.createObjectURL(blob);
     
-                // Open in a new tab for supported file types (PDF, images, etc.)
                 if (fileType.includes('pdf') || fileType.includes('image') || fileType.includes('text')) {
-                  window.open(blobUrl, '_blank');
+                  newTab!.location.href = blobUrl;
                 } else {
-                  // For Word, Excel, and other formats, trigger a download
                   const anchor = document.createElement('a');
                   anchor.href = blobUrl;
                   anchor.download = fileName;
@@ -121,12 +121,14 @@ export class MyBackupsComponent implements OnInit {
               },
               error: () => {
                 this.showErrorMessage(`Failed to download ${fileName}`);
+                newTab!.close();
               }
             });
           });
         }
       });
     }
+    
     
   
     private showSuccessMessage(message: string) {
