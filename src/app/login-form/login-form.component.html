@@ -1,34 +1,27 @@
-<div style="background-color: #b3ffc4;">
-    <h1 style="text-align:center; font-size:25px; font-weight:bold; padding-top: 20px;">LOGIN</h1>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" style="background-color: #b3ffc4; padding-bottom: 20px; padding-top: 5px;">
-        <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-            <mat-form-field style="width: 500px;">
-                <mat-label>Email</mat-label>
-                <input matInput placeholder="Enter Text Here" formControlName="email" />
-                <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Please enter a valid email address</mat-error>
-            </mat-form-field>
+<div class="login-container">
+  <h1 class="login-title">LOGIN</h1>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-field-container">
+          <mat-form-field class="input-field">
+              <mat-label>Email</mat-label>
+              <input matInput placeholder="Enter Text Here" formControlName="email" />
+              <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Please enter a valid email address</mat-error>
+          </mat-form-field>
 
-            <mat-form-field style="width: 500px;" appearance="fill">
-                <mat-label>Password</mat-label>
-                <input
-                  matInput
-                  [type]="hidePassword ? 'password' : 'text'"
-                  placeholder="Enter Text Here"
-                  formControlName="password"
-                />
-                <button
-                  mat-icon-button
-                  matSuffix
-                  type="button"
-                  (click)="hidePassword = !hidePassword"
-                  [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'"
-                >
+          <mat-form-field class="input-field" appearance="fill">
+              <mat-label>Password</mat-label>
+              <input matInput [type]="hidePassword ? 'password' : 'text'" placeholder="Enter Text Here" formControlName="password" />
+              <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword" [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'">
                   <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-                </button>
-              </mat-form-field>
-            <button mat-raised-button type="submit" style="width: 500px; background-color: #78fd95;">LOGIN</button>
-        </div>
-    </form>
-    <span style="display: flex; justify-content: center; font-size: 14px; padding-bottom: 15px; background-color: #b3ffc4;">No account?&nbsp;<span class="link" (click)="navigateToRegistrationForm()" style="color: blue">Sign up</span></span>
-    <span style="display: flex; justify-content: center; font-size: 14px; padding-bottom: 20px; background-color: #b3ffc4;"><span class="link" (click)="displayResetPasswordForm()" style="color: blue">Forgot Password?</span></span>
+              </button>
+          </mat-form-field>
+
+          <button mat-raised-button type="submit" class="login-button">LOGIN</button>
+      </div>
+  </form>
+
+  <div class="footer-links">
+      <div>No account?&nbsp;<span class="link" (click)="navigateToRegistrationForm()">Sign up</span></div>
+      <div style="padding-top: 10%;"><span class="link" (click)="displayResetPasswordForm()">Forgot Password?</span></div>
+  </div>
 </div>

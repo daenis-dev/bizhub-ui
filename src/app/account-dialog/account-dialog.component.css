@@ -1,0 +1,20 @@
+.close-button {
+    color: #006600 !important;
+  }
+  
+button:hover {
+    background-color: #78fd95;
+    color: #006600;
+}
+
+.close-button {
+    color: #006600 !important;
+    background-color: transparent;
+    border: none;
+}
+
+.close-button:hover, .close-button:focus {
+    background-color: #78fd95;
+    color: #006600 !important;
+    outline: none;
+}

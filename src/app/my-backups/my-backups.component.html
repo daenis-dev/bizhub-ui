@@ -1,12 +1,24 @@
-<h1 style="font-size: 50px; text-align: center; padding-top: 1%;">Checkers File Backup</h1>
 <div class="settings-wheel" (click)="openAccountDialog()">
   <mat-icon>settings</mat-icon>
 </div>
-<div class="container">
-  <div style="padding-bottom: 5%;">
-    <button mat-button tabindex="-1" (click)="selectFilesAndUpload()" style="font-size: 40px; padding: 40px 80px;">Upload Files</button>
+<div style="display: flex; flex-direction: column;">
+  <div style="margin: 0 auto;">
+      <h1 style="font-size: 70px; text-align: center; padding-top: 1%; color: #006600">Checkers</h1>  
   </div>
-  <div>
-    <button mat-button tabindex="-1" (click)="selectFilesAndDownload()" style="font-size: 40px; padding: 40px 80px;">Download Files</button>
+  
+  <div style="padding-top: 2%">
+    <div class="container">
+      <div>
+        <button mat-button tabindex="-1" (click)="selectFilesAndUpload()" style="font-size: 40px; padding: 40px 80px; color: #006600">Upload Files&nbsp;&nbsp;</button>
+      </div>
+      
+      <div class="vertical-rule"></div>
+    
+      <div>
+        <button mat-button tabindex="-1" (click)="selectFilesAndDownload()" style="font-size: 40px; padding: 40px 80px; color: #006600">Download Files</button>
+      </div>
+    </div>
   </div>
+  
 </div>
+
