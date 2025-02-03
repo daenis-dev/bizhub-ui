@@ -98,7 +98,7 @@ export class MyBackupsComponent implements OnInit {
       dialogRef.afterClosed().subscribe((selectedFiles: string[] | undefined) => {
         if (selectedFiles && selectedFiles.length > 0) {
           const fileNamesParam = selectedFiles.join(',');
-          const url = `https://localhost:8080/v1/backups/all?file-names=${encodeURIComponent(fileNamesParam)}`;
+          const url = `https://localhost:8080/v1/backups?file-names=${encodeURIComponent(fileNamesParam)}`;
           const headers = new HttpHeaders({ Authorization: this.auth.getToken() });
     
           this.http.get(url, { headers, responseType: 'blob' }).subscribe({
