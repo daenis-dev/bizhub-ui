@@ -48,26 +48,25 @@ html, body {
 /* Input field styling */
 .input-field {
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 3%;
 }
 
-/* Login button styling */
+/* Style for Login Button */
 .login-button {
-    width: 100%;
+    color: #006600;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    background-color: transparent; 
+    border: none;
+    padding: 12px 24px;
+    width: 500px;
+}
+
+/* Login Button Hover and Focus States */
+.login-button:hover, .login-button:focus {
     background-color: #78fd95;
     color: #006600;
-    font-weight: bold;
-    font-size: 16px;
-    padding: 12px;
-    border-radius: 5px;
-    text-transform: uppercase;
-    box-shadow: none;
-}
-
-.login-button:hover,
-.login-button:focus {
-    background-color: #006600;
-    color: white;
     outline: none;
     box-shadow: none;
 }

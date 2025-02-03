@@ -31,6 +31,7 @@ import { CommonModule } from '@angular/common';
 })
 export class AccountRegistrationFormComponent {
   registrationForm: FormGroup;
+  hidePassword: boolean = true;
 
   constructor(private formBuilder: FormBuilder, private authService: AuthService, private snackBar: MatSnackBar, private router: Router) {
     this.registrationForm = this.formBuilder.group({

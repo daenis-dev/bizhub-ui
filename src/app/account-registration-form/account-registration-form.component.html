@@ -1,27 +1,34 @@
-<h1 style="text-align:center; font-size:25px; font-weight:bold; padding-top: 20px; background-color: white; padding-bottom: 20px;">REGISTER ACCOUNT</h1>
+<div class="login-container">
+    <h1 class="login-title">REGISTER</h1>
 
-<form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" style="background-color: #b3ffc4; padding-top: 20px;">
-    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column">
-        <mat-form-field style="width: 500px;">
-            <mat-label>Email</mat-label>
-            <input matInput placeholder="Enter Text Here" formControlName="email" />
-            <mat-error *ngIf="registrationForm.get('email')?.hasError('email')">Please enter a valid email address</mat-error>
-        </mat-form-field>
+    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="login-form">
+        <div class="form-field-container">
+            <mat-form-field class="input-field">
+                <mat-label>Email</mat-label>
+                <input matInput placeholder="Enter Text Here" formControlName="email" />
+                <mat-error *ngIf="registrationForm.get('email')?.hasError('email')">Please enter a valid email address</mat-error>
+            </mat-form-field>
 
-        <mat-form-field style="width: 500px;">
-            <mat-label>Password</mat-label>
-            <input matInput placeholder="Enter Text Here" formControlName="password" />
-            <mat-error *ngIf="registrationForm.get('password')?.hasError('password')">Please enter a valid password</mat-error>
-        </mat-form-field>
+            <mat-form-field class="input-field">
+                <mat-label>Password</mat-label>
+                <input matInput [type]="hidePassword ? 'password' : 'text'" placeholder="Enter Text Here" formControlName="password" />
+                <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword" [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'">
+                    <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                <mat-error *ngIf="registrationForm.get('password')?.hasError('password')">Please enter a valid password</mat-error>
+            </mat-form-field>
 
-        <mat-form-field style="width: 500px;">
-            <mat-label>Confirm Password</mat-label>
-            <input matInput placeholder="Enter Text Here" formControlName="confirmedPassword" />
-            <mat-error *ngIf="registrationForm.get('confirmedPassword')?.hasError('confirmedPassword')">Please confirm password</mat-error>
-        </mat-form-field>
+            <mat-form-field class="input-field">
+                <mat-label>Confirm Password</mat-label>
+                <input matInput [type]="hidePassword ? 'password' : 'text'" placeholder="Enter Text Here" formControlName="confirmedPassword" />
+                <mat-error *ngIf="registrationForm.get('confirmedPassword')?.hasError('confirmedPassword')">Please confirm password</mat-error>
+            </mat-form-field>
 
-        <button mat-raised-button type="submit" style="width: 500px; background-color: #78fd95;">CREATE ACCOUNT</button>
+            <div style="padding-bottom: 5px;"><button mat-raised-button type="submit" class="login-button">CREATE ACCOUNT</button></div>
+        </div>
+    </form>
+
+    <div class="footer-links">
+        <div>Already have an account?&nbsp;<span class="link" (click)="navigateToLoginForm()">Log in</span></div>
     </div>
-</form>
-
-<span style="display: flex; justify-content: center; font-size: 14px; padding-bottom: 20px; padding-top: 20px; background-color: #b3ffc4;">Already have an account?&nbsp;<span class="link" (click)="navigateToLoginForm()" style="color: blue">Log in</span></span>
+</div>
