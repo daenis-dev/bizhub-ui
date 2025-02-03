@@ -53,22 +53,22 @@ html, body {
 
 /* Style for Login Button */
 .login-button {
-    color: #006600;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-    background-color: transparent; 
-    border: none;
-    padding: 12px 24px;
-    width: 500px;
+    color: #006600 !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    background-color: transparent !important; 
+    border: none !important;
+    padding: 12px 24px !important;
+    width: 500px !important;
 }
 
 /* Login Button Hover and Focus States */
 .login-button:hover, .login-button:focus {
-    background-color: #78fd95;
-    color: #006600;
-    outline: none;
-    box-shadow: none;
+    background-color: #78fd95 !important;
+    color: #006600 !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 /* Footer links styling */
