@@ -120,7 +120,6 @@ export class MyBackupsComponent implements OnInit {
         }
       });
     }
-     
 
     private showSuccessMessage(message: string) {
       this.snackBar.open(message, 'Close', {

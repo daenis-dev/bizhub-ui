@@ -5,7 +5,7 @@ import { authGuard } from "./services/permission.service";
 import { AccountRegistrationFormComponent } from "./account-registration-form/account-registration-form.component";
 import { MyBackupsComponent } from "./my-backups/my-backups.component";
 
-const routes: Routes = [
+export const routes: Routes = [
     { path: '', component: LoginFormComponent },
     { path: 'register', component: AccountRegistrationFormComponent },
     { path: 'my-backups', component: MyBackupsComponent, canActivate: [authGuard]}

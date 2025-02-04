@@ -1,7 +1,7 @@
 <div class="login-container">
     <h1 class="login-title">REGISTER</h1>
 
-    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="login-form">
+    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
         <div class="form-field-container">
             <mat-form-field class="input-field">
                 <mat-label>Email</mat-label>
@@ -24,7 +24,7 @@
                 <mat-error *ngIf="registrationForm.get('confirmedPassword')?.hasError('confirmedPassword')">Please confirm password</mat-error>
             </mat-form-field>
 
-            <div style="padding-bottom: 5px;"><button mat-raised-button type="submit" class="login-button">CREATE ACCOUNT</button></div>
+            <div style="padding-bottom: 5px;"><button mat-raised-button type="submit" class="create-account-button">CREATE ACCOUNT</button></div>
         </div>
     </form>
 

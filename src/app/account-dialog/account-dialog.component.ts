@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
 import { ResetPasswordFormComponent } from '../reset-password-form/reset-password-form.component';
 
 @Component({
