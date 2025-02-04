@@ -4,22 +4,20 @@ html, body {
     padding: 0;
 }
 
-.login-container {
+.account-registration-container {
     background-color: #b3ffc4;
     width: 100%;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 20px;
     box-sizing: border-box;
     overflow: hidden;
 }
 
-.login-title {
+.account-registration-title {
     text-align: center;
-    font-size: 30px;
+    font-size: 70px;
     font-weight: bold;
     color: #006600;
     margin-bottom: 20px;
@@ -32,6 +30,7 @@ html, body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 500px;
+    margin-top: 3%;
 }
 
 .form-field-container {
@@ -53,7 +52,7 @@ html, body {
     background-color: transparent !important; 
     border: none !important;
     padding: 12px 24px !important;
-    width: 500px !important;
+    width: 500px;
 }
 
 .create-account-button:hover, .create-account-button:focus {

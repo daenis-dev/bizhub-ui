@@ -1,0 +1,27 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #b3ffc4;
+}
+
+.title-container {
+    background-color: #b3ffc4;
+    padding-top: 20px;
+    text-align: center;
+    width: 100%;
+    z-index: 9999;
+}
+
+.title {
+    font-size: 70px;
+    font-weight: bold;
+    color: #006600;
+    margin: 0;
+}
