@@ -33,21 +33,21 @@ export class AuthService {
 
   loginForEmailAndPassword(email: string, password: string): Observable<boolean> {
     return this.http.post("https://localhost:8080/v1/login", null, {
-        params: new HttpParams().set("email-address", email).set("password", password)
+      params: new HttpParams().set("email-address", email).set("password", password)
     }).pipe(
-        map((data: any) => {
-            let response: any = data;
-            if (response.accessToken != null && response.accessToken !== 'Bearer null') {
-                localStorage.setItem(this.tokenKey, response.accessToken);
-                let expDate: any = new Date(new Date().setDate(new Date().getDate() + 1));
-                localStorage.setItem(this.tokenExpDateKey, expDate);
-                return true;
-            }
-            return false;
-        }),
-        catchError(() => {
-            return of(false);
-        })
+      map((data: any) => {
+        let response: any = data;
+        if (response.accessToken != null && response.accessToken !== 'Bearer null') {
+          localStorage.setItem(this.tokenKey, response.accessToken);
+          let expDate: any = new Date(new Date().setDate(new Date().getDate() + 1));
+          localStorage.setItem(this.tokenExpDateKey, expDate);
+          return true;
+        }
+        return false;
+      }),
+      catchError(() => {
+        return of(false);
+      })
     );
   }
 
