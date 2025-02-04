@@ -107,7 +107,7 @@ export class MyBackupsComponent implements OnInit {
               const blobUrl = window.URL.createObjectURL(blob);
               const anchor = document.createElement('a');
               anchor.href = blobUrl;
-              anchor.download = 'checkers-backup.zip';
+              anchor.download = 'bizhub-backup.zip';
               document.body.appendChild(anchor);
               anchor.click();
               document.body.removeChild(anchor);
