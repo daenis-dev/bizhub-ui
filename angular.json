@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "checkers-ui": {
+    "bizhub-ui": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/checkers-ui",
+            "outputPath": "dist/bizhub-ui",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -60,10 +60,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "checkers-ui:build:production"
+              "buildTarget": "bizhub-ui:build:production"
             },
             "development": {
-              "buildTarget": "checkers-ui:build:development"
+              "buildTarget": "bizhub-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
