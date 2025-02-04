@@ -28,7 +28,7 @@ import { FileSelectionDialogComponent } from '../file-selection-dialog/file-sele
 })
 export class MyBackupsComponent implements OnInit {
 
-  private backupFileNames: String[] = [];
+  backupFileNames: String[] = [];
 
   constructor(private dialog: MatDialog, private http: HttpClient, private auth: AuthService, private snackBar: MatSnackBar) {
 
@@ -121,7 +121,7 @@ export class MyBackupsComponent implements OnInit {
       });
     }
 
-    private showSuccessMessage(message: string) {
+    showSuccessMessage(message: string) {
       this.snackBar.open(message, 'Close', {
         horizontalPosition: 'end',
         verticalPosition: 'top',
@@ -129,7 +129,7 @@ export class MyBackupsComponent implements OnInit {
       });
     }
   
-    private showErrorMessage(message: string) {
+    showErrorMessage(message: string) {
       this.snackBar.open(message, 'Close', {
         horizontalPosition: 'end',
         verticalPosition: 'top',
