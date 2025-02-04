@@ -6,12 +6,15 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { HttpParams, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpTestingController: HttpTestingController;
   let snackBarSpy: jasmine.SpyObj<MatSnackBar>;
   let routerSpy: jasmine.SpyObj<Router>;
+
+  let apiUrl: string = environment.apiUrl;
 
   beforeEach(() => {
     snackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
@@ -61,7 +64,7 @@ describe('AuthService', () => {
 
     service.registerAccountForParams(params);
     
-    const req = httpTestingController.expectOne("https://localhost:8080/v1/register?email-address=john.doe@example.com&password=password123&confirmed-password=password123");
+    const req = httpTestingController.expectOne(apiUrl + "/v1/register?email-address=john.doe@example.com&password=password123&confirmed-password=password123");
     expect(req.request.method).toBe('POST');
     
     req.flush({});

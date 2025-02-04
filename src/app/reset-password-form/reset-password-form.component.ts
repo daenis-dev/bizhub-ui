@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-reset-password-form',
@@ -32,6 +33,7 @@ import { CommonModule } from '@angular/common';
 })
 export class ResetPasswordFormComponent {
   resetPasswordForm: FormGroup;
+  apiUrl: string = environment.apiUrl;
 
   constructor(private fb: FormBuilder, private http: HttpClient, private snackBar: MatSnackBar, public dialog: MatDialog) {
     this.resetPasswordForm = this.fb.group({
@@ -43,7 +45,7 @@ export class ResetPasswordFormComponent {
     if (this.resetPasswordForm.valid) {
       let httpParams = new HttpParams()
       .set('email-address', this.resetPasswordForm.value.emailAddress);
-      this.http.post('https://localhost:8080/v1/reset-password', httpParams)
+      this.http.post(this.apiUrl + '/v1/reset-password', httpParams)
       .subscribe({
         next: () => this.showSuccessMessage("Link to reset password has been sent via email"),
         error: () => this.showErrorMessage("Error occurred while sending the link to reset password via email")

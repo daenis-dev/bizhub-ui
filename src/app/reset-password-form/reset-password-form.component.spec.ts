@@ -10,12 +10,14 @@ import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { environment } from '../../environments/environment';
 
 describe('ResetPasswordFormComponent', () => {
   let component: ResetPasswordFormComponent;
   let fixture: ComponentFixture<ResetPasswordFormComponent>;
   let snackBar: MatSnackBar;
   let httpTestingController: HttpTestingController;
+  let apiUrl: string = environment.apiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -56,7 +58,7 @@ describe('ResetPasswordFormComponent', () => {
 
     component.onSubmit();
 
-    const req = httpTestingController.expectOne('https://localhost:8080/v1/reset-password');
+    const req = httpTestingController.expectOne(apiUrl + '/v1/reset-password');
     expect(req.request.method).toBe('POST');
     req.flush({});
 

@@ -10,6 +10,7 @@ import { AccountDialogComponent } from '../account-dialog/account-dialog.compone
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
 import { FileSelectionDialogComponent } from '../file-selection-dialog/file-selection-dialog.component';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-my-backups',
@@ -29,13 +30,14 @@ import { FileSelectionDialogComponent } from '../file-selection-dialog/file-sele
 export class MyBackupsComponent implements OnInit {
 
   backupFileNames: String[] = [];
+  apiUrl: string = environment.apiUrl;
 
   constructor(private dialog: MatDialog, private http: HttpClient, private auth: AuthService, private snackBar: MatSnackBar) {
 
   }
 
   ngOnInit() {
-    this.http.get<String[]>('https://localhost:8080/v1/backups/file-names', {
+    this.http.get<String[]>(this.apiUrl + '/v1/backups/file-names', {
       headers: new HttpHeaders({ 'Authorization': this.auth.getToken() })
     }).subscribe({
       next: (data: String[]) => {

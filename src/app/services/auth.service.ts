@@ -4,11 +4,14 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { catchError, map, Observable, of } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
+  apiUrl: string = environment.apiUrl;
 
   tokenKey = 'token';
   tokenExpDateKey = 'token-exp';
@@ -21,7 +24,7 @@ export class AuthService {
   }
 
   registerAccountForParams(params: HttpParams) {
-    this.http.post("https://localhost:8080/v1/register", null, {params: params})
+    this.http.post(this.apiUrl + "/v1/register", null, {params: params})
     .subscribe({
       next: () => {
         this.displaySuccess("Account registered successfully");
@@ -32,7 +35,7 @@ export class AuthService {
   }
 
   loginForEmailAndPassword(email: string, password: string): Observable<boolean> {
-    return this.http.post("https://localhost:8080/v1/login", null, {
+    return this.http.post(this.apiUrl + "/v1/login", null, {
       params: new HttpParams().set("email-address", email).set("password", password)
     }).pipe(
       map((data: any) => {
