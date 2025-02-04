@@ -2,7 +2,7 @@
 <mat-dialog-content>
   <mat-list>
     <mat-list-item *ngFor="let file of data.fileNames" (click)="toggleSelection(file)">
-      <mat-checkbox [checked]="selectedFiles.includes(file)">{{ file }}</mat-checkbox>
+      <mat-checkbox [checked]="selectedFiles.includes(file)">{{ file.length > 30 ? file.slice(0, 27) + '...' : file }}</mat-checkbox>
     </mat-list-item>
   </mat-list>
 </mat-dialog-content>
