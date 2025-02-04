@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -32,10 +32,11 @@ import { CommonModule } from '@angular/common';
 })
 export class LoginFormComponent {
   loginForm: FormGroup;
+  loginIsDisabled: boolean = false;
 
   hidePassword: boolean = true;
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router, private dialog: MatDialog) {
+  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router, private dialog: MatDialog, private snackBar: MatSnackBar) {
     if (this.authService.isAuthenticated()) {
       this.router.navigateByUrl('/my-backups');
     }
@@ -47,8 +48,30 @@ export class LoginFormComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      this.authService.loginForEmailAndPassword(this.loginForm?.value?.email, this.loginForm?.value?.password);
+        this.loginIsDisabled = true;
+        this.authService.loginForEmailAndPassword(this.loginForm?.value?.email, this.loginForm?.value?.password)
+        .subscribe({
+          next: (isLoginSuccessful) => {
+            this.loginIsDisabled = false;
+            if (isLoginSuccessful) {
+              this.router.navigateByUrl('/my-backups');
+            } else {
+              this.displayError("Login attempt failed");
+            }
+          }, error: () => {
+                this.loginIsDisabled = false;
+                this.displayError("Login attempt failed");
+            }
+        });
     }
+  }
+
+  private displayError(message: string) {
+    this.snackBar.open(message, 'Close', {
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['mat-snackbar-error']
+    });
   }
 
   navigateToRegistrationForm() {

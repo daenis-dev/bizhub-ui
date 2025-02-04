@@ -9,6 +9,7 @@ import { LoginFormComponent } from './login-form.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../services/auth.service';
+import { of } from 'rxjs';
 
 describe('LoginFormComponent', () => {
   let component: LoginFormComponent;
@@ -72,10 +73,12 @@ describe('LoginFormComponent', () => {
     const password = 'validPassword123';
     component.loginForm.controls['email'].setValue(email);
     component.loginForm.controls['password'].setValue(password);
-
-    authServiceSpy.loginForEmailAndPassword;
+  
+    const mockObservable = of(true);
+    authServiceSpy.loginForEmailAndPassword.and.returnValue(mockObservable); 
+  
     component.onSubmit();
-
+  
     expect(authServiceSpy.loginForEmailAndPassword).toHaveBeenCalledWith(email, password);
   });
 
