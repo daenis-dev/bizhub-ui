@@ -26,7 +26,7 @@ export class AuthService {
   registerAccountForParams(params: HttpParams) {
     this.http.post(this.apiUrl + "/v1/register", null, {params: params})
     .subscribe({
-      next: () => this.displaySuccess('Verify account by clicking the link sent to the email address'),
+      next: () => this.displaySuccess('An administrator will contact you once your account has been verified.'),
       error: () => this.displayError("Error occurred while registering for an account")
     });
   }
