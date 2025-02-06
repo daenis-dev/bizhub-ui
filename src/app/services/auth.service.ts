@@ -26,22 +26,7 @@ export class AuthService {
   registerAccountForParams(params: HttpParams) {
     this.http.post(this.apiUrl + "/v1/register", null, {params: params})
     .subscribe({
-      next: () => {
-        const username: string = params.get('email-address') ?? '';
-        const password: string = params.get('password') ?? '';
-        this.loginForEmailAndPassword(username, password)
-        .subscribe({
-          next: (isLoginSuccessful) => {
-            if (isLoginSuccessful) {
-              this.router.navigateByUrl('/my-backups');
-            } else {
-              this.displayError("Login attempt failed");
-            }
-          }, error: () => {
-                this.displayError("Login attempt failed");
-            }
-        });
-      },
+      next: () => this.displaySuccess('Verify account by clicking the link sent to the email address'),
       error: () => this.displayError("Error occurred while registering for an account")
     });
   }
