@@ -75,7 +75,7 @@ export class MyBackupsComponent implements OnInit {
           this.backupFileNames.push(file.name);
         }
     
-        this.http.post<void>('https://localhost:8080/v1/backups', formData, {
+        this.http.post<void>(this.apiUrl + '/v1/backups', formData, {
           headers: new HttpHeaders({ 'Authorization': this.auth.getToken() })
         }).subscribe({
           next: () => {
@@ -100,7 +100,7 @@ export class MyBackupsComponent implements OnInit {
       dialogRef.afterClosed().subscribe((selectedFiles: string[] | undefined) => {
         if (selectedFiles && selectedFiles.length > 0) {
           const fileNamesParam = selectedFiles.join(',');
-          const url = `https://localhost:8080/v1/backups?file-names=${encodeURIComponent(fileNamesParam)}`;
+          const url = this.apiUrl + `/v1/backups?file-names=${encodeURIComponent(fileNamesParam)}`;
           const headers = new HttpHeaders({ Authorization: this.auth.getToken() });
     
           this.http.get(url, { headers, responseType: 'blob' }).subscribe({
