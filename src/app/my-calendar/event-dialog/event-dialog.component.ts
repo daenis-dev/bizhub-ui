@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';import dayjs from 'dayjs';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-event-dialog',
@@ -19,6 +20,7 @@ import { MatNativeDateModule } from '@angular/material/core';import dayjs from '
     MatCardModule,
     MatButtonModule,
     MatIconModule,
+    MatInputModule,
     MatDialogModule,
     MatFormFieldModule,
     ReactiveFormsModule,

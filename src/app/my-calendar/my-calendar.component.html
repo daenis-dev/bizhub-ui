@@ -5,23 +5,24 @@
   <mat-icon>settings</mat-icon>
 </div>
 <div style="display: flex; flex-direction: column;">
-  <div style="padding-top: 2%">
+  <div>
       <div class="container">
           <div class="calendar-container">
               <div class="calendar-header">
-                <button mat-button (click)="changeView('week')">Week</button>
-                <button mat-button (click)="changeView('month')">Month</button>
-                <button mat-raised-button color="primary" (click)="createEvent()">+ Create Event</button>
+                <div>
+                  <button mat-raised-button color="primary" (click)="createEvent()" style="font-size: 20px; padding: 20px 40px; color: #006600; width: 400px;">Create Event</button>
+                </div>
 
-                <!-- Back and Forward Navigation Buttons -->
-                <button mat-button (click)="navigate(-1)">
-                  <mat-icon>chevron_left</mat-icon>
-                  {{ view === 'week' ? 'Previous Week' : 'Previous Month' }}
-                </button>
-                <button mat-button (click)="navigate(1)">
-                  {{ view === 'week' ? 'Next Week' : 'Next Month' }}
-                  <mat-icon>chevron_right</mat-icon>
-                </button>
+                <div>
+                  <button mat-button (click)="navigate(-1)" style="width: 200px;">
+                    <mat-icon>chevron_left</mat-icon>
+                    {{ 'Previous Week' }}
+                  </button>
+                  <button mat-button (click)="navigate(1)" style="width: 200px;">
+                    {{ 'Next Week' }}
+                    <mat-icon>chevron_right</mat-icon>
+                  </button>
+                </div>                
               </div>
             
               <div class="calendar-grid">

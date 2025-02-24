@@ -6,11 +6,14 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { AccountDialogComponent } from '../account-dialog/account-dialog.component';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EventDetails } from './event-details.model';
 import dayjs from 'dayjs';
 import { EventDialogComponent } from './event-dialog/event-dialog.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { environment } from '../../environments/environment';
+import { AuthService } from '../services/auth.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-my-calendar',
@@ -23,17 +26,19 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatSnackBarModule
   ]
 })
 export class MyCalendarComponent implements OnInit {
 
-  view: 'week' | 'month' = 'week';
+  apiUrl: string = environment.apiUrl;
+  view = 'week';
   events: EventDetails[] = [];
   calendarDays: any[] = [];
   currentDate: dayjs.Dayjs = dayjs(); // Keep track of current displayed date
 
-  constructor(private router: Router, private dialog: MatDialog, private http: HttpClient) {}
+  constructor(private router: Router, private dialog: MatDialog, private http: HttpClient, private auth: AuthService, private snackBar: MatSnackBar) {}
 
   navigateHome() {
     this.router.navigateByUrl('/home');
@@ -48,18 +53,35 @@ export class MyCalendarComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadEvents();
+
+    this.generateCalendar()
   }
 
   loadEvents(): void {
-    this.http.get<EventDetails[]>('/v1/events').subscribe((data) => {
-      this.events = data;
-      this.generateCalendar();
+    this.http.get<EventDetails[]>(
+      this.apiUrl + '/v1/events',
+      { headers: new HttpHeaders({ 'Authorization': this.auth.getToken() })}).subscribe({
+        next: (data: EventDetails[]) => {
+          this.events = data;
+          this.generateCalendar();
+        },
+        error: () => {
+          this.showErrorMessage('An error occurred while getting the events');
+        }
+      });
+  }
+
+  showErrorMessage(message: string) {
+    this.snackBar.open(message, 'Close', {
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['mat-snackbar-error']
     });
   }
 
   generateCalendar(): void {
-    const startDate = this.view === 'week' ? this.currentDate.startOf('week') : this.currentDate.startOf('month');
-    const daysInView = this.view === 'week' ? 7 : this.currentDate.daysInMonth();
+    const startDate = this.currentDate.startOf('week');
+    const daysInView = 7;
   
     this.calendarDays = Array.from({ length: daysInView }, (_, i) => {
       const date = startDate.add(i, 'day');
@@ -68,11 +90,6 @@ export class MyCalendarComponent implements OnInit {
       );
       return { date, events: eventsForDay };
     });
-  }
-
-  changeView(view: 'week' | 'month'): void {
-    this.view = view;
-    this.generateCalendar();
   }
 
   createEvent(): void {
@@ -103,23 +120,10 @@ export class MyCalendarComponent implements OnInit {
     this.http.delete(`/v1/events/${eventId}`).subscribe(() => this.loadEvents());
   }
 
-  toggleView() {
-    if (this.view === 'week') {
-      this.changeView('month');
-    } else {
-      this.changeView('week');
-    }
-  }
-
   navigate(direction: number): void {
     const increment = direction === 1 ? 1 : -1;
 
-    if (this.view === 'week') {
-      this.currentDate = this.currentDate.add(increment, 'week');
+    this.currentDate = this.currentDate.add(increment, 'week');
       this.generateCalendar();
-    } else {
-      this.currentDate = this.currentDate.add(increment, 'month');
-      this.generateCalendar();
-    }
   }
 }
