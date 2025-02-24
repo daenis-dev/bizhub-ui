@@ -10,7 +10,7 @@
 }
 
 .vertical-rule {
-  width: 1px;
+  width: 1px !important;
   height: 60px;
   background-color: #000;
 }
@@ -61,4 +61,31 @@ button:hover {
   width: 1px;
   height: 60px;
   background-color: #006600;
+}
+
+.home-icon {
+  position: fixed;
+  top: 2.5%;
+  left: 2%;
+  background-color: #b3ffc4;
+  border: 2px solid #006600;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 910;
+}
+
+.home-icon mat-icon {
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #006600;
+}
+
+.home-icon:hover {
+  background-color: #78fd95;
+  color: #006600;
+  border: 2px solid #78fd95;
 }

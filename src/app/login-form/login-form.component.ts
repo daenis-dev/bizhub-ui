@@ -38,7 +38,7 @@ export class LoginFormComponent {
 
   constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router, private dialog: MatDialog, private snackBar: MatSnackBar) {
     if (this.authService.isAuthenticated()) {
-      this.router.navigateByUrl('/my-backups');
+      this.router.navigateByUrl('/home');
     }
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -54,7 +54,7 @@ export class LoginFormComponent {
           next: (isLoginSuccessful) => {
             this.loginIsDisabled = false;
             if (isLoginSuccessful) {
-              this.router.navigateByUrl('/my-backups');
+              this.router.navigateByUrl('/home');
             } else {
               this.displayError("Login attempt failed");
             }

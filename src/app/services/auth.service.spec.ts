@@ -56,7 +56,7 @@ describe('AuthService', () => {
     expect(service.isAuthenticated()).toBeFalse();
   });
 
-  it('should register account and navigate to /my-backups', () => {
+  it('should register account and navigate to /home', () => {
     const params = new HttpParams()
       .set('email-address', 'john.doe@example.com')
       .set('password', 'password123')

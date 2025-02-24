@@ -1,4 +1,6 @@
-
+<div class="home-icon" (click)="navigateHome()">
+  <mat-icon>home</mat-icon>
+</div>
 <div class="settings-wheel" (click)="openAccountDialog()">
   <mat-icon>settings</mat-icon>
 </div>
@@ -6,13 +8,13 @@
   <div style="padding-top: 2%">
     <div class="container">
       <div>
-        <button mat-button tabindex="-1" (click)="selectFilesAndUpload()" style="font-size: 40px; padding: 40px 80px; color: #006600">Upload Files&nbsp;&nbsp;</button>
+        <button mat-button tabindex="-1" (click)="selectFilesAndUpload()" style="font-size: 30px; padding: 40px 80px; color: #006600; width: 400px;">Upload Files</button>
       </div>
       
       <div class="vertical-rule"></div>
     
       <div>
-        <button mat-button tabindex="-1" (click)="selectFilesAndDownload()" style="font-size: 40px; padding: 40px 80px; color: #006600">Download Files</button>
+        <button mat-button tabindex="-1" (click)="selectFilesAndDownload()" style="font-size: 30px; padding: 40px 80px; color: #006600; width: 400px;">Download Files</button>
       </div>
     </div>
   </div>

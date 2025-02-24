@@ -11,6 +11,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
 import { FileSelectionDialogComponent } from '../file-selection-dialog/file-selection-dialog.component';
 import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-my-backups',
@@ -19,7 +20,6 @@ import { environment } from '../../environments/environment';
   standalone: true,
   imports: [
     CommonModule,
-    MatButtonModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -32,7 +32,7 @@ export class MyBackupsComponent implements OnInit {
   backupFileNames: String[] = [];
   apiUrl: string = environment.apiUrl;
 
-  constructor(private dialog: MatDialog, private http: HttpClient, private auth: AuthService, private snackBar: MatSnackBar) {
+  constructor(private dialog: MatDialog, private http: HttpClient, private auth: AuthService, private snackBar: MatSnackBar, private router: Router) {
 
   }
 
@@ -136,5 +136,9 @@ export class MyBackupsComponent implements OnInit {
         verticalPosition: 'top',
         panelClass: ['mat-snackbar-error']
       });
+    }
+
+    navigateHome() {
+      this.router.navigateByUrl('/home');
     }
 }
