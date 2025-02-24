@@ -33,6 +33,14 @@ export const routes: Routes = [
       ),
     canActivate: [authGuard],
   },
+  {
+    path: 'my-calendar',
+    loadComponent: () =>
+      import('./my-calendar/my-calendar.component').then(
+        (m) => m.MyCalendarComponent
+      ),
+    canActivate: [authGuard],
+  }
 ];
 
 @NgModule({

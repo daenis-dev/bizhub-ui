@@ -4,14 +4,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { AccountDialogComponent } from '../account-dialog/account-dialog.component';
 import { Router } from '@angular/router';
+import { AccountDialogComponent } from '../account-dialog/account-dialog.component';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css',
+  selector: 'app-my-calendar',
+  templateUrl: './my-calendar.component.html',
+  styleUrl: './my-calendar.component.css',
   standalone: true,
   imports: [
     CommonModule,
@@ -21,10 +20,14 @@ import { Router } from '@angular/router';
     MatDialogModule
   ]
 })
-export class HomeComponent {
+export class MyCalendarComponent {
 
-  constructor(private dialog: MatDialog, private router: Router) {
+  constructor(private router: Router, private dialog: MatDialog) {
 
+  }
+
+  navigateHome() {
+    this.router.navigateByUrl('/home');
   }
 
   openAccountDialog() {
@@ -32,13 +35,5 @@ export class HomeComponent {
       width: '800px',
       height: '225px'
     });
-  }
-
-  openMyFiles() {
-    this.router.navigateByUrl('/my-backups');
-  }
-
-  openMyCalendar() {
-    this.router.navigateByUrl('/my-calendar');
   }
 }
