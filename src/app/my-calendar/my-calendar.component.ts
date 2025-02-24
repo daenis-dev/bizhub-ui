@@ -97,9 +97,9 @@ export class MyCalendarComponent implements OnInit {
       data: { mode: 'create' },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.http.post<EventDetails>('/v1/events', result).subscribe(() => this.loadEvents());
+    dialogRef.afterClosed().subscribe((newEvent: EventDetails | undefined) => {
+      if (newEvent) {
+        this.events.push(newEvent);
       }
     });
   }

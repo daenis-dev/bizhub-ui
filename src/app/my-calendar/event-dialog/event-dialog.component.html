@@ -3,6 +3,13 @@
     <form [formGroup]="eventForm" (ngSubmit)="save()">
         <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
 
+          <div style="width: 250px;">
+            <mat-form-field appearance="fill" style="width: 100%;">
+              <mat-label>Event Name</mat-label>
+              <input matInput formControlName="name" required />
+            </mat-form-field>            
+          </div> 
+
           <div style="display: flex; flex-direction: row;">
             <mat-form-field appearance="fill" style="width: 250px; padding-right: 10px;">
               <mat-label>Start Date</mat-label>

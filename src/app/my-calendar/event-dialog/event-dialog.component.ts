@@ -11,6 +11,11 @@ import { NativeDateAdapter } from '@angular/material/core';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import { environment } from '../../../environments/environment';
+import { AuthService } from '../../services/auth.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { EventDetails } from '../event-details.model';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -29,7 +34,8 @@ dayjs.extend(timezone);
     ReactiveFormsModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatOptionModule
+    MatOptionModule,
+    MatSnackBarModule
   ],
   providers: [
     { provide: DateAdapter, useClass: NativeDateAdapter },
@@ -51,13 +57,18 @@ dayjs.extend(timezone);
   ]
 })
 export class EventDialogComponent implements OnInit {
+
+  apiUrl: string = environment.apiUrl;
   eventForm!: FormGroup;
   currentTimezone: string;
   timeOptions = this.generateTimeOptions();
 
   constructor(
     public dialogRef: MatDialogRef<EventDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { mode: 'create' | 'edit'; event?: any }
+    @Inject(MAT_DIALOG_DATA) public data: { mode: 'create' | 'edit'; event?: any },
+    private auth: AuthService,
+    private http: HttpClient,
+    private snackBar: MatSnackBar
   ) {
     this.currentTimezone = dayjs.tz.guess();
   }
@@ -70,7 +81,7 @@ export class EventDialogComponent implements OnInit {
     this.eventForm = new FormGroup({
       name: new FormControl(this.data.event?.name || '', Validators.required),
       startDate: new FormControl(
-        this.data.event ? dayjs(this.data.event.startDateTime).format('YYYY-MM-DD') : '',
+        this.data.event ? dayjs(this.data.event.startDateTime).toDate() : null,
         Validators.required
       ),
       startTime: new FormControl(
@@ -79,7 +90,7 @@ export class EventDialogComponent implements OnInit {
       ),
       startTimeCustom: new FormControl(''),
       endDate: new FormControl(
-        this.data.event ? dayjs(this.data.event.endDateTime).format('YYYY-MM-DD') : '',
+        this.data.event ? dayjs(this.data.event.endDateTime).toDate() : null,
         Validators.required
       ),
       endTime: new FormControl(
@@ -117,12 +128,41 @@ export class EventDialogComponent implements OnInit {
         dayjs(`${endDate} ${endTimeCustom}`, 'YYYY-MM-DD hh:mm A').tz(this.currentTimezone).format() :
         dayjs(`${endDate} ${endTime}`, 'YYYY-MM-DD hh:mm A').tz(this.currentTimezone).format();
 
-      this.dialogRef.close({
-        name: this.eventForm.value.name,
-        startDateTime: formattedStart,
-        endDateTime: formattedEnd,
-        timezone: this.currentTimezone
-      });
+      this.http.post<EventDetails>(
+        this.apiUrl + '/v1/events',
+        { headers: new HttpHeaders({ 'Authorization': this.auth.getToken() })}).subscribe({
+          next: (data: EventDetails) => {
+            this.dialogRef.close(data);
+            this.showSuccessMessage('Successfully created an event');
+          },
+          error: () => {
+            this.dialogRef.close({
+              name: this.eventForm.value.name,
+              startDateTime: formattedStart,
+              endDateTime: formattedEnd,
+              timezone: this.currentTimezone
+            });
+            this.showErrorMessage('An error occurred while creating the event');
+          }
+        });
+
+      
     }
+  }
+
+  showSuccessMessage(message: string) {
+    this.snackBar.open(message, 'Close', {
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['mat-snackbar-success']
+    });
+  }
+
+  showErrorMessage(message: string) {
+    this.snackBar.open(message, 'Close', {
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['mat-snackbar-error']
+    });
   }
 }
