@@ -1,27 +1,48 @@
-<h2 mat-dialog-title>{{ data.mode === 'create' ? 'Create Event' : 'Edit Event' }}</h2>
+<h2 mat-dialog-title style="text-align: center; font-size: 25px; font-weight: bold; padding-top: 30px; padding-bottom: 20px; color: #006600;">Create Event</h2>
+<mat-dialog-content style="padding-top: 2%;">
+    <form [formGroup]="eventForm" (ngSubmit)="save()">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
 
-<div mat-dialog-content>
-  <form [formGroup]="eventForm">
-    <mat-form-field appearance="fill">
-      <mat-label>Event Name</mat-label>
-      <input matInput formControlName="name" />
-    </mat-form-field>
+          <div style="display: flex; flex-direction: row;">
+            <mat-form-field appearance="fill" style="width: 250px; padding-right: 10px;">
+              <mat-label>Start Date</mat-label>
+              <input matInput [matDatepicker]="startDatePicker" formControlName="startDate" />
+              <mat-datepicker-toggle matIconSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #startDatePicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="fill" style="width: 250px; padding-left: 10px;">
+              <mat-label>Start Time</mat-label>
+              <input matInput formControlName="startTime" placeholder="HH:mm AM/PM"/>
+            </mat-form-field>
+          </div>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Start Date & Time</mat-label>
-      <input matInput [matDatepicker]="startDatePicker" formControlName="startDateTime" />
-      <mat-datepicker #startDatePicker></mat-datepicker>
-    </mat-form-field>
+          <div style="display: flex; flex-direction: row;">
+            <mat-form-field appearance="fill" style="width: 250px; padding-right: 10px;">
+              <mat-label>End Date</mat-label>
+              <input matInput [matDatepicker]="endDatePicker" formControlName="endDate" />
+              <mat-datepicker-toggle matIconSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #endDatePicker></mat-datepicker>
+            </mat-form-field>
 
-    <mat-form-field appearance="fill">
-      <mat-label>End Date & Time</mat-label>
-      <input matInput [matDatepicker]="endDatePicker" formControlName="endDateTime" />
-      <mat-datepicker #endDatePicker></mat-datepicker>
-    </mat-form-field>
-  </form>
-</div>
+            <mat-form-field appearance="fill" style="width: 250px; padding-left: 10px;">
+              <mat-label>End Time</mat-label>
+              <input matInput formControlName="endTime" placeholder="HH:mm AM/PM"/>
+            </mat-form-field>
+          </div>
 
-<div mat-dialog-actions>
+          <div style="width: 250px;">
+            <mat-form-field appearance="fill">
+              <mat-label>Timezone</mat-label>
+              <input matInput formControlName="timezone" [attr.disabled]="'disabled'" />
+            </mat-form-field>
+          </div>            
+
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
   <button mat-button (click)="dialogRef.close()">Cancel</button>
   <button mat-raised-button color="primary" (click)="save()" [disabled]="!eventForm.valid">Save</button>
-</div>
+</mat-dialog-actions>
+

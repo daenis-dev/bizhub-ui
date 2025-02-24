@@ -1,0 +1,60 @@
+.submit-button {
+    width: 500px;
+    background-color: #78fd95;
+    color: #006600;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.submit-button:hover, .submit-button:focus {
+    background-color: #006600;
+    color: white;
+    outline: none;
+    box-shadow: none;
+}
+
+.close-button {
+    color: #006600 !important;
+    background-color: transparent; 
+    border: none;
+    font-size: 16px;
+}
+
+.close-button:hover, .close-button:focus {
+    background-color: #78fd95;
+    color: #006600 !important;
+    outline: none;
+    box-shadow: none;
+}
+
+mat-dialog-content {
+    overflow: hidden;
+    padding-top: 2%;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+mat-error {
+    font-size: 14px;
+    color: red;
+}
+
+.send-button {
+    color: #006600 !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    background-color: transparent !important; 
+    border: none !important;
+    padding: 12px 24px !important;
+    width: 500px !important;
+}
+
+.send-button:hover, .send-button:focus {
+    background-color: #78fd95 !important;
+    color: #006600 !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
