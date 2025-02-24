@@ -1,15 +1,41 @@
 <div class="home-icon" (click)="navigateHome()">
-    <mat-icon>home</mat-icon>
+  <mat-icon>home</mat-icon>
 </div>
 <div class="settings-wheel" (click)="openAccountDialog()">
-    <mat-icon>settings</mat-icon>
+  <mat-icon>settings</mat-icon>
 </div>
 <div style="display: flex; flex-direction: column;">
-    <div style="padding-top: 2%">
-        <div class="container">
-        <div>
-            Calendar here
-        </div>
-        </div>
-    </div>
+  <div style="padding-top: 2%">
+      <div class="container">
+          <div class="calendar-container">
+              <div class="calendar-header">
+                <button mat-button (click)="changeView('week')">Week</button>
+                <button mat-button (click)="changeView('month')">Month</button>
+                <button mat-raised-button color="primary" (click)="createEvent()">+ Create Event</button>
+
+                <!-- Back and Forward Navigation Buttons -->
+                <button mat-button (click)="navigate(-1)">
+                  <mat-icon>chevron_left</mat-icon>
+                  {{ view === 'week' ? 'Previous Week' : 'Previous Month' }}
+                </button>
+                <button mat-button (click)="navigate(1)">
+                  {{ view === 'week' ? 'Next Week' : 'Next Month' }}
+                  <mat-icon>chevron_right</mat-icon>
+                </button>
+              </div>
+            
+              <div class="calendar-grid">
+                <div *ngFor="let day of calendarDays" class="calendar-day">
+                  <div class="day-label">{{ day.date.format('ddd, MMM D') }}</div>
+                  <div *ngFor="let event of day.events" class="calendar-event" (click)="updateEvent(event)">
+                    {{ event.name }}
+                    <button mat-icon-button (click)="deleteEvent(event.id)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>              
+      </div>
+  </div>
 </div>
