@@ -128,13 +128,22 @@ export class MyCalendarComponent implements OnInit {
   
     const eventStartHour = eventStart.hour();
     const eventEndHour = eventEnd.hour();
+
+    const eventStartMinute = eventStart.minute();
+    const eventEndMinute = eventEnd.minute();
   
     const visibleStart = Math.max(eventStartHour, this.visibleHourStart + 1);
     const visibleEnd = Math.min(eventEndHour, this.visibleHourStart + this.visibleHourCount);
   
     const eventDuration = visibleEnd - visibleStart;
+
+    return eventStartMinute !== 0 && eventEndMinute !== 0
+      ? (eventDuration * 50)
+      : eventStartMinute !== 0 || eventEndMinute !== 0
+        ? (eventDuration * 50) + 25
+        : eventDuration * 50;
     
-    return eventDuration * 50;
+    // return eventDuration * 50;
   }
   
   getEventTop(day: any, hour: number): number {
@@ -153,11 +162,20 @@ export class MyCalendarComponent implements OnInit {
     // return top;
   
     const eventStart = dayjs(event.startDateTime);
+    const eventEnd = dayjs(event.endDateTime);
+
     const eventStartHour = eventStart.hour();
+
+    const eventStartMinute = eventStart.minute();
+    const eventEndMinute = eventEnd.minute();
     
     const topOffset = (eventStartHour - this.visibleHourStart) * 50;
     if (topOffset <= 0 ) return 50;
-    console.log('Top offset: ', topOffset);
+    
+    
+    if (eventStartMinute !== 0 && eventEndMinute !== 0) {
+      return topOffset + 25;
+    }
     
     return topOffset;
   }
