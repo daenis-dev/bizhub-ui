@@ -138,10 +138,6 @@ export class EventDialogComponent implements OnInit {
       const formattedStart = this.getFormattedDate(startDate, startTime);
   
       const formattedEnd = this.getFormattedDate(endDate, endTime);
-
-      console.log('Starts at: ', formattedStart);
-
-      console.log('Ends at: ', formattedEnd);
   
       const formData = new FormData();
       formData.append("name", name);
@@ -175,10 +171,6 @@ export class EventDialogComponent implements OnInit {
       const formattedStart = this.getFormattedDate(startDate, startTime);
   
       const formattedEnd = this.getFormattedDate(endDate, endTime);
-
-      console.log('Starts at: ', formattedStart);
-
-      console.log('Ends at: ', formattedEnd);
   
       const formData = new FormData();
       formData.append("name", name);

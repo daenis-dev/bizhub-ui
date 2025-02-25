@@ -122,9 +122,6 @@ export class MyCalendarComponent implements OnInit {
   
     const eventStart = dayjs(event.startDateTime);
     const eventEnd = dayjs(event.endDateTime);
-
-    // const durationMinutes = dayjs(event.endDateTime).diff(dayjs(event.startDateTime), 'minute');
-    // return (durationMinutes / 30) * 25;
   
     const eventStartHour = eventStart.hour();
     const eventEndHour = eventEnd.hour();
@@ -142,25 +139,11 @@ export class MyCalendarComponent implements OnInit {
       : eventStartMinute !== 0 || eventEndMinute !== 0
         ? (eventDuration * 50) + 25
         : eventDuration * 50;
-    
-    // return eventDuration * 50;
   }
   
   getEventTop(day: any, hour: number): number {
     const event = this.getEventAtTime(day, hour);
     if (!event) return 50;
-
-    // const eventStart = dayjs(event.startDateTime);
-    // const hourStart = eventStart.hour();
-    // const minuteStart = eventStart.minute();
-
-    // let top = (hourStart - this.visibleHourStart) * 50;
-    // if (minuteStart >= 30) {
-    //   top += 25;
-    // }
-
-    // return top;
-  
     const eventStart = dayjs(event.startDateTime);
     const eventEnd = dayjs(event.endDateTime);
 
