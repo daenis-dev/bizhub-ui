@@ -86,20 +86,20 @@ export class EventDialogComponent implements OnInit {
       name: new FormControl(this.data.event?.name || '', Validators.required),
       startDate: new FormControl(
         this.data.event ? dayjs(this.data.event.startDateTime).toDate() : null,
-        Validators.required
+          Validators.required
       ),
       startTime: new FormControl(
         this.data.event ? dayjs(this.data.event.startDateTime).format('hh:mm A') : '',
-        Validators.required
+          Validators.required
       ),
       startTimeCustom: new FormControl(''),
       endDate: new FormControl(
         this.data.event ? dayjs(this.data.event.endDateTime).toDate() : null,
-        Validators.required
+          Validators.required
       ),
       endTime: new FormControl(
         this.data.event ? dayjs(this.data.event.endDateTime).format('hh:mm A') : '',
-        Validators.required
+          Validators.required
       ),
       endTimeCustom: new FormControl(''),
       timezone: new FormControl(this.currentTimezone)
@@ -185,7 +185,6 @@ export class EventDialogComponent implements OnInit {
       formData.append("start-date-time", formattedStart);
       formData.append("end-date-time", formattedEnd);
   
-      // TODO: Add ID to the URL
       this.http.put<EventDetails>(this.apiUrl + '/v1/events/' + this.id, formData, {
         headers: new HttpHeaders({ 'Authorization': this.auth.getToken() })
       }).subscribe({
@@ -213,9 +212,9 @@ export class EventDialogComponent implements OnInit {
     let amPm = time.split(' ')[1];
 
     if (amPm === 'PM' && Number(hours) < 12) {
-        hours = (parseInt(hours) + 12).toString();
+      hours = (parseInt(hours) + 12).toString();
     } else if (amPm === 'AM' && Number(hours) == 12) {
-        hours = '00';
+      hours = '00';
     }
 
     combinedDateTime.setHours(Number(hours), Number(minutes));
@@ -225,10 +224,22 @@ export class EventDialogComponent implements OnInit {
     let isoDateTime = utcDateTime.toISOString();
 
     return isoDateTime;
-}
+  }
 
-
-
+  onDelete() {
+    this.http.delete<void>(this.apiUrl + '/v1/events/' + this.id, {
+      headers: new HttpHeaders({ 'Authorization': this.auth.getToken() })
+    }).subscribe({
+      next: () => {
+        this.dialogRef.close({ deleted: true });
+        this.showSuccessMessage('Successfully deleted the event');
+      },
+      error: () => {
+        this.dialogRef.close();
+        this.showErrorMessage('An error occurred while deleting the event');
+      }
+    });
+  }
 
   showSuccessMessage(message: string) {
     this.snackBar.open(message, 'Close', {

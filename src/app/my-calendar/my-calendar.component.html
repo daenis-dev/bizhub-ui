@@ -9,9 +9,19 @@
     <div class="container">
       <div class="calendar-container">
         <div class="calendar-header">
+
           <div class="create-event-container">
             <button mat-button color="primary" (click)="createEvent()">
               Create Event
+            </button>
+          </div>
+
+          <div class="time-navigation">
+            <button mat-icon-button (click)="navigateHours(-1)" [disabled]="visibleHourStart === 0">
+              <mat-icon>arrow_upward</mat-icon>
+            </button>
+            <button mat-icon-button (click)="navigateHours(1)" [disabled]="visibleHourStart + visibleHourCount >= 24">
+              <mat-icon>arrow_downward</mat-icon>
             </button>
           </div>
 
@@ -25,15 +35,7 @@
               <mat-icon>chevron_right</mat-icon>
             </button>
           </div>
-        </div>
-
-        <div class="time-navigation">
-          <button mat-icon-button (click)="navigateHours(-1)" [disabled]="visibleHourStart === 0">
-            <mat-icon>arrow_upward</mat-icon>
-          </button>
-          <button mat-icon-button (click)="navigateHours(1)" [disabled]="visibleHourStart + visibleHourCount >= 24">
-            <mat-icon>arrow_downward</mat-icon>
-          </button>
+          
         </div>
 
         <div class="calendar-grid">
@@ -47,19 +49,27 @@
           </div>
           <div *ngFor="let day of calendarDays" class="calendar-day">
             <div class="day-label">{{ day.date.format('ddd, MMM D') }}</div>
-
+          
             <div class="time-grid">
               <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount)" class="hour-cell">
-                <div *ngIf="hasEventAtTime(day, hour) && hour >= visibleHourStart + 1" 
-                  class="calendar-event" 
-                  [style.height.px]="getEventHeight(day, hour)" 
-                  (click)="updateEvent(getEventAtTime(day, hour))">
-               {{ getEventAtTime(day, hour)?.name }}
-             </div>
+
+                <div *ngIf="hour !== visibleHourStart">Some test</div>
+
+                <div *ngIf="hour !== visibleHourStart && hasEventAtTime(day, hour)" 
+                     class="calendar-event" 
+                     [style.height.px]="getEventHeight(day, hour)"
+                     [style.top.px]="getEventTop(day, hour)"
+                     (click)="updateEvent(getEventAtTime(day, hour))">
+                  {{ (getEventAtTime(day, hour)?.name?.length ?? 0) > 10 
+                     ? (getEventAtTime(day, hour)?.name | slice:0:10) + '...' 
+                     : getEventAtTime(day, hour)?.name || '' }}
+                </div>
+
+
               </div>
             </div>
-
           </div>
+          
         </div>
 
       </div>

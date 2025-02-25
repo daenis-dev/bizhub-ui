@@ -58,3 +58,14 @@ mat-error {
     outline: none !important;
     box-shadow: none !important;
 }
+
+.delete-button {
+    background-color: red !important;
+    color: white !important;
+    border: none !important;
+}
+
+.delete-button:hover {
+    background-color: darkred !important;
+    color: white !important;
+}

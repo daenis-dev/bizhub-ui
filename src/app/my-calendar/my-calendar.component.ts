@@ -94,33 +94,69 @@ export class MyCalendarComponent implements OnInit {
   }
 
   hasEventAtTime(day: { events: EventDetails[] }, hour: number): boolean {
-    return day.events.some((event: EventDetails) => this.getEventHour(event) === hour);
+    if (hour <= this.visibleHourStart) return false;
+    return day.events.some((event: EventDetails) => 
+      this.getEventStartHour(event) === hour
+    || this.getEventEndHour(event) === hour
+    || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event))
+    );
   }
   
   getEventAtTime(day: { events: EventDetails[] }, hour: number): EventDetails | null {
-    return day.events.find((event: EventDetails) => this.getEventHour(event) === hour) || null;
+    if (hour <= this.visibleHourStart) return null;
+    return day.events.find((event: EventDetails) => 
+      this.getEventStartHour(event) === hour
+    || this.getEventEndHour(event) === hour
+    || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event))) || null;
   }
-  
 
-  getEventHour(event: EventDetails): number {
+  getEventStartHour(event: EventDetails): number {
     return dayjs(event.startDateTime).hour();
+  }
+
+  getEventEndHour(event: EventDetails): number {
+    return dayjs(event.endDateTime).hour();
   }
 
   getEventHeight(day: any, hour: number): number {
     const event = this.getEventAtTime(day, hour);
     if (!event) return 0;
   
-    const eventStartHour = this.getEventHour(event);
-    const eventEndHour = dayjs(event.endDateTime).hour();
+    const eventStart = dayjs(event.startDateTime);
+    const eventEnd = dayjs(event.endDateTime);
   
-    const visibleStart = Math.max(eventStartHour, this.visibleHourStart);
+    const eventStartHour = eventStart.hour();
+    const eventEndHour = eventEnd.hour();
+  
+    const visibleStart = Math.max(eventStartHour, this.visibleHourStart + 1);
     const visibleEnd = Math.min(eventEndHour, this.visibleHourStart + this.visibleHourCount);
+    console.log('Visible start: ', visibleStart);
+    console.log('Visible end: ', visibleEnd);
   
-    return (visibleEnd - visibleStart) * 50;
+    const eventDuration = visibleEnd - visibleStart;
+
+    console.log('Pixels: ', eventDuration * 50);
+    
+    return eventDuration * 50;
+  }
+  
+  getEventTop(day: any, hour: number): number {
+    const event = this.getEventAtTime(day, hour);
+    if (!event) return 0;
+  
+    const eventStart = dayjs(event.startDateTime);
+    const eventStartHour = eventStart.hour();
+    
+    // Calculate top offset based on event start time
+    const topOffset = (eventStartHour - this.visibleHourStart) * 50; // 50px per hour
+    if (topOffset < 0 ) return 0;
+    console.log('Top offset: ', topOffset);
+    
+    return topOffset;
   }
   
   
-
+  
   createEvent(): void {
     const dialogRef = this.dialog.open(EventDialogComponent, { data: { mode: 'create', title: 'Create Event' } });
     dialogRef.afterClosed().subscribe((newEvent) => {
@@ -132,29 +168,25 @@ export class MyCalendarComponent implements OnInit {
   }
 
   updateEvent(event: EventDetails | null): void {
-    if (!event) return; // Exit early if no event is found
+    if (!event) return;
   
     const dialogRef = this.dialog.open(EventDialogComponent, {
       data: { mode: 'edit', title: 'Edit Event', event, id: event.id },
     });
   
-    dialogRef.afterClosed().subscribe((updatedEvent: EventDetails | undefined) => {
-      if (updatedEvent) {
-        const index = this.events.findIndex((e) => e.id === updatedEvent.id);
+    dialogRef.afterClosed().subscribe((result: EventDetails | { deleted: true }) => {
+      if (result && 'deleted' in result) {
+        this.events = this.events.filter((e) => e.id !== event.id);
+        this.generateCalendar();
+      } else if (result) {
+        const index = this.events.findIndex((e) => e.id === result.id);
         if (index !== -1) {
-          this.events[index] = updatedEvent;
+          this.events[index] = result;
           this.generateCalendar();
         }
       }
     });
   }
-  
-  deleteEvent(eventId: string | undefined): void {
-    if (!eventId) return;
-  
-    this.http.delete(`${this.apiUrl}/v1/events/${eventId}`).subscribe(() => this.loadEvents());
-  }
-  
 
   navigate(direction: number): void {
     this.currentDate = this.currentDate.add(direction, 'week');

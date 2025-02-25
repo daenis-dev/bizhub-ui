@@ -1,7 +1,7 @@
 export interface EventDetails {
-    id: string;
-    name: string;
-    startDateTime: string;
-    endDateTime: string;
-  }
+  id: string;
+  name: string;
+  startDateTime: string;
+  endDateTime: string;
+}
   
