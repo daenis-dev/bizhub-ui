@@ -94,8 +94,7 @@ export class MyCalendarComponent implements OnInit {
   }
 
   hasEventAtTime(day: { events: EventDetails[] }, hour: number): boolean {
-    if (hour <= this.visibleHourStart) return false;
-    return day.events.some((event: EventDetails) => 
+    return day.events.some((event: EventDetails) =>
       this.getEventStartHour(event) === hour
     || this.getEventEndHour(event) === hour
     || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event))
@@ -103,7 +102,6 @@ export class MyCalendarComponent implements OnInit {
   }
   
   getEventAtTime(day: { events: EventDetails[] }, hour: number): EventDetails | null {
-    if (hour <= this.visibleHourStart) return null;
     return day.events.find((event: EventDetails) => 
       this.getEventStartHour(event) === hour
     || this.getEventEndHour(event) === hour
@@ -142,14 +140,14 @@ export class MyCalendarComponent implements OnInit {
   
   getEventTop(day: any, hour: number): number {
     const event = this.getEventAtTime(day, hour);
-    if (!event) return 0;
+    if (!event) return 50;
   
     const eventStart = dayjs(event.startDateTime);
     const eventStartHour = eventStart.hour();
     
     // Calculate top offset based on event start time
     const topOffset = (eventStartHour - this.visibleHourStart) * 50; // 50px per hour
-    if (topOffset < 0 ) return 0;
+    if (topOffset <= 0 ) return 50;
     console.log('Top offset: ', topOffset);
     
     return topOffset;
