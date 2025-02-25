@@ -92,7 +92,6 @@ export class EventDialogComponent implements OnInit {
         this.data.event ? dayjs(this.data.event.startDateTime).format('hh:mm A') : '',
           Validators.required
       ),
-      startTimeCustom: new FormControl(''),
       endDate: new FormControl(
         this.data.event ? dayjs(this.data.event.endDateTime).toDate() : null,
           Validators.required
@@ -101,7 +100,6 @@ export class EventDialogComponent implements OnInit {
         this.data.event ? dayjs(this.data.event.endDateTime).format('hh:mm A') : '',
           Validators.required
       ),
-      endTimeCustom: new FormControl(''),
       timezone: new FormControl(this.currentTimezone)
     });
   }
@@ -131,7 +129,7 @@ export class EventDialogComponent implements OnInit {
     }
   }
 
-  private createEvent(): void {
+  createEvent(): void {
     if (this.eventForm.valid) {
       const { startDate, startTime, endDate, endTime, name } = this.eventForm.value;
 
@@ -164,7 +162,7 @@ export class EventDialogComponent implements OnInit {
     }
   }
 
-  private editEvent(): void {
+  editEvent(): void {
     if (this.eventForm.valid) {
       const { startDate, startTime, endDate, endTime, name } = this.eventForm.value;
 
@@ -197,7 +195,7 @@ export class EventDialogComponent implements OnInit {
     }
   }
   
-  private getFormattedDate(date: string, time: string) {
+  getFormattedDate(date: string, time: string) {
     let combinedDateTime = new Date(date);
 
     let [hours, minutes] = time.split(' ')[0].split(':');
