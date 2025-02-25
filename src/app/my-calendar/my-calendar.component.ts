@@ -97,6 +97,7 @@ export class MyCalendarComponent implements OnInit {
     return day.events.some((event: EventDetails) =>
       this.getEventStartHour(event) === hour
     || this.getEventEndHour(event) - 1 === hour
+    || this.getEventEndHour(event) - 1 === this.visibleHourStart
     || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event))
     );
   }
@@ -105,15 +106,24 @@ export class MyCalendarComponent implements OnInit {
     return day.events.find((event: EventDetails) => 
       this.getEventStartHour(event) === hour
     || this.getEventEndHour(event) - 1 === hour
-    || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event))) || null;
+    || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event))
+    || (this.getEventEndHour(event) === this.visibleHourStart + 1 && this.getEventEndMinute(event) !== 0)) || null;
   }
 
   getEventStartHour(event: EventDetails): number {
     return dayjs(event.startDateTime).hour();
   }
 
+  getEventStartMinute(event: EventDetails): number {
+    return dayjs(event.startDateTime).minute();
+  }
+
   getEventEndHour(event: EventDetails): number {
     return dayjs(event.endDateTime).hour();
+  }
+
+  getEventEndMinute(event: EventDetails): number {
+    return dayjs(event.endDateTime).minute();
   }
 
   getEventHeight(day: any, hour: number): number {
@@ -133,6 +143,10 @@ export class MyCalendarComponent implements OnInit {
     const visibleEnd = Math.min(eventEndHour, this.visibleHourStart + this.visibleHourCount);
   
     const eventDuration = visibleEnd - visibleStart;
+
+    if (eventEndHour === this.visibleHourStart + 1) {
+      return 25;
+    }
 
     return eventStartMinute !== 0 && eventEndMinute !== 0
       ? (eventDuration * 50)
