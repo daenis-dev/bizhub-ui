@@ -38,8 +38,8 @@ export class MyCalendarComponent implements OnInit {
   currentDate: dayjs.Dayjs = dayjs();
   hours: number[] = Array.from({ length: 24 }, (_, i) => i);
 
-  visibleHourStart: number = 8; // Track the start of the visible time range
-  visibleHourCount: number = 5; // Number of hours visible at a time
+  visibleHourStart: number = 8;
+  visibleHourCount: number = 5;
 
   constructor(private router: Router, private dialog: MatDialog, private http: HttpClient, private auth: AuthService, private snackBar: MatSnackBar) {}
 

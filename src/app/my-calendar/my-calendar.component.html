@@ -8,14 +8,13 @@
   <div>
     <div class="container">
       <div class="calendar-container">
-        <div class="calendar-header">
 
+        <div class="calendar-header">
           <div class="create-event-container">
             <button mat-button color="primary" (click)="createEvent()">
               Create Event
             </button>
           </div>
-
           <div class="time-navigation">
             <button mat-icon-button (click)="navigateHours(-1)" [disabled]="visibleHourStart === 0">
               <mat-icon>arrow_upward</mat-icon>
@@ -24,7 +23,6 @@
               <mat-icon>arrow_downward</mat-icon>
             </button>
           </div>
-
           <div class="navigation-buttons">
             <button mat-button (click)="navigate(-1)">
               <mat-icon>chevron_left</mat-icon>
@@ -35,7 +33,6 @@
               <mat-icon>chevron_right</mat-icon>
             </button>
           </div>
-          
         </div>
 
         <div class="calendar-grid">
@@ -44,30 +41,24 @@
               <div *ngIf="hour!==visibleHourStart">
                 {{ hour }}:00
               </div>
-              
             </div>
           </div>
           <div *ngFor="let day of calendarDays" class="calendar-day">
             <div class="day-label">{{ day.date.format('ddd, MMM D') }}</div>
-          
             <div class="time-grid">
               <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount)" class="hour-cell">
-
                 <div *ngIf="hour !== visibleHourStart && hasEventAtTime(day, hour)" 
                      class="calendar-event" 
                      [style.height.px]="getEventHeight(day, hour)"
                      [style.top.px]="getEventTop(day, hour)"
                      (click)="updateEvent(getEventAtTime(day, hour))">
-                  {{ (getEventAtTime(day, hour)?.name?.length ?? 0) > 10 
-                     ? (getEventAtTime(day, hour)?.name | slice:0:10) + '...' 
+                  {{ (getEventAtTime(day, hour)?.name?.length ?? 0) > 14 
+                     ? (getEventAtTime(day, hour)?.name | slice:0:14) + '...' 
                      : getEventAtTime(day, hour)?.name || '' }}
                 </div>
-
-
               </div>
             </div>
           </div>
-          
         </div>
 
       </div>

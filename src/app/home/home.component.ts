@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AccountDialogComponent } from '../account-dialog/account-dialog.component';
 import { Router } from '@angular/router';
 
@@ -24,7 +23,6 @@ import { Router } from '@angular/router';
 export class HomeComponent {
 
   constructor(private dialog: MatDialog, private router: Router) {
-
   }
 
   openAccountDialog() {
