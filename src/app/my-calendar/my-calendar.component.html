@@ -53,8 +53,6 @@
             <div class="time-grid">
               <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount)" class="hour-cell">
 
-                <div *ngIf="hour !== visibleHourStart">Some test</div>
-
                 <div *ngIf="hour !== visibleHourStart && hasEventAtTime(day, hour)" 
                      class="calendar-event" 
                      [style.height.px]="getEventHeight(day, hour)"

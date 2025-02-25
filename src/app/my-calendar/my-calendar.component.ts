@@ -96,7 +96,7 @@ export class MyCalendarComponent implements OnInit {
   hasEventAtTime(day: { events: EventDetails[] }, hour: number): boolean {
     return day.events.some((event: EventDetails) =>
       this.getEventStartHour(event) === hour
-    || this.getEventEndHour(event) === hour
+    || this.getEventEndHour(event) - 1 === hour
     || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event))
     );
   }
@@ -104,7 +104,7 @@ export class MyCalendarComponent implements OnInit {
   getEventAtTime(day: { events: EventDetails[] }, hour: number): EventDetails | null {
     return day.events.find((event: EventDetails) => 
       this.getEventStartHour(event) === hour
-    || this.getEventEndHour(event) === hour
+    || this.getEventEndHour(event) - 1 === hour
     || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event))) || null;
   }
 
