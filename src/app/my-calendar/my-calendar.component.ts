@@ -122,18 +122,17 @@ export class MyCalendarComponent implements OnInit {
   
     const eventStart = dayjs(event.startDateTime);
     const eventEnd = dayjs(event.endDateTime);
+
+    // const durationMinutes = dayjs(event.endDateTime).diff(dayjs(event.startDateTime), 'minute');
+    // return (durationMinutes / 30) * 25;
   
     const eventStartHour = eventStart.hour();
     const eventEndHour = eventEnd.hour();
   
     const visibleStart = Math.max(eventStartHour, this.visibleHourStart + 1);
     const visibleEnd = Math.min(eventEndHour, this.visibleHourStart + this.visibleHourCount);
-    console.log('Visible start: ', visibleStart);
-    console.log('Visible end: ', visibleEnd);
   
     const eventDuration = visibleEnd - visibleStart;
-
-    console.log('Pixels: ', eventDuration * 50);
     
     return eventDuration * 50;
   }
@@ -141,19 +140,27 @@ export class MyCalendarComponent implements OnInit {
   getEventTop(day: any, hour: number): number {
     const event = this.getEventAtTime(day, hour);
     if (!event) return 50;
+
+    // const eventStart = dayjs(event.startDateTime);
+    // const hourStart = eventStart.hour();
+    // const minuteStart = eventStart.minute();
+
+    // let top = (hourStart - this.visibleHourStart) * 50;
+    // if (minuteStart >= 30) {
+    //   top += 25;
+    // }
+
+    // return top;
   
     const eventStart = dayjs(event.startDateTime);
     const eventStartHour = eventStart.hour();
     
-    // Calculate top offset based on event start time
-    const topOffset = (eventStartHour - this.visibleHourStart) * 50; // 50px per hour
+    const topOffset = (eventStartHour - this.visibleHourStart) * 50;
     if (topOffset <= 0 ) return 50;
     console.log('Top offset: ', topOffset);
     
     return topOffset;
   }
-  
-  
   
   createEvent(): void {
     const dialogRef = this.dialog.open(EventDialogComponent, { data: { mode: 'create', title: 'Create Event' } });
