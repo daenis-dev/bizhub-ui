@@ -33,12 +33,37 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 export class MyCalendarComponent implements OnInit {
 
   apiUrl: string = environment.apiUrl;
-  view = 'week';
   events: EventDetails[] = [];
   calendarDays: any[] = [];
-  currentDate: dayjs.Dayjs = dayjs(); // Keep track of current displayed date
+  currentDate: dayjs.Dayjs = dayjs();
+  hours: number[] = Array.from({ length: 24 }, (_, i) => i);
+
+  visibleHourStart: number = 8; // Track the start of the visible time range
+  visibleHourCount: number = 5; // Number of hours visible at a time
 
   constructor(private router: Router, private dialog: MatDialog, private http: HttpClient, private auth: AuthService, private snackBar: MatSnackBar) {}
+
+  ngOnInit(): void {
+    this.loadEvents();
+  }
+
+  loadEvents(): void {
+    this.http.get<EventDetails[]>(`${this.apiUrl}/v1/events`, { 
+      headers: new HttpHeaders({ 'Authorization': this.auth.getToken() }) 
+    }).subscribe({
+      next: (data) => {
+        this.events = data;
+        this.generateCalendar();
+      },
+      error: () => this.showErrorMessage('An error occurred while getting the events')
+    });
+  }
+
+  navigateHours(direction: number): void {
+    const maxHour = 24 - this.visibleHourCount;
+    this.visibleHourStart = Math.max(0, Math.min(this.visibleHourStart + direction, maxHour));
+  }
+  
 
   navigateHome() {
     this.router.navigateByUrl('/home');
@@ -51,26 +76,6 @@ export class MyCalendarComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    this.loadEvents();
-
-    this.generateCalendar()
-  }
-
-  loadEvents(): void {
-    this.http.get<EventDetails[]>(
-      this.apiUrl + '/v1/events',
-      { headers: new HttpHeaders({ 'Authorization': this.auth.getToken() })}).subscribe({
-        next: (data: EventDetails[]) => {
-          this.events = data;
-          this.generateCalendar();
-        },
-        error: () => {
-          this.showErrorMessage('An error occurred while getting the events');
-        }
-      });
-  }
-
   showErrorMessage(message: string) {
     this.snackBar.open(message, 'Close', {
       horizontalPosition: 'end',
@@ -81,49 +86,78 @@ export class MyCalendarComponent implements OnInit {
 
   generateCalendar(): void {
     const startDate = this.currentDate.startOf('week');
-    const daysInView = 7;
-  
-    this.calendarDays = Array.from({ length: daysInView }, (_, i) => {
+    this.calendarDays = Array.from({ length: 7 }, (_, i) => {
       const date = startDate.add(i, 'day');
-      const eventsForDay = this.events.filter(event =>
-        dayjs(event.startDateTime).isSame(date, 'day')
-      );
+      const eventsForDay = this.events.filter(event => dayjs(event.startDateTime).isSame(date, 'day'));
       return { date, events: eventsForDay };
     });
   }
 
-  createEvent(): void {
-    const dialogRef = this.dialog.open(EventDialogComponent, {
-      data: { mode: 'create' },
-    });
+  hasEventAtTime(day: { events: EventDetails[] }, hour: number): boolean {
+    return day.events.some((event: EventDetails) => this.getEventHour(event) === hour);
+  }
+  
+  getEventAtTime(day: { events: EventDetails[] }, hour: number): EventDetails | null {
+    return day.events.find((event: EventDetails) => this.getEventHour(event) === hour) || null;
+  }
+  
 
-    dialogRef.afterClosed().subscribe((newEvent: EventDetails | undefined) => {
+  getEventHour(event: EventDetails): number {
+    return dayjs(event.startDateTime).hour();
+  }
+
+  getEventHeight(day: any, hour: number): number {
+    const event = this.getEventAtTime(day, hour);
+    if (!event) return 0;
+  
+    const eventStartHour = this.getEventHour(event);
+    const eventEndHour = dayjs(event.endDateTime).hour();
+  
+    const visibleStart = Math.max(eventStartHour, this.visibleHourStart);
+    const visibleEnd = Math.min(eventEndHour, this.visibleHourStart + this.visibleHourCount);
+  
+    return (visibleEnd - visibleStart) * 50;
+  }
+  
+  
+
+  createEvent(): void {
+    const dialogRef = this.dialog.open(EventDialogComponent, { data: { mode: 'create', title: 'Create Event' } });
+    dialogRef.afterClosed().subscribe((newEvent) => {
       if (newEvent) {
         this.events.push(newEvent);
+        this.generateCalendar();
       }
     });
   }
 
-  updateEvent(event: EventDetails): void {
+  updateEvent(event: EventDetails | null): void {
+    if (!event) return; // Exit early if no event is found
+  
     const dialogRef = this.dialog.open(EventDialogComponent, {
-      data: { mode: 'edit', event },
+      data: { mode: 'edit', title: 'Edit Event', event, id: event.id },
     });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.http.put<EventDetails>(`/v1/events/${event.id}`, result).subscribe(() => this.loadEvents());
+  
+    dialogRef.afterClosed().subscribe((updatedEvent: EventDetails | undefined) => {
+      if (updatedEvent) {
+        const index = this.events.findIndex((e) => e.id === updatedEvent.id);
+        if (index !== -1) {
+          this.events[index] = updatedEvent;
+          this.generateCalendar();
+        }
       }
     });
   }
-
-  deleteEvent(eventId: string): void {
-    this.http.delete(`/v1/events/${eventId}`).subscribe(() => this.loadEvents());
+  
+  deleteEvent(eventId: string | undefined): void {
+    if (!eventId) return;
+  
+    this.http.delete(`${this.apiUrl}/v1/events/${eventId}`).subscribe(() => this.loadEvents());
   }
+  
 
   navigate(direction: number): void {
-    const increment = direction === 1 ? 1 : -1;
-
-    this.currentDate = this.currentDate.add(increment, 'week');
-      this.generateCalendar();
+    this.currentDate = this.currentDate.add(direction, 'week');
+    this.generateCalendar();
   }
 }

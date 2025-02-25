@@ -58,6 +58,8 @@ dayjs.extend(timezone);
 })
 export class EventDialogComponent implements OnInit {
 
+  title: string;
+  id: string;
   apiUrl: string = environment.apiUrl;
   eventForm!: FormGroup;
   currentTimezone: string;
@@ -65,11 +67,13 @@ export class EventDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<EventDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { mode: 'create' | 'edit'; event?: any },
+    @Inject(MAT_DIALOG_DATA) public data: { mode: 'create' | 'edit'; event?: any, title?: string, id?: string },
     private auth: AuthService,
     private http: HttpClient,
     private snackBar: MatSnackBar
   ) {
+    this.title = data.title || 'Event';
+    this.id = data.id || '';
     this.currentTimezone = dayjs.tz.guess();
   }
 
@@ -119,36 +123,112 @@ export class EventDialogComponent implements OnInit {
   }
 
   save(): void {
-    if (this.eventForm.valid) {
-      const { startDate, startTime, startTimeCustom, endDate, endTime, endTimeCustom } = this.eventForm.value;
-      const formattedStart = startTime === 'custom' ? 
-        dayjs(`${startDate} ${startTimeCustom}`, 'YYYY-MM-DD hh:mm A').tz(this.currentTimezone).format() :
-        dayjs(`${startDate} ${startTime}`, 'YYYY-MM-DD hh:mm A').tz(this.currentTimezone).format();
-      const formattedEnd = endTime === 'custom' ? 
-        dayjs(`${endDate} ${endTimeCustom}`, 'YYYY-MM-DD hh:mm A').tz(this.currentTimezone).format() :
-        dayjs(`${endDate} ${endTime}`, 'YYYY-MM-DD hh:mm A').tz(this.currentTimezone).format();
-
-      this.http.post<EventDetails>(
-        this.apiUrl + '/v1/events',
-        { headers: new HttpHeaders({ 'Authorization': this.auth.getToken() })}).subscribe({
-          next: (data: EventDetails) => {
-            this.dialogRef.close(data);
-            this.showSuccessMessage('Successfully created an event');
-          },
-          error: () => {
-            this.dialogRef.close({
-              name: this.eventForm.value.name,
-              startDateTime: formattedStart,
-              endDateTime: formattedEnd,
-              timezone: this.currentTimezone
-            });
-            this.showErrorMessage('An error occurred while creating the event');
-          }
-        });
-
-      
+    if (this.title === 'Create Event') {
+      this.createEvent();
+    }
+    if (this.title === 'Edit Event') {
+      this.editEvent();
     }
   }
+
+  private createEvent(): void {
+    if (this.eventForm.valid) {
+      const { startDate, startTime, endDate, endTime, name } = this.eventForm.value;
+
+      const formattedStart = this.getFormattedDate(startDate, startTime);
+  
+      const formattedEnd = this.getFormattedDate(endDate, endTime);
+
+      console.log('Starts at: ', formattedStart);
+
+      console.log('Ends at: ', formattedEnd);
+  
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("start-date-time", formattedStart);
+      formData.append("end-date-time", formattedEnd);
+  
+      this.http.post<EventDetails>(this.apiUrl + '/v1/events', formData, {
+        headers: new HttpHeaders({ 'Authorization': this.auth.getToken() })
+      }).subscribe({
+        next: (data: EventDetails) => {
+          this.dialogRef.close(data);
+          this.showSuccessMessage('Successfully created an event');
+        },
+        error: () => {
+          this.dialogRef.close({
+            name: name,
+            startDateTime: formattedStart,
+            endDateTime: formattedEnd,
+            timezone: this.currentTimezone
+          });
+          this.showErrorMessage('An error occurred while creating the event');
+        }
+      });
+    }
+  }
+
+  private editEvent(): void {
+    if (this.eventForm.valid) {
+      const { startDate, startTime, endDate, endTime, name } = this.eventForm.value;
+
+      const formattedStart = this.getFormattedDate(startDate, startTime);
+  
+      const formattedEnd = this.getFormattedDate(endDate, endTime);
+
+      console.log('Starts at: ', formattedStart);
+
+      console.log('Ends at: ', formattedEnd);
+  
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("start-date-time", formattedStart);
+      formData.append("end-date-time", formattedEnd);
+  
+      // TODO: Add ID to the URL
+      this.http.put<EventDetails>(this.apiUrl + '/v1/events/' + this.id, formData, {
+        headers: new HttpHeaders({ 'Authorization': this.auth.getToken() })
+      }).subscribe({
+        next: (data: EventDetails) => {
+          this.dialogRef.close(data);
+          this.showSuccessMessage('Successfully updated the event');
+        },
+        error: () => {
+          this.dialogRef.close({
+            name: name,
+            startDateTime: formattedStart,
+            endDateTime: formattedEnd,
+            timezone: this.currentTimezone
+          });
+          this.showErrorMessage('An error occurred while updating the event');
+        }
+      });
+    }
+  }
+  
+  private getFormattedDate(date: string, time: string) {
+    let combinedDateTime = new Date(date);
+
+    let [hours, minutes] = time.split(' ')[0].split(':');
+    let amPm = time.split(' ')[1];
+
+    if (amPm === 'PM' && Number(hours) < 12) {
+        hours = (parseInt(hours) + 12).toString();
+    } else if (amPm === 'AM' && Number(hours) == 12) {
+        hours = '00';
+    }
+
+    combinedDateTime.setHours(Number(hours), Number(minutes));
+
+    const utcDateTime = new Date(combinedDateTime.toISOString());
+
+    let isoDateTime = utcDateTime.toISOString();
+
+    return isoDateTime;
+}
+
+
+
 
   showSuccessMessage(message: string) {
     this.snackBar.open(message, 'Close', {

@@ -4,7 +4,7 @@
 <div class="settings-wheel" (click)="openAccountDialog()">
   <mat-icon>settings</mat-icon>
 </div>
-<div style="display: flex; flex-direction: column;">
+<div>
   <div>
     <div class="container">
       <div class="calendar-container">
@@ -16,32 +16,52 @@
           </div>
 
           <div class="navigation-buttons">
-            <div>
-              <button mat-button (click)="navigate(-1)">
-                <mat-icon>chevron_left</mat-icon>
-                {{ 'Previous Week' }}
-              </button>
-            </div>
-            <div>
-              <button mat-button (click)="navigate(1)">
-                {{ 'Next Week' }}
-                <mat-icon>chevron_right</mat-icon>
-              </button>
-            </div>
+            <button mat-button (click)="navigate(-1)">
+              <mat-icon>chevron_left</mat-icon>
+              Previous Week
+            </button>
+            <button mat-button (click)="navigate(1)">
+              Next Week
+              <mat-icon>chevron_right</mat-icon>
+            </button>
           </div>
         </div>
 
+        <div class="time-navigation">
+          <button mat-icon-button (click)="navigateHours(-1)" [disabled]="visibleHourStart === 0">
+            <mat-icon>arrow_upward</mat-icon>
+          </button>
+          <button mat-icon-button (click)="navigateHours(1)" [disabled]="visibleHourStart + visibleHourCount >= 24">
+            <mat-icon>arrow_downward</mat-icon>
+          </button>
+        </div>
+
         <div class="calendar-grid">
-          <div *ngFor="let day of calendarDays" class="calendar-day">
-            <div class="day-label">{{ day.date.format('ddd, MMM D') }}</div>
-            <div *ngFor="let event of day.events" class="calendar-event" (click)="updateEvent(event)">
-              {{ event.name }}
-              <button mat-icon-button (click)="deleteEvent(event.id)">
-                <mat-icon>delete</mat-icon>
-              </button>
+          <div class="time-labels">
+            <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount + 1)" class="time-label">
+              <div *ngIf="hour!==visibleHourStart">
+                {{ hour }}:00
+              </div>
+              
             </div>
           </div>
+          <div *ngFor="let day of calendarDays" class="calendar-day">
+            <div class="day-label">{{ day.date.format('ddd, MMM D') }}</div>
+
+            <div class="time-grid">
+              <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount)" class="hour-cell">
+                <div *ngIf="hasEventAtTime(day, hour) && hour >= visibleHourStart + 1" 
+                  class="calendar-event" 
+                  [style.height.px]="getEventHeight(day, hour)" 
+                  (click)="updateEvent(getEventAtTime(day, hour))">
+               {{ getEventAtTime(day, hour)?.name }}
+             </div>
+              </div>
+            </div>
+
+          </div>
         </div>
+
       </div>
     </div>
   </div>

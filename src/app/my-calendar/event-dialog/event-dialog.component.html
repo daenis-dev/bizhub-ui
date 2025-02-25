@@ -1,4 +1,4 @@
-<h2 mat-dialog-title style="text-align: center; font-size: 25px; font-weight: bold; padding-top: 30px; padding-bottom: 20px; color: #006600;">Create Event</h2>
+<h2 mat-dialog-title style="text-align: center; font-size: 25px; font-weight: bold; padding-top: 30px; padding-bottom: 20px; color: #006600;">{{ title }}</h2>
 <mat-dialog-content style="padding-top: 2%;">
     <form [formGroup]="eventForm" (ngSubmit)="save()">
         <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
