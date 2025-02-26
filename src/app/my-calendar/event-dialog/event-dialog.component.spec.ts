@@ -24,7 +24,7 @@ describe('EventDialogComponent', () => {
   let snackBarSpy: jasmine.SpyObj<MatSnackBar>;
 
   beforeEach(async () => {
-    authServiceSpy = jasmine.createSpyObj('AuthService', ['getToken']);
+    authServiceSpy = jasmine.createSpyObj('AuthService', ['getToken', 'hasRole']);
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['post', 'put', 'delete']);
     dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
     snackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
@@ -59,6 +59,7 @@ describe('EventDialogComponent', () => {
     fixture = TestBed.createComponent(EventDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    authServiceSpy.hasRole.and.returnValue(true);
   });
 
   it('should create the component', () => {

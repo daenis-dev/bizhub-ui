@@ -17,7 +17,7 @@ describe('MyCalendarComponent', () => {
   let routerSpy: jasmine.SpyObj<Router>;
 
   beforeEach(async () => {
-    authServiceSpy = jasmine.createSpyObj('AuthService', ['getToken']);
+    authServiceSpy = jasmine.createSpyObj('AuthService', ['getToken', 'hasRole']);
     routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl']);
 
     await TestBed.configureTestingModule({
@@ -37,6 +37,8 @@ describe('MyCalendarComponent', () => {
     fixture = TestBed.createComponent(MyCalendarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+    authServiceSpy.hasRole.and.returnValue(true);
   });
 
   it('should create', () => {

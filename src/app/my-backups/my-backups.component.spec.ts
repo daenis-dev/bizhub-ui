@@ -26,7 +26,7 @@ describe('MyBackupsComponent', () => {
     snackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
     dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
     httpSpy = jasmine.createSpyObj('HttpClient', ['get', 'post']);
-    authServiceSpy = jasmine.createSpyObj('AuthService', ['getToken'])
+    authServiceSpy = jasmine.createSpyObj('AuthService', ['getToken', 'hasRole'])
 
     const dialogRefMock = {
       afterClosed: jasmine.createSpy().and.returnValue(of(['file1.txt', 'file2.txt'])),
@@ -60,6 +60,8 @@ describe('MyBackupsComponent', () => {
     fixture = TestBed.createComponent(MyBackupsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+    authServiceSpy.hasRole.and.returnValue(true);
   });
 
   it('should create', () => {
