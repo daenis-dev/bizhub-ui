@@ -32,7 +32,7 @@ export class MyBackupsComponent implements OnInit {
   backupFileNames: String[] = [];
   apiUrl: string = environment.apiUrl;
 
-  constructor(private dialog: MatDialog, private http: HttpClient, private auth: AuthService, private snackBar: MatSnackBar, private router: Router) {
+  constructor(private dialog: MatDialog, private http: HttpClient, public auth: AuthService, private snackBar: MatSnackBar, private router: Router) {
 
   }
 
