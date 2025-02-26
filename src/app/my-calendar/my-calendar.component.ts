@@ -52,7 +52,7 @@ export class MyCalendarComponent implements OnInit {
       headers: new HttpHeaders({ 'Authorization': this.auth.getToken() }) 
     }).subscribe({
       next: (data) => {
-        this.events = data;
+        this.events = data.sort((a, b) => new Date(b.startDateTime).getTime() - new Date(a.startDateTime).getTime());
         this.generateCalendar();
       },
       error: () => this.showErrorMessage('An error occurred while getting the events')
@@ -93,20 +93,12 @@ export class MyCalendarComponent implements OnInit {
     });
   }
 
-  // TODO:
-  // When the event is the first half hour of the first hour, all others in the sequence disappear.
-  // If the event is deleted and recreated after the others exist, they all display as intended.
-  // When the event is the second half hour of the first hour, it displays for an hour and a half. Ex: 9:30 - 10:00 displays as 9:00 - 11:30
-  // When the event is an hour, all others in the sequence display as intended
   hasEventAtTime(day: { events: EventDetails[] }, hour: number): boolean {
-    console.log('Considering the following days events: ', day);
     return day.events.some((event: EventDetails) => {
-      console.log('Event name: ', event.name);
-
       return this.getEventStartHour(event) === hour
-    || this.getEventEndHour(event) - 1 === hour
-    || this.getEventEndHour(event) - 1 === this.visibleHourStart
-    || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event));
+      || this.getEventEndHour(event) - 1 === hour
+      || this.getEventEndHour(event) - 1 === this.visibleHourStart
+      || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event));
     });
   }
   
@@ -136,10 +128,8 @@ export class MyCalendarComponent implements OnInit {
 
   getEventHeight(day: any, hour: number): number {
     const event = this.getEventAtTime(day, hour);
-    if (!event) console.log('Event height: 0'); // TODO: remove
     if (!event) return 0;
   
-    console.log('Event: ', event.name);
     const eventStart = dayjs(event.startDateTime);
     const eventEnd = dayjs(event.endDateTime);
   
@@ -155,15 +145,8 @@ export class MyCalendarComponent implements OnInit {
     const eventDuration = visibleEnd - visibleStart;
 
     if (eventEndHour === this.visibleHourStart + 1) {
-      console.log('Event height: 25'); // TODO: remove
       return 25;
     }
-
-    console.log('Event height: ', eventStartMinute !== 0 && eventEndMinute !== 0
-      ? (eventDuration * 50)
-      : eventStartMinute !== 0 || eventEndMinute !== 0
-        ? (eventDuration * 50) + 25
-        : eventDuration * 50); // TODO: remove
 
     return eventStartMinute !== 0 && eventEndMinute !== 0
       ? (eventDuration * 50)
@@ -198,7 +181,12 @@ export class MyCalendarComponent implements OnInit {
     const dialogRef = this.dialog.open(EventDialogComponent, { data: { mode: 'create', title: 'Create Event' } });
     dialogRef.afterClosed().subscribe((newEvent) => {
       if (newEvent) {
-        this.events.push(newEvent);
+        if (this.events.length === 0 || this.events[0].startDateTime > newEvent.startDateTime) {
+          this.events.push(newEvent);
+        }
+        else {
+          this.events.unshift(newEvent);
+        }
         this.generateCalendar();
       }
     });
