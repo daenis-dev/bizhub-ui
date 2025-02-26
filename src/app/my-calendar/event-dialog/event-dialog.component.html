@@ -51,6 +51,6 @@
 
 <mat-dialog-actions>
   <button mat-button (click)="dialogRef.close()">Cancel</button>
-  <button mat-raised-button *ngIf="this.title === 'Edit Event'" class="delete-button" (click)="onDelete()">Delete</button>
-  <button mat-raised-button color="primary" (click)="save()" [disabled]="!eventForm.valid">Save</button>
+  <button mat-raised-button *ngIf="this.title === 'Edit Event'" class="delete-button" (click)="onDelete()" [disabled]="this.auth.hasRole('demo_user')">Delete</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="!eventForm.valid" [disabled]="this.auth.hasRole('demo_user')">Save</button>
 </mat-dialog-actions>

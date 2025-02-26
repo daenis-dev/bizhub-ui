@@ -57,6 +57,13 @@ button:hover {
   border: 2px solid #78fd95;
 }
 
+button:disabled {
+  background-color: #c4ffd1;
+  color: #00660077 !important;
+  border: 2px solid #006600;
+  cursor: not-allowed;
+}
+
 .vertical-rule {
   width: 1px;
   height: 60px;

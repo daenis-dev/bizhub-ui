@@ -82,18 +82,20 @@ export class AuthService {
   }
 
   hasRole(role: string): boolean {
-    return this.getUserRoles().includes(role);
+    console.log('User has role: ', role);
+    return this.getUserRole() === role;
   }
 
-  private getUserRoles(): string[] {
+  private getUserRole(): string {
     const token = this.getToken();
-    if (!token) return [];
+
+    if (!token) return '';
 
     try {
       const decodedToken: any = jwtDecode(token);
-      return decodedToken.roles || [];
+      return decodedToken.resource_access.bizhub_api.roles[0] || '';
     } catch (error) {
-      return [];
+      return '';
     }
   }
 }

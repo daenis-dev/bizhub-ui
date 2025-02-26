@@ -50,6 +50,13 @@
   width: 300px;
 }
 
+.create-event-container button:disabled {
+  background-color: #c4ffd1;
+  color: #00660077 !important;
+  border: 2px solid #006600;
+  cursor: not-allowed;
+}
+
 .navigation-buttons {
   width: 300px;
   display: flex;

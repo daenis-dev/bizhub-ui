@@ -68,7 +68,7 @@ export class EventDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<EventDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { mode: 'create' | 'edit'; event?: any, title?: string, id?: string },
-    private auth: AuthService,
+    public auth: AuthService,
     private http: HttpClient,
     private snackBar: MatSnackBar
   ) {

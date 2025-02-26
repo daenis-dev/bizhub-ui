@@ -41,7 +41,7 @@ export class MyCalendarComponent implements OnInit {
   visibleHourStart: number = 8;
   visibleHourCount: number = 5;
 
-  constructor(private router: Router, private dialog: MatDialog, private http: HttpClient, private auth: AuthService, private snackBar: MatSnackBar) {}
+  constructor(private router: Router, private dialog: MatDialog, private http: HttpClient, public auth: AuthService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.loadEvents();

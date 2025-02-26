@@ -69,3 +69,8 @@ mat-error {
     background-color: darkred !important;
     color: white !important;
 }
+
+.delete-button:disabled {
+    background-color: rgba(139, 0, 0, 0.267) !important;
+    color: white !important;
+}
