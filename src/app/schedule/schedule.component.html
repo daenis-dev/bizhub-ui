@@ -1,4 +1,3 @@
-    
 <div class="calendar-header">
   <div style="text-align: center;">
     <button mat-button (click)="navigate(-1)">
@@ -20,6 +19,7 @@
 </div>
 
 <div class="calendar-grid">
+
   <div class="time-labels">
     <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount + 1)" class="time-label">
       <div *ngIf="hour!==visibleHourStart">
@@ -41,4 +41,4 @@
       </div>
     </div>
   </div>
-
+</div>
