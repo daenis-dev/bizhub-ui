@@ -37,7 +37,9 @@ export class LoginFormComponent {
   hidePassword: boolean = true;
 
   constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router, private dialog: MatDialog, private snackBar: MatSnackBar) {
+    console.log('Constructing login form');
     if (this.authService.isAuthenticated()) {
+      console.log('User is authenticated, navigating home now');
       this.router.navigateByUrl('/home');
     }
     this.loginForm = this.formBuilder.group({

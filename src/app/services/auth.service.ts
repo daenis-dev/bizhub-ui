@@ -19,10 +19,17 @@ export class AuthService {
 
   constructor(private http: HttpClient, private snackBar: MatSnackBar, private router: Router) { }
 
-  isAuthenticated() {
-    let tokenExpirationDate: any = localStorage.getItem(this.tokenExpDateKey);
-    return localStorage.getItem(this.tokenKey) != null && new Date(tokenExpirationDate).getDate() > new Date().getDate();
-  }
+  isAuthenticated(): boolean {
+    const tokenExpirationDateStr = localStorage.getItem(this.tokenExpDateKey);
+    if (!tokenExpirationDateStr) {
+        return false;
+    }
+
+    const tokenExpirationDate = new Date(tokenExpirationDateStr);
+    const currentDate = new Date();
+    return localStorage.getItem(this.tokenKey) !== null && tokenExpirationDate > currentDate;
+}
+
 
   registerAccountForParams(params: HttpParams) {
     this.http.post(this.apiUrl + "/v1/register", null, {params: params})

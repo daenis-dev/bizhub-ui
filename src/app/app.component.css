@@ -5,9 +5,13 @@ html, body {
     padding: 0;
 }
 
-/* .app-container {
+.app-container {
     height: 100%;
     background-color: #b3ffc4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
     overflow-y: hidden;
     overflow-x: hidden;
 }
@@ -19,26 +23,6 @@ html, body {
     width: 100%;
     max-width: 900px;
     z-index: 900;
-    display: block;
-    margin: 0 auto; 
-} */
-
-
-.app-container {
-    height: 100%;
-    background-color: #b3ffc4;
-    display: flex;
-    flex-direction: column;
-    align-items: center;  /* Center horizontally */
-    justify-content: flex-start;
-}
-
-.title-container {
-    background-color: #b3ffc4;
-    padding-top: 20px;
-    text-align: center;
-    width: 100%;
-    max-width: 900px;
 }
 
 .title {
