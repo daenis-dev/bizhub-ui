@@ -1,10 +1,10 @@
 <h2 mat-dialog-title style="text-align: center; font-size: 25px; font-weight: bold; padding-top: 30px; padding-bottom: 20px; color: #006600;">Share Schedule</h2>
 <mat-dialog-content style="padding-top: 2%;">
 
-  <div *ngIf="!this.shareUrl" style="text-align: center;">
+  <div *ngIf="!this.shareUrl" style="text-align: center; padding-bottom: 10px;">
     Generate a URL to share your schedule!
   </div>
-  <div *ngIf="this.shareUrl" style="text-align: center;">
+  <div *ngIf="this.shareUrl" style="text-align: center; padding-bottom: 10px;">
     <span style="font-weight: bold;">Share URL:</span>&nbsp;{{ this.shareUrl }}
   </div>
   
@@ -12,6 +12,6 @@
 
 <mat-dialog-actions>
   <button mat-button (click)="dialogRef.close()">Cancel</button>
-  <button mat-raised-button class="disable-button" (click)="disableShareUrl()" [disabled]="this.shareUrl === ''">Disable URL</button>
-  <button mat-raised-button color="primary" (click)="generateShareUrl()" [disabled]="this.shareUrl !== ''">Generate URL</button>
+  <button mat-raised-button class="disable-button" (click)="disableShareUrl()" [disabled]="this.shareUrl === '' || this.auth.hasRole('demo_user')">Disable URL</button>
+  <button mat-raised-button color="primary" (click)="generateShareUrl()" [disabled]="this.shareUrl !== '' || this.auth.hasRole('demo_user')">Generate URL</button>
 </mat-dialog-actions>

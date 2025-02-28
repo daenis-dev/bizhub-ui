@@ -30,7 +30,7 @@ export class ShareScheduleComponent implements OnInit {
 
   shareUrl: string = '';
 
-  constructor(public dialogRef: MatDialogRef<ShareScheduleComponent>, private auth: AuthService, private http: HttpClient, private snackBar: MatSnackBar) {
+  constructor(public dialogRef: MatDialogRef<ShareScheduleComponent>, public auth: AuthService, private http: HttpClient, private snackBar: MatSnackBar) {
 
   }
 

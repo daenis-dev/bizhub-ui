@@ -49,9 +49,7 @@
 }
 
 .create-event-container button:disabled {
-  background-color: #c4ffd1;
   color: #00660077 !important;
-  border: 2px solid #006600;
   cursor: not-allowed;
 }
 
@@ -60,13 +58,6 @@
   color: #006600;
   width: 450px;
   max-width: 450px;
-}
-
-.share-schedule-container button:disabled {
-  background-color: #c4ffd1;
-  color: #00660077 !important;
-  border: 2px solid #006600;
-  cursor: not-allowed;
 }
 
 .navigation-buttons {
