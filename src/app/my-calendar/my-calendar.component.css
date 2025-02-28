@@ -89,9 +89,10 @@ html, body {
 .time-labels {
   display: flex;
   flex-direction: column;
-  gap: 4px;
   align-items: center;
   height: 100%;
+  gap: 1px;
+  margin-top: 2px;
 }
 
 .time-label {
