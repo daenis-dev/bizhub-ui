@@ -5,7 +5,7 @@ html, body {
     padding: 0;
 }
 
-.app-container {
+/* .app-container {
     height: 100%;
     background-color: #b3ffc4;
     overflow-y: hidden;
@@ -17,12 +17,29 @@ html, body {
     padding-top: 20px;
     text-align: center;
     width: 100%;
-    max-width: 900px;  /* Added max-width to match the calendar header */
+    max-width: 900px;
     z-index: 900;
     display: block;
-    margin: 0 auto;  /* Ensure it's centered within its container */
+    margin: 0 auto; 
+} */
+
+
+.app-container {
+    height: 100%;
+    background-color: #b3ffc4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;  /* Center horizontally */
+    justify-content: flex-start;
 }
 
+.title-container {
+    background-color: #b3ffc4;
+    padding-top: 20px;
+    text-align: center;
+    width: 100%;
+    max-width: 900px;
+}
 
 .title {
     font-size: 50px;
