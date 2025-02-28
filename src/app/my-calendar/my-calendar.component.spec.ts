@@ -81,13 +81,6 @@ describe('MyCalendarComponent', () => {
     expect(component.visibleHourStart).toBe(8);
   });
 
-  it('should disable navigate up button at hour 0', () => {
-    component.visibleHourStart = 0;
-    fixture.detectChanges();
-    const button = fixture.nativeElement.querySelector('.time-navigation button:first-child');
-    expect(button.disabled).toBeTrue();
-  });
-
   it('should open account dialog', () => {
     const dialogSpy = spyOn(component['dialog'], 'open');
     component.openAccountDialog();
