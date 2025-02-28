@@ -40,6 +40,13 @@ export const routes: Routes = [
         (m) => m.MyCalendarComponent
       ),
     canActivate: [authGuard],
+  },
+  {
+    path: 'schedules',
+    loadComponent: () =>
+      import('./schedule/schedule.component').then(
+        (m) => m.ScheduleComponent
+      )
   }
 ];
 

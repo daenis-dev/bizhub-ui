@@ -44,7 +44,7 @@ export class ShareScheduleComponent implements OnInit {
       }).subscribe({
         next: (data: ScheduleKey) => {
           if (data) {
-            this.shareUrl = environment.appUrl + '/schedules?username=' + this.auth.getUsername() + '&schedule-key=' + data;
+            this.shareUrl = environment.appUrl + '/schedules?username=' + this.auth.getUsername() + '&schedule-key=' + data.token;
           } 
         },
         error: () => {
@@ -54,11 +54,11 @@ export class ShareScheduleComponent implements OnInit {
   }
 
   generateShareUrl() {
-    this.http.post<ScheduleKey>(environment.apiUrl + '/v1/schedule-keys', {
+    this.http.post<ScheduleKey>(environment.apiUrl + '/v1/schedule-keys', null, {
         headers: new HttpHeaders({ 'Authorization': this.auth.getToken()})
       }).subscribe({
         next: (data: ScheduleKey) => {
-          this.shareUrl = environment.appUrl + '/schedules?username=' + this.auth.getUsername() + '&schedule-key=' + data;
+          this.shareUrl = environment.appUrl + '/schedules?username=' + this.auth.getUsername() + '&schedule-key=' + data.token;
           this.showSuccessMessage('Share URL created successfully')
         },
         error: () => {
@@ -85,6 +85,16 @@ export class ShareScheduleComponent implements OnInit {
   }
 
   disableShareUrl() {
-
+    this.http.delete<void>(environment.apiUrl + '/v1/schedule-keys', {
+      headers: new HttpHeaders({ 'Authorization': this.auth.getToken()})
+    }).subscribe({
+      next: () => {
+        this.shareUrl = '';
+        this.showSuccessMessage('Share URL successfully disabled')
+      },
+      error: () => {
+        this.showErrorMessage('An error occurred while disabling the share URL');
+      }
+  });
   }
 }

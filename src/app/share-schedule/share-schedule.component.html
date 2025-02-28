@@ -13,5 +13,5 @@
 <mat-dialog-actions>
   <button mat-button (click)="dialogRef.close()">Cancel</button>
   <button mat-raised-button class="disable-button" (click)="disableShareUrl()" [disabled]="this.shareUrl === ''">Disable URL</button>
-  <button mat-raised-button color="primary" (click)="generateShareUrl()">Generate URL</button>
+  <button mat-raised-button color="primary" (click)="generateShareUrl()" [disabled]="this.shareUrl !== ''">Generate URL</button>
 </mat-dialog-actions>
