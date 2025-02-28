@@ -1,14 +1,17 @@
 html, body {
     height: 100%;
+    width: 100%;
     margin: 0;
     padding: 0;
 }
 
 .app-container {
-    display: flex;
-    flex-direction: column;
     height: 100%;
     background-color: #b3ffc4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .title-container {
@@ -16,11 +19,11 @@ html, body {
     padding-top: 20px;
     text-align: center;
     width: 100%;
-    z-index: 900;
+    max-width: 900px;
 }
 
 .title {
-    font-size: 70px;
+    font-size: 50px;
     font-weight: bold;
     color: #006600;
     margin: 0;

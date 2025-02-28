@@ -235,6 +235,21 @@ export class MyCalendarComponent implements OnInit {
     });
   }
 
+  openShareScheduleForm(): void {
+    // const dialogRef = this.dialog.open(EventDialogComponent, { data: { mode: 'create', title: 'Create Event' } });
+    // dialogRef.afterClosed().subscribe((newEvent) => {
+    //   if (newEvent) {
+    //     if (this.events.length === 0 || this.events[0].startDateTime > newEvent.startDateTime) {
+    //       this.events.push(newEvent);
+    //     }
+    //     else {
+    //       this.events.unshift(newEvent);
+    //     }
+    //     this.generateCalendar();
+    //   }
+    // });
+  }
+
   navigate(direction: number): void {
     this.currentDate = this.currentDate.add(direction, 'week');
     this.generateCalendar();

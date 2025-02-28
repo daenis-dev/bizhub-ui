@@ -4,64 +4,67 @@
 <div class="settings-wheel" (click)="openAccountDialog()">
   <mat-icon>settings</mat-icon>
 </div>
-<div>
-  <div>
-    <div class="container">
-      <div class="calendar-container">
 
-        <div class="calendar-header">
-          <div class="create-event-container">
-            <button mat-button color="primary" (click)="createEvent()" [disabled]="this.auth.hasRole('demo_user')">
-              Create Event
-            </button>
-          </div>
-          <div class="time-navigation">
-            <button mat-icon-button (click)="navigateHours(-1)" [disabled]="visibleHourStart === 0">
-              <mat-icon>arrow_upward</mat-icon>
-            </button>
-            <button mat-icon-button (click)="navigateHours(1)" [disabled]="visibleHourStart + visibleHourCount >= 24">
-              <mat-icon>arrow_downward</mat-icon>
-            </button>
-          </div>
-          <div class="navigation-buttons">
-            <button mat-button (click)="navigate(-1)">
-              <mat-icon>chevron_left</mat-icon>
-              Previous Week
-            </button>
-            <button mat-button (click)="navigate(1)">
-              Next Week
-              <mat-icon>chevron_right</mat-icon>
-            </button>
+
+
+<div class="calendar-container">
+  <div class="calendar-header">
+    <div class="calendar-container-buttons">
+      <div class="create-event-container">
+        <button mat-button color="primary" (click)="createEvent()" [disabled]="this.auth.hasRole('demo_user')">
+          &nbsp;Create Event&nbsp;
+        </button>
+      </div>
+      <div class="share-schedule-container">
+        <button mat-button color="primary" (click)="openShareScheduleForm()">
+          Share Schedule
+        </button>
+      </div>
+    </div>
+
+    <div style="text-align: center;">
+      <button mat-button (click)="navigate(-1)">
+        &lt;
+      </button>
+      <button mat-button (click)="navigate(1)">
+        &gt;
+      </button>
+    </div>
+
+    <div style="text-align: center; padding-bottom: 15px;">
+      <button mat-icon-button (click)="navigateHours(-1)" [disabled]="visibleHourStart === 0">
+        <mat-icon>arrow_upward</mat-icon>
+      </button>
+      <button mat-icon-button (click)="navigateHours(1)" [disabled]="visibleHourStart + visibleHourCount >= 24">
+        <mat-icon>arrow_downward</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="calendar-grid">
+    <div class="time-labels">
+      <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount + 1)" class="time-label">
+        <div *ngIf="hour!==visibleHourStart">
+          {{ hour }}:00
+        </div>
+      </div>
+    </div>
+    <div *ngFor="let day of calendarDays" class="calendar-day">
+      <div class="day-label">{{ day.date.format('ddd, MMM D') }}</div>
+      <div class="time-grid">
+        <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount)" class="hour-cell">
+          <div *ngIf="hour !== visibleHourStart && hasEventAtTime(day, hour)" 
+                class="calendar-event" 
+                [style.height.px]="getEventHeight(day, hour)"
+                [style.top.px]="getEventTop(day, hour)"
+                (click)="updateEvent(getEventAtTime(day, hour))">
+            {{ (getEventAtTime(day, hour)?.name?.length ?? 0) > 14 
+                ? (getEventAtTime(day, hour)?.name | slice:0:14) + '...' 
+                : getEventAtTime(day, hour)?.name || '' }}
           </div>
         </div>
-
-        <div class="calendar-grid">
-          <div class="time-labels">
-            <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount + 1)" class="time-label">
-              <div *ngIf="hour!==visibleHourStart">
-                {{ hour }}:00
-              </div>
-            </div>
-          </div>
-          <div *ngFor="let day of calendarDays" class="calendar-day">
-            <div class="day-label">{{ day.date.format('ddd, MMM D') }}</div>
-            <div class="time-grid">
-              <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount)" class="hour-cell">
-                <div *ngIf="hour !== visibleHourStart && hasEventAtTime(day, hour)" 
-                     class="calendar-event" 
-                     [style.height.px]="getEventHeight(day, hour)"
-                     [style.top.px]="getEventTop(day, hour)"
-                     (click)="updateEvent(getEventAtTime(day, hour))">
-                  {{ (getEventAtTime(day, hour)?.name?.length ?? 0) > 14 
-                     ? (getEventAtTime(day, hour)?.name | slice:0:14) + '...' 
-                     : getEventAtTime(day, hour)?.name || '' }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
   </div>
+
 </div>
