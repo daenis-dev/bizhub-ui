@@ -1,0 +1,15 @@
+.disable-button {
+    background-color: red !important;
+    color: white !important;
+    border: none !important;
+}
+
+.disable-button:hover {
+    background-color: darkred !important;
+    color: white !important;
+}
+
+.disable-button:disabled {
+    background-color: rgba(139, 0, 0, 0.267) !important;
+    color: white !important;
+}

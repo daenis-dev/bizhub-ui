@@ -82,7 +82,6 @@ export class AuthService {
   }
 
   hasRole(role: string): boolean {
-    console.log('User has role: ', role);
     return this.getUserRole() === role;
   }
 
@@ -97,5 +96,18 @@ export class AuthService {
     } catch (error) {
       return '';
     }
+  }
+
+  getUsername(): string {
+    const token = this.getToken();
+
+    if (!token) return '';
+
+    try {
+      const decodedToken: any = jwtDecode(token);
+      return decodedToken.email || '';
+    } catch (error) {
+      return '';
+    } 
   }
 }

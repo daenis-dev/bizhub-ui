@@ -14,6 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { environment } from '../../environments/environment';
 import { AuthService } from '../services/auth.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ShareScheduleComponent } from '../share-schedule/share-schedule.component';
 
 @Component({
   selector: 'app-my-calendar',
@@ -236,18 +237,7 @@ export class MyCalendarComponent implements OnInit {
   }
 
   openShareScheduleForm(): void {
-    // const dialogRef = this.dialog.open(EventDialogComponent, { data: { mode: 'create', title: 'Create Event' } });
-    // dialogRef.afterClosed().subscribe((newEvent) => {
-    //   if (newEvent) {
-    //     if (this.events.length === 0 || this.events[0].startDateTime > newEvent.startDateTime) {
-    //       this.events.push(newEvent);
-    //     }
-    //     else {
-    //       this.events.unshift(newEvent);
-    //     }
-    //     this.generateCalendar();
-    //   }
-    // });
+    this.dialog.open(ShareScheduleComponent);
   }
 
   navigate(direction: number): void {

@@ -8,10 +8,8 @@ html, body {
 .app-container {
     height: 100%;
     background-color: #b3ffc4;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
 
 .title-container {
@@ -19,8 +17,12 @@ html, body {
     padding-top: 20px;
     text-align: center;
     width: 100%;
-    max-width: 900px;
+    max-width: 900px;  /* Added max-width to match the calendar header */
+    z-index: 900;
+    display: block;
+    margin: 0 auto;  /* Ensure it's centered within its container */
 }
+
 
 .title {
     font-size: 50px;
