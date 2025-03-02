@@ -1,4 +1,13 @@
 <div class="calendar-header">
+  <div style="padding-bottom: 10px; padding-top: 16px;">
+    <mat-card class="email-container">
+      <mat-card-content>
+        <span class="email-label">{{ username }}</span>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  
+  
   <div style="text-align: center;">
     <button mat-button (click)="navigate(-1)">
       &lt;

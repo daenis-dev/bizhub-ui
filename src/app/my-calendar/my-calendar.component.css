@@ -104,7 +104,7 @@ html, body {
 }
 
 .calendar-day {
-  background-color: #b3ffc4;
+  background-color: #ffffff;
   padding: 8px;
   min-height: 250px;
   width: 120px;
@@ -114,6 +114,8 @@ html, body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border-radius: 8px;
+  box-shadow: inset 0 0 8px rgba(0, 102, 0, 0.1);
 }
 
 .time-grid {
@@ -130,6 +132,12 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #fafffa;
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hour-cell:hover {
+  background-color: #e0ffe0;
 }
 
 .calendar-event {
@@ -148,4 +156,6 @@ html, body {
 .calendar-container-buttons {
   display: flex;
   flex-direction: row;
+  padding-bottom: 10px;
+  padding-top: 10px;
 }
