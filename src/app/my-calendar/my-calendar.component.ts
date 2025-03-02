@@ -108,6 +108,10 @@ export class MyCalendarComponent implements OnInit {
     const eventStartMinute = this.getEventStartMinute(event);
     const eventEndMinute = this.getEventEndMinute(event);
 
+    if (eventEndHour === this.visibleHourStart + 1 && eventEndMinute === 0) {
+      return false;
+    }
+
     const eventEndsThirtyMinutesIntoTheFirstVisibleHour = eventEndHour === this.visibleHourStart + 1 && eventEndMinute !== 0;
     if (eventEndsThirtyMinutesIntoTheFirstVisibleHour) {
       return this.eventOccursAtHour(event, hour);
