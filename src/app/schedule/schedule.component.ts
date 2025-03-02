@@ -93,7 +93,14 @@ export class ScheduleComponent {
 
   hasEventAtTime(day: { events: EventDateDetails[] }, hour: number): boolean {
     return day.events.some((event: EventDateDetails) => {
+      if ((this.getEventStartHour(event) === this.visibleHourStart + 1) && this.getEventEndMinute(event) !== 0) {
+        return true;
+      }
       if (this.getEventStartHour(event) === this.visibleHourStart + this.visibleHourCount) {
+        return false;
+      }
+
+      if (this.getEventEndHour(event) === this.visibleHourStart + 1) {
         return false;
       }
       return this.getEventStartHour(event) === hour
@@ -150,24 +157,25 @@ export class ScheduleComponent {
     }
 
     if (eventEndHour === this.visibleHourStart + 1) {
-      return 25;
+      return 15;
     }
 
     if (eventStartMinute !== 0 && eventEndMinute === 0 && eventStartHour + 1 === eventEndHour) {
-      return 25;
+      return 15;
     }
 
-    return eventStartMinute !== 0 && eventEndMinute !== 0
+    return (eventStartMinute !== 0 && eventEndMinute !== 0
       ? (eventDuration * 50)
       : eventStartMinute !== 0 || eventEndMinute !== 0
         ? (eventDuration * 50) + 25
-        : eventDuration * 50;
+        : eventDuration * 50) - 10;
   }
   
   getEventTop(day: any, hour: number): number {
     const event = this.getEventAtTime(day, hour);
     
-    if (!event) return 50;
+    if (!event) console.log('Event top not zero, no event');
+    if (!event) return 0; // TODO: was 50, trying to resolve early events
     const eventStart = dayjs(event.startDateTime);
     const eventEnd = dayjs(event.endDateTime);
 

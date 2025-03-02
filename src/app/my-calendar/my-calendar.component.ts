@@ -96,7 +96,14 @@ export class MyCalendarComponent implements OnInit {
 
   hasEventAtTime(day: { events: EventDetails[] }, hour: number): boolean {
     return day.events.some((event: EventDetails) => {
+      if ((this.getEventStartHour(event) === this.visibleHourStart + 1) && this.getEventEndMinute(event) !== 0) {
+        return true;
+      }
       if (this.getEventStartHour(event) === this.visibleHourStart + this.visibleHourCount) {
+        return false;
+      }
+
+      if (this.getEventEndHour(event) === this.visibleHourStart + 1) {
         return false;
       }
       return this.getEventStartHour(event) === hour
@@ -107,12 +114,12 @@ export class MyCalendarComponent implements OnInit {
   }
   
   getEventAtTime(day: { events: EventDetails[] }, hour: number): EventDetails | null {
-    return day.events.find((event: EventDetails) => 
-      this.getEventStartHour(event) === hour
-    || this.getEventEndHour(event) - 1 === hour
-    || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event))
-    || (this.getEventEndHour(event) === this.visibleHourStart + 1 && this.getEventEndMinute(event) !== 0)) || null;
-  }
+      return day.events.find((event: EventDetails) => 
+        this.getEventStartHour(event) === hour
+      || this.getEventEndHour(event) - 1 === hour
+      || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event))
+      || (this.getEventEndHour(event) === this.visibleHourStart + 1 && this.getEventEndMinute(event) !== 0)) || null;
+    }
 
   getEventStartHour(event: EventDetails): number {
     return dayjs(event.startDateTime).hour();
@@ -153,18 +160,18 @@ export class MyCalendarComponent implements OnInit {
     }
 
     if (eventEndHour === this.visibleHourStart + 1) {
-      return 25;
+      return 15;
     }
 
     if (eventStartMinute !== 0 && eventEndMinute === 0 && eventStartHour + 1 === eventEndHour) {
-      return 25;
+      return 15;
     }
 
-    return eventStartMinute !== 0 && eventEndMinute !== 0
+    return (eventStartMinute !== 0 && eventEndMinute !== 0
       ? (eventDuration * 50)
       : eventStartMinute !== 0 || eventEndMinute !== 0
         ? (eventDuration * 50) + 25
-        : eventDuration * 50;
+        : eventDuration * 50) - 10;
   }
   
   getEventTop(day: any, hour: number): number {
