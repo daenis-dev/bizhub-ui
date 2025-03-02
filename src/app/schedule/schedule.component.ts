@@ -40,7 +40,7 @@ export class ScheduleComponent {
   currentDate: dayjs.Dayjs = dayjs();
   hours: number[] = Array.from({ length: 24 }, (_, i) => i);
 
-  visibleHourStart: number = 8;
+  visibleHourStart: number = 8; // ideally 9
   visibleHourCount: number = 5;
 
   constructor(private route: ActivatedRoute, private http: HttpClient, public auth: AuthService, private snackBar: MatSnackBar) {}
@@ -93,7 +93,7 @@ export class ScheduleComponent {
 
   hasEventAtTime(day: { events: EventDateDetails[] }, hour: number): boolean {
     return day.events.some((event: EventDateDetails) => {
-      if ((this.getEventStartHour(event) === this.visibleHourStart + 1) && this.getEventEndMinute(event) !== 0) {
+        if ((this.getEventStartHour(event) === this.visibleHourStart + 1) && this.getEventEndMinute(event) !== 0) {
         return true;
       }
       if (this.getEventStartHour(event) === this.visibleHourStart + this.visibleHourCount) {
@@ -110,13 +110,14 @@ export class ScheduleComponent {
     });
   }
   
+
   getEventAtTime(day: { events: EventDateDetails[] }, hour: number): EventDateDetails | null {
-    return day.events.find((event: EventDateDetails) => 
-      this.getEventStartHour(event) === hour
-    || this.getEventEndHour(event) - 1 === hour
-    || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event))
-    || (this.getEventEndHour(event) === this.visibleHourStart + 1 && this.getEventEndMinute(event) !== 0)) || null;
-  }
+        return day.events.find((event: EventDateDetails) => 
+          this.getEventStartHour(event) === hour
+        || this.getEventEndHour(event) - 1 === hour
+        || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event))
+        || (this.getEventEndHour(event) === this.visibleHourStart + 1 && this.getEventEndMinute(event) !== 0)) || null;
+      }
 
   getEventStartHour(event: EventDateDetails): number {
     return dayjs(event.startDateTime).hour();
@@ -135,47 +136,46 @@ export class ScheduleComponent {
   }
 
   getEventHeight(day: any, hour: number): number {
-    const event = this.getEventAtTime(day, hour);
-    if (!event) return 0;
+      const event = this.getEventAtTime(day, hour);
+      if (!event) return 0;
+    
+      const eventStart = dayjs(event.startDateTime);
+      const eventEnd = dayjs(event.endDateTime);
+    
+      const eventStartHour = eventStart.hour();
+      const eventEndHour = eventEnd.hour();
   
-    const eventStart = dayjs(event.startDateTime);
-    const eventEnd = dayjs(event.endDateTime);
+      const eventStartMinute = eventStart.minute();
+      const eventEndMinute = eventEnd.minute();
+    
+      const visibleStart = Math.max(eventStartHour, this.visibleHourStart + 1);
+      const visibleEnd = Math.min(eventEndHour, this.visibleHourStart + this.visibleHourCount);
+    
+      const eventDuration = visibleEnd - visibleStart;
   
-    const eventStartHour = eventStart.hour();
-    const eventEndHour = eventEnd.hour();
-
-    const eventStartMinute = eventStart.minute();
-    const eventEndMinute = eventEnd.minute();
+      if (eventStartHour === this.visibleHourStart + this.visibleHourCount) {
+        return 0;
+      }
   
-    const visibleStart = Math.max(eventStartHour, this.visibleHourStart + 1);
-    const visibleEnd = Math.min(eventEndHour, this.visibleHourStart + this.visibleHourCount);
+      if (eventEndHour === this.visibleHourStart + 1) {
+        return 15;
+      }
   
-    const eventDuration = visibleEnd - visibleStart;
-
-    if (eventStartHour === this.visibleHourStart + this.visibleHourCount) {
-      return 0;
+      if (eventStartMinute !== 0 && eventEndMinute === 0 && eventStartHour + 1 === eventEndHour) {
+        return 15;
+      }
+  
+      return (eventStartMinute !== 0 && eventEndMinute !== 0
+        ? (eventDuration * 50)
+        : eventStartMinute !== 0 || eventEndMinute !== 0
+          ? (eventDuration * 50) + 25
+          : eventDuration * 50) - 10;
     }
-
-    if (eventEndHour === this.visibleHourStart + 1) {
-      return 15;
-    }
-
-    if (eventStartMinute !== 0 && eventEndMinute === 0 && eventStartHour + 1 === eventEndHour) {
-      return 15;
-    }
-
-    return (eventStartMinute !== 0 && eventEndMinute !== 0
-      ? (eventDuration * 50)
-      : eventStartMinute !== 0 || eventEndMinute !== 0
-        ? (eventDuration * 50) + 25
-        : eventDuration * 50) - 10;
-  }
-  
-  getEventTop(day: any, hour: number): number {
+    
+    getEventTop(day: any, hour: number): number {
     const event = this.getEventAtTime(day, hour);
     
-    if (!event) console.log('Event top not zero, no event');
-    if (!event) return 0; // TODO: was 50, trying to resolve early events
+    if (!event) return 50;
     const eventStart = dayjs(event.startDateTime);
     const eventEnd = dayjs(event.endDateTime);
 

@@ -96,21 +96,52 @@ export class MyCalendarComponent implements OnInit {
 
   hasEventAtTime(day: { events: EventDetails[] }, hour: number): boolean {
     return day.events.some((event: EventDetails) => {
-      if ((this.getEventStartHour(event) === this.visibleHourStart + 1) && this.getEventEndMinute(event) !== 0) {
-        return true;
-      }
-      if (this.getEventStartHour(event) === this.visibleHourStart + this.visibleHourCount) {
-        return false;
-      }
 
-      if (this.getEventEndHour(event) === this.visibleHourStart + 1) {
-        return false;
-      }
-      return this.getEventStartHour(event) === hour
-      || this.getEventEndHour(event) - 1 === hour
-      || this.getEventEndHour(event) - 1 === this.visibleHourStart
-      || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event));
+      return this.hasEventAtHour(event, hour);
     });
+  }
+
+  private hasEventAtHour(event: EventDetails, hour: number): boolean {
+    const eventStartHour = this.getEventStartHour(event);
+    const eventEndHour = this.getEventEndHour(event);
+
+    const eventStartMinute = this.getEventStartMinute(event);
+    const eventEndMinute = this.getEventEndMinute(event);
+
+    const eventEndsThirtyMinutesIntoTheFirstVisibleHour = eventEndHour === this.visibleHourStart + 1 && eventEndMinute !== 0;
+    if (eventEndsThirtyMinutesIntoTheFirstVisibleHour) {
+      return this.eventOccursAtHour(event, hour);
+    }
+
+    const eventIsAtOrAfterMinimumVisibleHour = this.visibleHourStart + 1 <= eventStartHour || eventEndHour === this.visibleHourStart + 1 && eventEndMinute !== 0;
+    const eventIsBeforeTheMaximumVisibleHour = eventEndHour < this.visibleHourStart + 1 + this.visibleHourCount;
+    const eventStartsAndEndsWithinTheVisibleTimeframe = eventIsAtOrAfterMinimumVisibleHour && eventIsBeforeTheMaximumVisibleHour;
+
+    if (eventStartsAndEndsWithinTheVisibleTimeframe) {
+      return this.eventOccursAtHour(event, hour);
+    }
+
+    const eventStartsWithinTheTimeframe = eventStartHour < this.visibleHourStart + 1 + this.visibleHourCount && eventStartHour >= this.visibleHourStart + 1;
+    const eventEndsWithinTheTimeframe = eventEndHour < this.visibleHourStart + 1 + this.visibleHourCount && eventEndHour >= this.visibleHourStart + 1;
+    if (eventStartsWithinTheTimeframe || eventEndsWithinTheTimeframe) {
+      return this.eventOccursAtHour(event, hour);
+    }
+
+    return false;
+  }
+
+  private eventOccursAtHour(event: EventDetails, hour: number): boolean {
+    const eventStartHour = this.getEventStartHour(event);
+    const eventEndHour = this.getEventEndHour(event);
+
+    const eventStartsAtTheHour = eventStartHour === hour;
+    const eventEndsOneHourBeforeTheHour = eventEndHour - 1 === hour;
+    const eventEndsOneHourBeforeTheVisibleStartHour = eventEndHour - 1 === this.visibleHourStart;
+    const theHourIsBetweenTheEventStartHourAndTheEventEndHour = eventStartHour < hour && hour < eventEndHour;
+    return eventStartsAtTheHour
+    || eventEndsOneHourBeforeTheHour
+    || eventEndsOneHourBeforeTheVisibleStartHour
+    || theHourIsBetweenTheEventStartHourAndTheEventEndHour;
   }
   
   getEventAtTime(day: { events: EventDetails[] }, hour: number): EventDetails | null {
@@ -166,7 +197,7 @@ export class MyCalendarComponent implements OnInit {
     if (eventStartMinute !== 0 && eventEndMinute === 0 && eventStartHour + 1 === eventEndHour) {
       return 15;
     }
-
+    
     return (eventStartMinute !== 0 && eventEndMinute !== 0
       ? (eventDuration * 50)
       : eventStartMinute !== 0 || eventEndMinute !== 0
