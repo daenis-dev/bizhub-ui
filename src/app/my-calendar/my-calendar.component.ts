@@ -112,6 +112,10 @@ export class MyCalendarComponent implements OnInit {
       return false;
     }
 
+    if (eventStartHour >= this.visibleHourStart + this.visibleHourCount) {
+      return false;
+    }
+
     const eventEndsThirtyMinutesIntoTheFirstVisibleHour = eventEndHour === this.visibleHourStart + 1 && eventEndMinute !== 0;
     if (eventEndsThirtyMinutesIntoTheFirstVisibleHour) {
       return this.eventOccursAtHour(event, hour);
@@ -174,6 +178,7 @@ export class MyCalendarComponent implements OnInit {
 
   getEventHeight(day: any, hour: number): number {
     const event = this.getEventAtTime(day, hour);
+    if (!event) console.log("1");
     if (!event) return 0;
   
     const eventStart = dayjs(event.startDateTime);
@@ -194,23 +199,30 @@ export class MyCalendarComponent implements OnInit {
 
     const eventOccursBeforeOrAfterDisplayedHours = eventStartsAtOrAfterTheLastVisibleHour || eventEndsByTheTopOfTheFirstVisibleHour;
     if (eventOccursBeforeOrAfterDisplayedHours) {
+      console.log("2");
       return 0;
     }
     
     const eventOccupiesFirstHalfOfTheFirstVisibleHour = (eventEndHour === this.visibleHourStart + 1 && eventEndMinute !== 0);
     const eventOccupiesSecondHalfOfTheFirstVisibleHour = (eventEndHour === this.visibleHourStart + 2 && eventEndMinute === 0 && eventStartMinute !== 0 && eventStartHour === this.visibleHourStart + 1);
     if (eventOccupiesFirstHalfOfTheFirstVisibleHour || eventOccupiesSecondHalfOfTheFirstVisibleHour) {
+      console.log("3");
       return 15;
     }
 
     const eventOccupiesTheEntireFirstVisibleHour = (eventEndHour === this.visibleHourStart + 2) && eventEndMinute === 0;
 
-    if (eventOccupiesTheEntireFirstVisibleHour) { // executes when event is 9:30 - 10:00 and minimum display is 9:00
+    if (eventOccupiesTheEntireFirstVisibleHour) {
+      console.log("4");
       return 40;
     }
 
+    console.log('Visible hour start: ', this.visibleHourStart);
+    console.log('Visible hour count: ', this.visibleHourCount);
+    console.log('Event start hour: ', eventStartHour);
     const eventOccupiesOnlyTheLastVisibleHour = eventStartHour === this.visibleHourStart + this.visibleHourCount;
-    if (eventOccupiesOnlyTheLastVisibleHour) {
+    if (eventOccupiesOnlyTheLastVisibleHour) { // TODO: always executes when event ends on half hour beyond visible max
+      console.log("5");
       return 40;
     }
 
@@ -221,6 +233,7 @@ export class MyCalendarComponent implements OnInit {
 
     const eventIsTheFirstVisibleHour = (eventEndHour === this.visibleHourStart + 2) && eventEndMinute === 0;
     if (eventIsTheFirstVisibleHour) {
+      console.log("6");
       return 50 - 10;
     }
 
@@ -230,17 +243,21 @@ export class MyCalendarComponent implements OnInit {
     const eventStartsHalfwayThroughTheHour = eventStartMinute !== 0;
     
     if (eventEndsHalfwayThroughTheHour && eventStartMinute === 0) {
+      console.log("7");
       return (eventDuration * 50) + 15;
     }
-    if (eventStartsHalfwayThroughTheHour && eventEndMinute === 0) { // where it usually exceutes / should execute
+    if (eventStartsHalfwayThroughTheHour && eventEndMinute === 0) {
+      console.log("8");
       return ((eventDuration - 1) * 50) + 15;
     }
 
     if (visibleEnd === this.visibleHourStart + 1) {
+      console.log("9");
       return 15;
     }
 
     if (eventStartMinute !== 0 && eventEndMinute === 0 && visibleStart + 1 === visibleEnd) {
+      console.log("10");
       return 15;
     }
     
@@ -250,13 +267,16 @@ export class MyCalendarComponent implements OnInit {
     const eventEndsAHalfHourAfterTheLastVisibleHour = eventEndHour === this.visibleHourStart + 1 + this.visibleHourCount && eventEndMinute !== 0;
 
     if (eventStartsAndEndsOnHalfHourMark) {
+      console.log("11");
       return eventEndsAHalfHourAfterTheLastVisibleHour ? eventDuration * 50 - 20 : eventDuration * 50 - 10;
     }
 
     if (eventStartsOrEndsOnHalfHourMark) {
+      console.log("12");
       return eventEndsAHalfHourAfterTheLastVisibleHour ? (eventDuration * 50) + 5 : (eventDuration * 50) + 15;
     }
 
+    console.log("13");
     return eventStartsOrEndsOnHalfHourMark ? eventDuration * 50 - 20 : eventDuration * 50 - 10;
   }
   
