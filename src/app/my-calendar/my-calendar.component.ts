@@ -217,9 +217,6 @@ export class MyCalendarComponent implements OnInit {
       return 40;
     }
 
-    console.log('Visible hour start: ', this.visibleHourStart);
-    console.log('Visible hour count: ', this.visibleHourCount);
-    console.log('Event start hour: ', eventStartHour);
     const eventOccupiesOnlyTheLastVisibleHour = eventStartHour === this.visibleHourStart + this.visibleHourCount;
     if (eventOccupiesOnlyTheLastVisibleHour) { // TODO: always executes when event ends on half hour beyond visible max
       console.log("5");
@@ -244,6 +241,9 @@ export class MyCalendarComponent implements OnInit {
     
     if (eventEndsHalfwayThroughTheHour && eventStartMinute === 0) {
       console.log("7");
+      if (eventEndHour > this.visibleHourStart + this.visibleHourCount || eventEndHour === this.visibleHourStart + this.visibleHourCount && eventEndMinute !== 0) {
+        return (eventDuration * 50) - 10;
+      }
       return (eventDuration * 50) + 15;
     }
     if (eventStartsHalfwayThroughTheHour && eventEndMinute === 0) {
@@ -264,11 +264,12 @@ export class MyCalendarComponent implements OnInit {
     const eventStartsAndEndsOnHalfHourMark = visibleStart !== 0 && visibleEnd !== 0;
     const eventStartsOrEndsOnHalfHourMark = visibleStart !== 0 && visibleEnd === 0 || eventStartMinute === 0 && eventEndMinute !== 0;
 
-    const eventEndsAHalfHourAfterTheLastVisibleHour = eventEndHour === this.visibleHourStart + 1 + this.visibleHourCount && eventEndMinute !== 0;
+    const eventEndsAHalfHourAfterTheLastVisibleHour = eventEndHour === this.visibleHourStart + this.visibleHourCount && eventEndMinute !== 0;
 
     if (eventStartsAndEndsOnHalfHourMark) {
-      console.log("11");
-      return eventEndsAHalfHourAfterTheLastVisibleHour ? eventDuration * 50 - 20 : eventDuration * 50 - 10;
+      console.log("11"); // here
+      console.log('eventEndsAHalfHourAfterTheLastVisibleHour: ', eventEndsAHalfHourAfterTheLastVisibleHour);
+      return eventEndsAHalfHourAfterTheLastVisibleHour ? eventDuration * 50 - 35 : eventDuration * 50 - 10;
     }
 
     if (eventStartsOrEndsOnHalfHourMark) {
