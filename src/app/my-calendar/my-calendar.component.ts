@@ -187,26 +187,77 @@ export class MyCalendarComponent implements OnInit {
   
     const visibleStart = Math.max(eventStartHour, this.visibleHourStart + 1);
     const visibleEnd = Math.min(eventEndHour, this.visibleHourStart + this.visibleHourCount);
+
+
+    const eventStartsAtOrAfterTheLastVisibleHour = visibleStart >= (this.visibleHourStart + 1 + this.visibleHourCount);
+    const eventEndsByTheTopOfTheFirstVisibleHour = visibleEnd < this.visibleHourStart + 1 || (visibleEnd === this.visibleHourStart && eventEndMinute === 0);
+
+    const eventOccursBeforeOrAfterDisplayedHours = eventStartsAtOrAfterTheLastVisibleHour || eventEndsByTheTopOfTheFirstVisibleHour;
+    if (eventOccursBeforeOrAfterDisplayedHours) {
+      return 0;
+    }
+    
+    const eventOccupiesFirstHalfOfTheFirstVisibleHour = (eventEndHour === this.visibleHourStart + 1 && eventEndMinute !== 0);
+    const eventOccupiesSecondHalfOfTheFirstVisibleHour = (eventEndHour === this.visibleHourStart + 2 && eventEndMinute === 0 && eventStartMinute !== 0 && eventStartHour === this.visibleHourStart + 1);
+    if (eventOccupiesFirstHalfOfTheFirstVisibleHour || eventOccupiesSecondHalfOfTheFirstVisibleHour) {
+      return 15;
+    }
+
+    const eventOccupiesTheEntireFirstVisibleHour = (eventEndHour === this.visibleHourStart + 2) && eventEndMinute === 0;
+
+    if (eventOccupiesTheEntireFirstVisibleHour) { // executes when event is 9:30 - 10:00 and minimum display is 9:00
+      return 40;
+    }
+
+    const eventOccupiesOnlyTheLastVisibleHour = eventStartHour === this.visibleHourStart + this.visibleHourCount;
+    if (eventOccupiesOnlyTheLastVisibleHour) {
+      return 40;
+    }
+
+
   
     const eventDuration = visibleEnd - visibleStart;
 
-    if (eventStartHour === this.visibleHourStart + this.visibleHourCount) {
-      return 0;
+
+    const eventIsTheFirstVisibleHour = (eventEndHour === this.visibleHourStart + 2) && eventEndMinute === 0;
+    if (eventIsTheFirstVisibleHour) {
+      return 50 - 10;
     }
 
-    if (eventEndHour === this.visibleHourStart + 1) {
+    
+
+    const eventEndsHalfwayThroughTheHour = eventEndMinute !== 0;
+    const eventStartsHalfwayThroughTheHour = eventStartMinute !== 0;
+    
+    if (eventEndsHalfwayThroughTheHour && eventStartMinute === 0) {
+      return (eventDuration * 50) + 15;
+    }
+    if (eventStartsHalfwayThroughTheHour && eventEndMinute === 0) { // where it usually exceutes / should execute
+      return ((eventDuration - 1) * 50) + 15;
+    }
+
+    if (visibleEnd === this.visibleHourStart + 1) {
       return 15;
     }
 
-    if (eventStartMinute !== 0 && eventEndMinute === 0 && eventStartHour + 1 === eventEndHour) {
+    if (eventStartMinute !== 0 && eventEndMinute === 0 && visibleStart + 1 === visibleEnd) {
       return 15;
     }
     
-    return (eventStartMinute !== 0 && eventEndMinute !== 0
-      ? (eventDuration * 50)
-      : eventStartMinute !== 0 || eventEndMinute !== 0
-        ? (eventDuration * 50) + 25
-        : eventDuration * 50) - 10;
+    const eventStartsAndEndsOnHalfHourMark = visibleStart !== 0 && visibleEnd !== 0;
+    const eventStartsOrEndsOnHalfHourMark = visibleStart !== 0 && visibleEnd === 0 || eventStartMinute === 0 && eventEndMinute !== 0;
+
+    const eventEndsAHalfHourAfterTheLastVisibleHour = eventEndHour === this.visibleHourStart + 1 + this.visibleHourCount && eventEndMinute !== 0;
+
+    if (eventStartsAndEndsOnHalfHourMark) {
+      return eventEndsAHalfHourAfterTheLastVisibleHour ? eventDuration * 50 - 20 : eventDuration * 50 - 10;
+    }
+
+    if (eventStartsOrEndsOnHalfHourMark) {
+      return eventEndsAHalfHourAfterTheLastVisibleHour ? (eventDuration * 50) + 5 : (eventDuration * 50) + 15;
+    }
+
+    return eventStartsOrEndsOnHalfHourMark ? eventDuration * 50 - 20 : eventDuration * 50 - 10;
   }
   
   getEventTop(day: any, hour: number): number {
@@ -226,6 +277,10 @@ export class MyCalendarComponent implements OnInit {
     const topOffset = (eventStartHour - this.visibleHourStart) * 50;
     if (topOffset <= 0 ) return 50;
     
+    const eventStartsHalfwayThroughTheHourAndEndsOnTheHour = eventStartMinute !== 0 && eventEndMinute === 0;
+    if (eventStartsHalfwayThroughTheHourAndEndsOnTheHour) {
+        return topOffset + 25;
+    }
     
     if (eventStartMinute !== 0 && eventEndMinute !== 0) {
       return topOffset + 25;
