@@ -16,6 +16,8 @@ import { AuthService } from '../../services/auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EventDetails } from '../event-details.model';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { map, Observable, startWith } from 'rxjs';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -35,7 +37,8 @@ dayjs.extend(timezone);
     MatDatepickerModule,
     MatNativeDateModule,
     MatOptionModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatAutocompleteModule
   ],
   providers: [
     { provide: DateAdapter, useClass: NativeDateAdapter },
@@ -63,7 +66,10 @@ export class EventDialogComponent implements OnInit {
   apiUrl: string = environment.apiUrl;
   eventForm!: FormGroup;
   currentTimezone: string;
-  timeOptions = this.generateTimeOptions();
+  
+  timeOptions: string[] = this.generateTimeOptions();
+  filteredTimes!: Observable<string[]>;
+  filteredEndTimes!: Observable<string[]>;
 
   constructor(
     public dialogRef: MatDialogRef<EventDialogComponent>,
@@ -79,6 +85,26 @@ export class EventDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
+    this.filteredTimes = this.eventForm.controls['startTime'].valueChanges.pipe(
+      startWith(''),
+      map(value => this.filterTimes(value))
+    );
+
+    this.filteredEndTimes = this.eventForm.controls['endTime'].valueChanges.pipe(
+      startWith(''),
+      map(value => this.filterEndTimes(value))
+    );
+  }
+
+  private filterTimes(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.timeOptions.filter(time => time.toLowerCase().includes(filterValue));
+  }
+
+  private filterEndTimes(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.timeOptions.filter(time => time.toLowerCase().includes(filterValue) &&
+      time !== this.eventForm.controls['startTime'].value);
   }
 
   private initializeForm(): void {
@@ -92,10 +118,6 @@ export class EventDialogComponent implements OnInit {
         this.data.event ? dayjs(this.data.event.startDateTime).format('hh:mm A') : '',
           Validators.required
       ),
-      endDate: new FormControl(
-        this.data.event ? dayjs(this.data.event.endDateTime).toDate() : null,
-          Validators.required
-      ),
       endTime: new FormControl(
         this.data.event ? dayjs(this.data.event.endDateTime).format('hh:mm A') : '',
           Validators.required
@@ -104,16 +126,16 @@ export class EventDialogComponent implements OnInit {
     });
   }
 
-  generateTimeOptions() {
-    const options = [];
-    let hour = 0;
-    const suffixes = ['AM', 'PM'];
-    for (let i = 0; i < 24; i++) {
-      const time = `${this.formatTime(hour % 12)}:${i % 2 === 0 ? '00' : '30'} ${suffixes[Math.floor(i / 12)]}`;
-      options.push(time);
-      hour++;
+  generateTimeOptions(): string[] {
+    const times: string[] = [];
+    for (let hour = 0; hour < 24; hour++) {
+      ['00', '30'].forEach(minute => {
+        const ampm = hour < 12 ? 'AM' : 'PM';
+        const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
+        times.push(`${formattedHour}:${minute} ${ampm}`);
+      });
     }
-    return options;
+    return times;
   }
 
   formatTime(hour: number): string {
@@ -131,11 +153,11 @@ export class EventDialogComponent implements OnInit {
 
   createEvent(): void {
     if (this.eventForm.valid) {
-      const { startDate, startTime, endDate, endTime, name } = this.eventForm.value;
+      const { startDate, startTime, endTime, name } = this.eventForm.value;
 
       const formattedStart = this.getFormattedDate(startDate, startTime);
   
-      const formattedEnd = this.getFormattedDate(endDate, endTime);
+      const formattedEnd = this.getFormattedDate(startDate, endTime);
   
       const formData = new FormData();
       formData.append("name", name);
@@ -164,11 +186,11 @@ export class EventDialogComponent implements OnInit {
 
   editEvent(): void {
     if (this.eventForm.valid) {
-      const { startDate, startTime, endDate, endTime, name } = this.eventForm.value;
+      const { startDate, startTime, endTime, name } = this.eventForm.value;
 
       const formattedStart = this.getFormattedDate(startDate, startTime);
   
-      const formattedEnd = this.getFormattedDate(endDate, endTime);
+      const formattedEnd = this.getFormattedDate(startDate, endTime);
   
       const formData = new FormData();
       formData.append("name", name);

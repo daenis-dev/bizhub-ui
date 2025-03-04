@@ -71,7 +71,6 @@ describe('EventDialogComponent', () => {
       name: '',
       startDate: null,
       startTime: '',
-      endDate: null,
       endTime: '',
       timezone: component.currentTimezone
     });
