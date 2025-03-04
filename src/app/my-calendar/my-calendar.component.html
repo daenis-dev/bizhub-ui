@@ -20,16 +20,43 @@
       </div>
     </div>
 
-    <div style="text-align: center;">
-      <button mat-button (click)="navigate(-1)">
+    <div style="text-align: center; padding-bottom: 20px;">
+      <button mat-button (click)="navigate(-1)" style="color: #006600;">
         &lt;
       </button>
-      <button mat-button (click)="navigate(1)">
+      <button mat-button (click)="navigate(1)" style="color: #006600;">
         &gt;
       </button>
     </div>
+  </div>
 
-    <div style="text-align: center; padding-bottom: 15px;">
+  <div style="display: flex; flex-direction: row;">
+    <div class="calendar-grid">
+      <div class="time-labels">
+        <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount + 1)" class="time-label">
+          <div *ngIf="hour!==visibleHourStart">
+            {{ hour }}:00
+          </div>
+        </div>
+      </div>
+      <div *ngFor="let day of calendarDays" class="calendar-day">
+        <div class="day-label">{{ day.date.format('ddd, MMM D') }}</div>
+        <div class="time-grid">
+          <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount)" class="hour-cell">
+            <div *ngIf="hour !== visibleHourStart && hasEventAtTime(day, hour)" 
+                  class="calendar-event" 
+                  [style.height.px]="getEventHeight(day, hour)"
+                  [style.top.px]="getEventTop(day, hour)"
+                  (click)="updateEvent(getEventAtTime(day, hour))">
+              {{ (getEventAtTime(day, hour)?.name?.length ?? 0) > 14 
+                  ? (getEventAtTime(day, hour)?.name | slice:0:14) + '...' 
+                  : getEventAtTime(day, hour)?.name || '' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="position: relative; top: 0; right: -180px; display: flex; flex-direction: column; justify-content: center;">
       <button mat-icon-button (click)="navigateHours(-1)" [disabled]="visibleHourStart === 0">
         <mat-icon>arrow_upward</mat-icon>
       </button>
@@ -38,31 +65,4 @@
       </button>
     </div>
   </div>
-
-  <div class="calendar-grid">
-    <div class="time-labels">
-      <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount + 1)" class="time-label">
-        <div *ngIf="hour!==visibleHourStart">
-          {{ hour }}:00
-        </div>
-      </div>
-    </div>
-    <div *ngFor="let day of calendarDays" class="calendar-day">
-      <div class="day-label">{{ day.date.format('ddd, MMM D') }}</div>
-      <div class="time-grid">
-        <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount)" class="hour-cell">
-          <div *ngIf="hour !== visibleHourStart && hasEventAtTime(day, hour)" 
-                class="calendar-event" 
-                [style.height.px]="getEventHeight(day, hour)"
-                [style.top.px]="getEventTop(day, hour)"
-                (click)="updateEvent(getEventAtTime(day, hour))">
-            {{ (getEventAtTime(day, hour)?.name?.length ?? 0) > 14 
-                ? (getEventAtTime(day, hour)?.name | slice:0:14) + '...' 
-                : getEventAtTime(day, hour)?.name || '' }}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
 </div>

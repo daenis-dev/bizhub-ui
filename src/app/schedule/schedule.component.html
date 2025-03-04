@@ -6,35 +6,18 @@
       </mat-card-content>
     </mat-card>
   </div>
-  
-  
-  <div style="text-align: center;">
-    <button mat-button (click)="navigate(-1)">
+
+  <div style="text-align: center; padding-bottom: 20px;">
+    <button mat-button (click)="navigate(-1)" style="color: #006600;">
       &lt;
     </button>
-    <button mat-button (click)="navigate(1)">
+    <button mat-button (click)="navigate(1)" style="color: #006600;">
       &gt;
-    </button>
-  </div>
-
-  <div style="text-align: center; padding-bottom: 15px;">
-    <button mat-icon-button (click)="navigateHours(-1)" [disabled]="visibleHourStart === 0">
-      <mat-icon>arrow_upward</mat-icon>
-    </button>
-    <button mat-icon-button (click)="navigateHours(1)" [disabled]="visibleHourStart + visibleHourCount >= 24">
-      <mat-icon>arrow_downward</mat-icon>
     </button>
   </div>
 </div>
 
-<div class="calendar-grid">
-
-  <div class="time-labels" style="padding-top: 50px !important;">
-    <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount)" class="time-label">
-      {{ hour }}:00
-    </div>
-  </div>
-  
+<div style="display: flex; flex-direction: row;">
   <div class="calendar-grid">
     <div class="time-labels">
       <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount + 1)" class="time-label">
@@ -51,11 +34,18 @@
                 class="calendar-event" 
                 [style.height.px]="getEventHeight(day, hour)"
                 [style.top.px]="getEventTop(day, hour)">
-            {{ getEventAtTime(day, hour) ? 'Busy' : '' }}
+                {{ getEventAtTime(day, hour) ? 'Busy' : '' }}
           </div>
         </div>
       </div>
     </div>
   </div>
-  
+  <div style="position: relative; top: 0; right: -180px; display: flex; flex-direction: column; justify-content: center;">
+    <button mat-icon-button (click)="navigateHours(-1)" [disabled]="visibleHourStart === 0">
+      <mat-icon>arrow_upward</mat-icon>
+    </button>
+    <button mat-icon-button (click)="navigateHours(1)" [disabled]="visibleHourStart + visibleHourCount >= 24">
+      <mat-icon>arrow_downward</mat-icon>
+    </button>
+  </div>
 </div>
