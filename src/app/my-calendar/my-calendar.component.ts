@@ -110,6 +110,17 @@ export class MyCalendarComponent implements OnInit {
     if (endHour === minHour && endMinute === 0) return false;
     if (startHour >= maxHour) return false;
     if (endHour === minHour && endMinute !== 0) return this.eventOccursAtHour(event, hour);
+
+    const eventStartsBeforeFirstVisibleHourLabel = startHour < this.visibleHourStart + 1;
+    const eventEndsAfterLastVisibleHourLabel = endHour > this.visibleHourStart + this.visibleHourCount;
+    if (eventStartsBeforeFirstVisibleHourLabel && eventEndsAfterLastVisibleHourLabel) {
+      return true;
+    }
+
+    const endHourIsVisible = this.visibleHourStart + 1 < endHour && endHour <= this.visibleHourStart + this.visibleHourCount;
+    if (eventStartsBeforeFirstVisibleHourLabel && endHourIsVisible) {
+      return true;
+    }
     
     const withinVisibleRange = 
       (minHour <= startHour || (endHour === minHour && endMinute !== 0)) &&
@@ -246,7 +257,7 @@ export class MyCalendarComponent implements OnInit {
   
   getEventTop(day: any, hour: number): number {
     const event = this.getEventAtTime(day, hour);
-    if (!event) return 50;
+    if (!event) return 300;
 
     const eventStart = dayjs(event.startDateTime);
     const eventEnd = dayjs(event.endDateTime);
