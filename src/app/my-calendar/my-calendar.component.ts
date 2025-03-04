@@ -95,70 +95,54 @@ export class MyCalendarComponent implements OnInit {
   }
 
   hasEventAtTime(day: { events: EventDetails[] }, hour: number): boolean {
-    return day.events.some((event: EventDetails) => {
-
-      return this.hasEventAtHour(event, hour);
-    });
+    return day.events.some(event => this.hasEventAtHour(event, hour));
   }
-
+  
   private hasEventAtHour(event: EventDetails, hour: number): boolean {
-    const eventStartHour = this.getEventStartHour(event);
-    const eventEndHour = this.getEventEndHour(event);
+    const startHour = this.getEventStartHour(event);
+    const endHour = this.getEventEndHour(event);
+    const endMinute = this.getEventEndMinute(event);
+    const minHour = this.visibleHourStart;
+    const maxHour = minHour + this.visibleHourCount;
 
-    const eventStartMinute = this.getEventStartMinute(event);
-    const eventEndMinute = this.getEventEndMinute(event);
-
-    if (eventEndHour === this.visibleHourStart + 1 && eventEndMinute === 0) {
-      return false;
-    }
-
-    if (eventStartHour >= this.visibleHourStart + this.visibleHourCount) {
-      return false;
-    }
-
-    const eventEndsThirtyMinutesIntoTheFirstVisibleHour = eventEndHour === this.visibleHourStart + 1 && eventEndMinute !== 0;
-    if (eventEndsThirtyMinutesIntoTheFirstVisibleHour) {
-      return this.eventOccursAtHour(event, hour);
-    }
-
-    const eventIsAtOrAfterMinimumVisibleHour = this.visibleHourStart + 1 <= eventStartHour || eventEndHour === this.visibleHourStart + 1 && eventEndMinute !== 0;
-    const eventIsBeforeTheMaximumVisibleHour = eventEndHour < this.visibleHourStart + 1 + this.visibleHourCount;
-    const eventStartsAndEndsWithinTheVisibleTimeframe = eventIsAtOrAfterMinimumVisibleHour && eventIsBeforeTheMaximumVisibleHour;
-
-    if (eventStartsAndEndsWithinTheVisibleTimeframe) {
-      return this.eventOccursAtHour(event, hour);
-    }
-
-    const eventStartsWithinTheTimeframe = eventStartHour < this.visibleHourStart + 1 + this.visibleHourCount && eventStartHour >= this.visibleHourStart + 1;
-    const eventEndsWithinTheTimeframe = eventEndHour < this.visibleHourStart + 1 + this.visibleHourCount && eventEndHour >= this.visibleHourStart + 1;
-    if (eventStartsWithinTheTimeframe || eventEndsWithinTheTimeframe) {
-      return this.eventOccursAtHour(event, hour);
-    }
-
-    return false;
+    if (endHour === this.visibleHourStart + 1 && endMinute === 0) return false;
+  
+    if (endHour === minHour && endMinute === 0) return false;
+    if (startHour >= maxHour) return false;
+    if (endHour === minHour && endMinute !== 0) return this.eventOccursAtHour(event, hour);
+    
+    const withinVisibleRange = 
+      (minHour <= startHour || (endHour === minHour && endMinute !== 0)) &&
+      endHour < maxHour;
+  
+    if (withinVisibleRange) return this.eventOccursAtHour(event, hour);
+  
+    const startsOrEndsWithin = 
+      (startHour < maxHour && startHour >= minHour) || 
+      (endHour < maxHour && endHour >= minHour);
+  
+    return startsOrEndsWithin ? this.eventOccursAtHour(event, hour) : startHour === hour;
   }
 
   private eventOccursAtHour(event: EventDetails, hour: number): boolean {
-    const eventStartHour = this.getEventStartHour(event);
-    const eventEndHour = this.getEventEndHour(event);
-
-    const eventStartsAtTheHour = eventStartHour === hour;
-    const eventEndsOneHourBeforeTheHour = eventEndHour - 1 === hour;
-    const eventEndsOneHourBeforeTheVisibleStartHour = eventEndHour - 1 === this.visibleHourStart;
-    const theHourIsBetweenTheEventStartHourAndTheEventEndHour = eventStartHour < hour && hour < eventEndHour;
-    return eventStartsAtTheHour
-    || eventEndsOneHourBeforeTheHour
-    || eventEndsOneHourBeforeTheVisibleStartHour
-    || theHourIsBetweenTheEventStartHourAndTheEventEndHour;
-  }
+    const startHour = this.getEventStartHour(event);
+    const endHour = this.getEventEndHour(event);
+  
+    return (
+      startHour === hour ||
+      endHour - 1 === hour ||
+      endHour - 1 === this.visibleHourStart ||
+      (startHour < hour && hour < endHour)
+    );
+  }  
   
   getEventAtTime(day: { events: EventDetails[] }, hour: number): EventDetails | null {
-      return day.events.find((event: EventDetails) => 
-        this.getEventStartHour(event) === hour
-      || this.getEventEndHour(event) - 1 === hour
-      || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event))
-      || (this.getEventEndHour(event) === this.visibleHourStart + 1 && this.getEventEndMinute(event) !== 0)) || null;
-    }
+    return day.events.find((event: EventDetails) => 
+      this.getEventStartHour(event) === hour
+    || this.getEventEndHour(event) - 1 === hour
+    || (this.getEventStartHour(event) < hour && hour < this.getEventEndHour(event))
+    || (this.getEventEndHour(event) === this.visibleHourStart + 1 && this.getEventEndMinute(event) !== 0)) || null;
+  }
 
   getEventStartHour(event: EventDetails): number {
     return dayjs(event.startDateTime).hour();
@@ -178,146 +162,111 @@ export class MyCalendarComponent implements OnInit {
 
   getEventHeight(day: any, hour: number): number {
     const event = this.getEventAtTime(day, hour);
-    if (!event) console.log("1");
     if (!event) return 0;
   
     const eventStart = dayjs(event.startDateTime);
     const eventEnd = dayjs(event.endDateTime);
   
-    const eventStartHour = eventStart.hour();
-    const eventEndHour = eventEnd.hour();
-
-    const eventStartMinute = eventStart.minute();
-    const eventEndMinute = eventEnd.minute();
+    const startHour = eventStart.hour();
+    const endHour = eventEnd.hour();
+    const startMinute = eventStart.minute();
+    const endMinute = eventEnd.minute();
   
-    const visibleStart = Math.max(eventStartHour, this.visibleHourStart + 1);
-    const visibleEnd = Math.min(eventEndHour, this.visibleHourStart + this.visibleHourCount);
-
-
-    const eventStartsAtOrAfterTheLastVisibleHour = visibleStart >= (this.visibleHourStart + 1 + this.visibleHourCount);
-    const eventEndsByTheTopOfTheFirstVisibleHour = visibleEnd < this.visibleHourStart + 1 || (visibleEnd === this.visibleHourStart && eventEndMinute === 0);
-
-    const eventOccursBeforeOrAfterDisplayedHours = eventStartsAtOrAfterTheLastVisibleHour || eventEndsByTheTopOfTheFirstVisibleHour;
-    if (eventOccursBeforeOrAfterDisplayedHours) {
-      console.log("2");
+    const visibleStart = Math.max(startHour, this.visibleHourStart + 1);
+    const visibleEnd = Math.min(endHour, this.visibleHourStart + this.visibleHourCount);
+  
+    if (
+      visibleStart >= this.visibleHourStart + 1 + this.visibleHourCount ||
+      visibleEnd < this.visibleHourStart + 1 ||
+      (visibleEnd === this.visibleHourStart && endMinute === 0)
+    ) {
       return 0;
     }
-    
-    const eventOccupiesFirstHalfOfTheFirstVisibleHour = (eventEndHour === this.visibleHourStart + 1 && eventEndMinute !== 0);
-    const eventOccupiesSecondHalfOfTheFirstVisibleHour = (eventEndHour === this.visibleHourStart + 2 && eventEndMinute === 0 && eventStartMinute !== 0 && eventStartHour === this.visibleHourStart + 1);
-    if (eventOccupiesFirstHalfOfTheFirstVisibleHour || eventOccupiesSecondHalfOfTheFirstVisibleHour) {
-      console.log("3");
-      return 15;
-    }
-
-    const eventOccupiesTheEntireFirstVisibleHour = (eventEndHour === this.visibleHourStart + 2) && eventEndMinute === 0;
-
-    if (eventOccupiesTheEntireFirstVisibleHour) {
-      console.log("4");
-      return 40;
-    }
-
-    const eventOccupiesOnlyTheLastVisibleHour = eventStartHour === this.visibleHourStart + this.visibleHourCount;
-    if (eventOccupiesOnlyTheLastVisibleHour) { // TODO: always executes when event ends on half hour beyond visible max
-      console.log("5");
-      return 40;
-    }
-
-
   
-    const eventDuration = visibleEnd - visibleStart;
-
-
-    const eventIsTheFirstVisibleHour = (eventEndHour === this.visibleHourStart + 2) && eventEndMinute === 0;
-    if (eventIsTheFirstVisibleHour) {
-      console.log("6");
-      return 50 - 10;
+    if ((endHour === this.visibleHourStart + 1 && endMinute !== 0) ||
+        (endHour === this.visibleHourStart + 2 && endMinute === 0 && startMinute !== 0 && startHour === this.visibleHourStart + 1)) {
+      return 15;
     }
-
-    
-
-    const eventEndsHalfwayThroughTheHour = eventEndMinute !== 0;
-    const eventStartsHalfwayThroughTheHour = eventStartMinute !== 0;
-    
-    if (eventEndsHalfwayThroughTheHour && eventStartMinute === 0) {
-      console.log("7");
-      if (eventEndHour > this.visibleHourStart + this.visibleHourCount || eventEndHour === this.visibleHourStart + this.visibleHourCount && eventEndMinute !== 0) {
-        return (eventDuration * 50) - 10;
+  
+    if (endHour === this.visibleHourStart + 2 && endMinute === 0) {
+      return 40;
+    }
+  
+    if (startHour === this.visibleHourStart + this.visibleHourCount) {
+      return 40;
+    }
+  
+    const duration = visibleEnd - visibleStart;
+  
+    if (endMinute !== 0 && startMinute === 0) {
+      return endHour > this.visibleHourStart + this.visibleHourCount || (endHour === this.visibleHourStart + this.visibleHourCount && endMinute !== 0)
+        ? duration * 50 - 10
+        : duration * 50 + 15;
+    }
+  
+    if (startMinute !== 0 && endMinute === 0) {
+      if (startHour < this.visibleHourStart + 1 && startMinute !== 0 && endMinute === 0 && endHour > this.visibleHourStart + 2) {
+        return (duration - 1) * 50 + 40;
       }
-      return (eventDuration * 50) + 15;
+      return (duration - 1) * 50 + 15;
     }
-    if (eventStartsHalfwayThroughTheHour && eventEndMinute === 0) {
-      console.log("8");
-      return ((eventDuration - 1) * 50) + 15;
-    }
-
+  
     if (visibleEnd === this.visibleHourStart + 1) {
-      console.log("9");
       return 15;
     }
-
-    if (eventStartMinute !== 0 && eventEndMinute === 0 && visibleStart + 1 === visibleEnd) {
-      console.log("10");
+  
+    if (startMinute !== 0 && endMinute === 0 && visibleStart + 1 === visibleEnd) {
       return 15;
     }
-    
-    const eventStartsAndEndsOnHalfHourMark = visibleStart !== 0 && visibleEnd !== 0;
-    const eventStartsOrEndsOnHalfHourMark = visibleStart !== 0 && visibleEnd === 0 || eventStartMinute === 0 && eventEndMinute !== 0;
+  
+    const startsOrEndsOnHalfHour = (visibleStart !== 0 && visibleEnd === 0) || (startMinute === 0 && endMinute !== 0);
+    const endsHalfHourAfterLastVisibleHour = endHour === this.visibleHourStart + this.visibleHourCount && endMinute !== 0;
+  
+    if (visibleStart !== 0 && visibleEnd !== 0) {
+      const startsAndEndsOnHalfHour = startMinute !== 0 && endMinute !== 0;
+      const startsBeforeFirstVisibleHour = startHour < this.visibleHourStart + 1;
+      const endsWithinVisibleHours = this.visibleHourCount + 1 < endHour && endHour < this.visibleHourStart + 1 + this.visibleHourCount;
+  
+      if (startsAndEndsOnHalfHour && startsBeforeFirstVisibleHour && endsWithinVisibleHours) {
+        return duration * 50 - 10 + 25;
+      }
+  
+      if (startsAndEndsOnHalfHour && (endHour > this.visibleHourStart + 1 + this.visibleHourCount || endsHalfHourAfterLastVisibleHour)) {
+        return duration * 50 - 35;
+      }
+      const endsAfterLastVisibleHour = endsHalfHourAfterLastVisibleHour || endHour > this.visibleHourCount + this.visibleHourStart;
 
-    const eventEndsAHalfHourAfterTheLastVisibleHour = eventEndHour === this.visibleHourStart + this.visibleHourCount && eventEndMinute !== 0;
 
-    if (eventStartsAndEndsOnHalfHourMark) {
-      console.log("11"); // here
-      console.log('eventEndsAHalfHourAfterTheLastVisibleHour: ', eventEndsAHalfHourAfterTheLastVisibleHour);
-      return eventEndsAHalfHourAfterTheLastVisibleHour ? eventDuration * 50 - 35 : eventDuration * 50 - 10;
+      const doesNotStartAndEndOnTheHour = !(startMinute === 0 && endMinute === 0);
+      return endsAfterLastVisibleHour && doesNotStartAndEndOnTheHour ? duration * 50 - 35 : duration * 50 - 10;
     }
-
-    if (eventStartsOrEndsOnHalfHourMark) {
-      console.log("12");
-      return eventEndsAHalfHourAfterTheLastVisibleHour ? (eventDuration * 50) + 5 : (eventDuration * 50) + 15;
-    }
-
-    console.log("13");
-    return eventStartsOrEndsOnHalfHourMark ? eventDuration * 50 - 20 : eventDuration * 50 - 10;
-  }
+  
+    return startsOrEndsOnHalfHour ? (endsHalfHourAfterLastVisibleHour ? duration * 50 + 5 : duration * 50 + 15) : duration * 50 - 10;
+  }  
   
   getEventTop(day: any, hour: number): number {
     const event = this.getEventAtTime(day, hour);
-    
     if (!event) return 50;
+
     const eventStart = dayjs(event.startDateTime);
     const eventEnd = dayjs(event.endDateTime);
 
-    const eventStartHour = eventStart.hour();
-
-    const eventEndHour = eventEnd.hour();
+    const topOffset = (eventStart.hour() - this.visibleHourStart) * 50;
+    if (topOffset <= 0) return 50;
 
     const eventStartMinute = eventStart.minute();
     const eventEndMinute = eventEnd.minute();
-    
-    const topOffset = (eventStartHour - this.visibleHourStart) * 50;
-    if (topOffset <= 0 ) return 50;
-    
-    const eventStartsHalfwayThroughTheHourAndEndsOnTheHour = eventStartMinute !== 0 && eventEndMinute === 0;
-    if (eventStartsHalfwayThroughTheHourAndEndsOnTheHour) {
+
+    if (eventStartMinute !== 0) {
+        if (eventEndMinute === 0 && eventStart.hour() + 1 === eventEnd.hour()) return topOffset + 25;
         return topOffset + 25;
     }
-    
-    if (eventStartMinute !== 0 && eventEndMinute !== 0) {
-      return topOffset + 25;
-    }
 
-    if (eventStartMinute !== 0 && eventEndMinute === 0 && eventStartHour + 1 === eventEndHour) {
-      return topOffset + 25;
-    }
+    if (eventStart.hour() === this.visibleHourStart + this.visibleHourCount) return topOffset;
 
-    if (eventStartHour === this.visibleHourStart + this.visibleHourCount) {
-      return topOffset;
-    }
-    
     return topOffset;
   }
-  
+
   createEvent(): void {
     const dialogRef = this.dialog.open(EventDialogComponent, { data: { mode: 'create', title: 'Create Event' } });
     dialogRef.afterClosed().subscribe((newEvent) => {

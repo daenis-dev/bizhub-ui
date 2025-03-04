@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import { of } from 'rxjs';
 import { ScheduleDetails } from './schedule-details.model';
 import { ActivatedRoute } from '@angular/router';
+import { EventDateDetails } from './event-date-details.model';
 
 describe('ScheduleComponent', () => {
   let component: ScheduleComponent;
@@ -95,5 +96,85 @@ describe('ScheduleComponent', () => {
     const day = { events: [event] };
     expect(component.getEventAtTime(day, 10)).toEqual(event);
     expect(component.getEventAtTime(day, 12)).toBeNull();
+  });
+
+  it('should correctly handle event starting on the hour and ending on the half hour (10:00 AM - 10:30 AM)', () => {
+    const event: EventDateDetails = {
+      startDateTime: dayjs().hour(10).minute(0).toISOString(),
+      endDateTime: dayjs().hour(10).minute(30).toISOString()
+    };
+    const day = { events: [event] };
+    expect(component.hasEventAtTime(day, 10)).toBeTrue();
+    expect(component.hasEventAtTime(day, 10.5)).toBeFalse();
+  });
+
+  it('should correctly handle event starting on the half hour and ending on the hour (10:30 AM - 11:00 AM)', () => {
+    const event: EventDateDetails = {
+      startDateTime: dayjs().hour(10).minute(30).toISOString(),
+      endDateTime: dayjs().hour(11).minute(0).toISOString()
+    };
+    const day = { events: [event] };
+    expect(component.hasEventAtTime(day, 10.5)).toBeTrue();
+    expect(component.hasEventAtTime(day, 11)).toBeFalse();
+  });
+
+  it('should correctly handle event starting on the hour and ending on the hour (10:00 AM - 11:00 AM)', () => {
+    const event: EventDateDetails = {
+      startDateTime: dayjs().hour(10).minute(0).toISOString(),
+      endDateTime: dayjs().hour(11).minute(0).toISOString()
+    };
+    const day = { events: [event] };
+    expect(component.hasEventAtTime(day, 10)).toBeTrue();
+    expect(component.hasEventAtTime(day, 11)).toBeFalse();
+  });
+
+  it('should correctly handle event starting on the half hour and ending on the half hour (10:30 AM - 11:30 AM)', () => {
+    const event: EventDateDetails = {
+      startDateTime: dayjs().hour(10).minute(30).toISOString(),
+      endDateTime: dayjs().hour(11).minute(30).toISOString()
+    };
+    const day = { events: [event] };
+    expect(component.hasEventAtTime(day, 10.5)).toBeTrue();
+    expect(component.hasEventAtTime(day, 11.5)).toBeFalse();
+  });
+
+  it('should correctly handle event starting on the half hour and ending on the hour (10:30 AM - 12:00 PM)', () => {
+    const event: EventDateDetails = {
+      startDateTime: dayjs().hour(10).minute(30).toISOString(),
+      endDateTime: dayjs().hour(12).minute(0).toISOString()
+    };
+    const day = { events: [event] };
+    expect(component.hasEventAtTime(day, 10.5)).toBeTrue();
+    expect(component.hasEventAtTime(day, 12)).toBeFalse();
+  });
+
+  it('should correctly handle event starting on the hour and ending on the half hour (10:00 AM - 11:30 AM)', () => {
+    const event: EventDateDetails = {
+      startDateTime: dayjs().hour(10).minute(0).toISOString(),
+      endDateTime: dayjs().hour(11).minute(30).toISOString()
+    };
+    const day = { events: [event] };
+    expect(component.hasEventAtTime(day, 10)).toBeTrue();
+    expect(component.hasEventAtTime(day, 11.5)).toBeFalse();
+  });
+
+  it('should correctly handle event starting on the hour and ending on the hour (10:00 AM - 12:00 PM)', () => {
+    const event: EventDateDetails = {
+      startDateTime: dayjs().hour(10).minute(0).toISOString(),
+      endDateTime: dayjs().hour(12).minute(0).toISOString()
+    };
+    const day = { events: [event] };
+    expect(component.hasEventAtTime(day, 10)).toBeTrue();
+    expect(component.hasEventAtTime(day, 12)).toBeFalse();
+  });
+
+  it('should correctly handle event starting on the half hour and ending on the half hour (10:30 AM - 12:30 PM)', () => {
+    const event: EventDateDetails = {
+      startDateTime: dayjs().hour(10).minute(30).toISOString(),
+      endDateTime: dayjs().hour(12).minute(30).toISOString()
+    };
+    const day = { events: [event] };
+    expect(component.hasEventAtTime(day, 10.5)).toBeTrue();
+    expect(component.hasEventAtTime(day, 12.5)).toBeFalse();
   });
 });
