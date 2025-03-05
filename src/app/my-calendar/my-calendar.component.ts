@@ -67,9 +67,7 @@ export class MyCalendarComponent implements OnInit {
   
   onScroll(event: WheelEvent, day: any): void {
     const direction = event.deltaY < 0 ? -1 : 1;
-  
     this.navigateHours(direction);
-  
     event.preventDefault();
   }
 
@@ -331,6 +329,9 @@ export class MyCalendarComponent implements OnInit {
   }
 
   onHourSelected(day: any, hour: any): void {
+    if (this.hasEventAtTime(day, hour) || hour === 0 || hour === 23) {
+      return ;
+    }
     const dialogRef = this.dialog.open(EventDialogComponent, {
       data: {
         mode: 'create',

@@ -73,6 +73,12 @@ export class ScheduleComponent {
     const maxHour = 24 - this.visibleHourCount;
     this.visibleHourStart = Math.max(0, Math.min(this.visibleHourStart + direction, maxHour));
   }
+
+  onScroll(event: WheelEvent, day: any): void {
+    const direction = event.deltaY < 0 ? -1 : 1;
+    this.navigateHours(direction);
+    event.preventDefault();
+  }
   
   showErrorMessage(message: string) {
     this.snackBar.open(message, 'Close', {

@@ -21,12 +21,12 @@
   <div class="calendar-grid">
     <div class="time-labels">
       <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount + 1)" class="time-label">
-        <div *ngIf="hour!==visibleHourStart">
-          {{ hour }}:00
+        <div *ngIf="hour!==visibleHourStart" style="font-size: smaller; padding-right: 5px;">
+          {{ (hour % 12 === 0 ? 12 : hour % 12) }}:00 {{ hour < 12 ? 'AM' : 'PM' }}
         </div>
       </div>
     </div>
-    <div *ngFor="let day of calendarDays" class="calendar-day">
+    <div *ngFor="let day of calendarDays" class="calendar-day" (wheel)="onScroll($event, day)">
       <div class="day-label">{{ day.date.format('ddd, MMM D') }}</div>
       <div class="time-grid">
         <div *ngFor="let hour of hours.slice(visibleHourStart, visibleHourStart + visibleHourCount)" class="hour-cell">

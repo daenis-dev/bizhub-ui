@@ -70,12 +70,14 @@ html, body {
 }
 
 .time-labels {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  gap: 1px;
-  margin-top: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 140%;
+    gap: 1px;
+    margin-top: 2px;
+    margin-left: -20px;
 }
 
 .time-label {
@@ -117,10 +119,6 @@ html, body {
     justify-content: center;
     background-color: #fafffa;
     transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.hour-cell:hover {
-    background-color: #e0ffe0;
 }
 
 .calendar-event {
