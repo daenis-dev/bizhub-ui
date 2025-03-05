@@ -73,7 +73,7 @@ export class EventDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<EventDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { mode: 'create' | 'edit'; event?: any, title?: string, id?: string },
+    @Inject(MAT_DIALOG_DATA) public data: { mode: 'create' | 'edit'; event?: any, title?: string, id?: string, selectedDate?: string, selectedHour?: number },
     public auth: AuthService,
     private http: HttpClient,
     private snackBar: MatSnackBar
@@ -96,6 +96,14 @@ export class EventDialogComponent implements OnInit {
     );
 
     if (this.data.mode === 'create') {
+      const { selectedDate, selectedHour } = this.data;
+  
+      if (selectedDate && selectedHour !== undefined) {
+        const selectedDateTime = dayjs(selectedDate).set('hour', selectedHour).set('minute', 0);
+        this.eventForm.controls['startDate'].setValue(selectedDateTime.toDate());
+        this.eventForm.controls['startTime'].setValue(selectedDateTime.format('hh:mm A'));
+      }
+  
       this.eventForm.controls['startTime'].valueChanges.subscribe(startTimeValue => {
         if (!this.eventForm.controls['endTime'].value && startTimeValue) {
           this.eventForm.controls['endTime'].setValue(startTimeValue);

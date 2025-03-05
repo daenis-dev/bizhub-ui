@@ -329,4 +329,28 @@ export class MyCalendarComponent implements OnInit {
     this.currentDate = this.currentDate.add(direction, 'week');
     this.generateCalendar();
   }
+
+  onHourSelected(day: any, hour: any): void {
+    const dialogRef = this.dialog.open(EventDialogComponent, {
+      data: {
+        mode: 'create',
+        title: 'Create Event',
+        selectedDate: day.date.format('YYYY-MM-DD'),
+        selectedHour: hour
+      }
+    });
+  
+    dialogRef.afterClosed().subscribe((newEvent) => {
+      if (newEvent) {
+        if (this.events.length === 0 || this.events[0].startDateTime > newEvent.startDateTime) {
+          this.events.push(newEvent);
+        }
+        else {
+          this.events.unshift(newEvent);
+        }
+        this.generateCalendar();
+      }
+    });
+  }
+  
 }
