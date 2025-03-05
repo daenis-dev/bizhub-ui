@@ -5,6 +5,14 @@ html, body {
 }
 
 .account-registration-container {
+    /* background-color: #b3ffc4;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    overflow: hidden; */
     background-color: #b3ffc4;
     width: 100%;
     min-height: 100vh;
@@ -16,6 +24,11 @@ html, body {
 }
 
 .account-registration-title {
+    /* text-align: center;
+    font-size: 70px;
+    font-weight: bold;
+    color: #006600;
+    margin-bottom: 20px; */
     text-align: center;
     font-size: 70px;
     font-weight: bold;
@@ -23,12 +36,19 @@ html, body {
     margin-bottom: 20px;
 }
 
-.registration-form {
-    background-color: #fff;
+.account-registration-form {
+    /* background-color: #fff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
+    max-width: 500px;
+    margin-top: 3%; */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 900px;
     max-width: 500px;
     margin-top: 3%;
 }
@@ -52,7 +72,7 @@ html, body {
     background-color: transparent !important; 
     border: none !important;
     padding: 12px 24px !important;
-    width: 500px;
+    width: 100%;
 }
 
 .create-account-button:hover, .create-account-button:focus {
@@ -90,4 +110,27 @@ mat-form-field .mat-form-field-infix input::placeholder {
 
 mat-form-field .mat-form-field-ripple {
     background-color: #006600 !important;
+}
+
+@media screen and (max-width: 600px) {
+    .account-registration-container {
+        padding-top: 5px !important;
+    }
+    
+    .account-registration-title {
+        font-size: 40px !important;
+    }
+    
+    .account-registration-form {
+        width: 200px !important;
+        max-width: 200px !important;
+    }
+    
+    .input-field {
+        height: 70px !important;
+    }
+
+    .create-account-button {
+        font-size: 16px !important;
+    }
 }

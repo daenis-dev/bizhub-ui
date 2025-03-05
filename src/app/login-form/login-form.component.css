@@ -91,3 +91,22 @@ mat-form-field .mat-form-field-infix input::placeholder {
 mat-form-field .mat-form-field-ripple {
     background-color: #006600 !important;
 }
+
+@media screen and (max-width: 600px) {
+    .login-container {
+        padding-top: 5px !important;
+    }
+    
+    .login-title {
+        font-size: 40px !important;
+    }
+    
+    .login-form {
+        width: 200px !important;
+        max-width: 200px !important;
+    }
+    
+    .input-field {
+        height: 70px !important;
+    }
+}

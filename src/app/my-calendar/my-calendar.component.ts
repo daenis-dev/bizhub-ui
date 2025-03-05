@@ -353,5 +353,4 @@ export class MyCalendarComponent implements OnInit {
       }
     });
   }
-  
 }

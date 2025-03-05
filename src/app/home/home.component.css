@@ -49,6 +49,7 @@ button {
     background-color: transparent;
     border: 2px solid #006600;
     transition: background-color 0.3s, color 0.3s;
+    width: 400px; /* Default width for larger screens */
 }
 
 button:hover {
@@ -61,4 +62,39 @@ button:hover {
     width: 1px;
     height: 60px;
     background-color: #006600;
+}
+
+/* Media Query for Mobile Devices */
+@media screen and (max-width: 600px) {
+    .container {
+        flex-direction: column !important; /* Force buttons to stack vertically */
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    /* Make the button font size and width mobile-friendly */
+    .container button {
+        font-size: 12px !important; /* Smaller font size */
+        padding: 10px 20px !important; /* Adjust padding */
+        width: 200px !important; /* Set button width to 50px on mobile */
+    }
+
+    .vertical-rule {
+        height: 0px !important; /* Reduce height of the vertical rule on mobile */
+    }
+
+    .settings-wheel {
+        top: 5%;
+        right: 5%;
+        padding: 8px;
+    }
+
+    .settings-wheel mat-icon {
+        font-size: 20px !important; /* Smaller icon size for mobile */
+    }
+
+    .button-container {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
 }
