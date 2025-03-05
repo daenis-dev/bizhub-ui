@@ -64,23 +64,21 @@ button:hover {
     background-color: #006600;
 }
 
-/* Media Query for Mobile Devices */
 @media screen and (max-width: 600px) {
     .container {
-        flex-direction: column !important; /* Force buttons to stack vertically */
+        flex-direction: column !important;
         padding-left: 5%;
         padding-right: 5%;
     }
 
-    /* Make the button font size and width mobile-friendly */
     .container button {
-        font-size: 12px !important; /* Smaller font size */
-        padding: 10px 20px !important; /* Adjust padding */
-        width: 200px !important; /* Set button width to 50px on mobile */
+        font-size: 12px !important;
+        padding: 10px 20px !important;
+        width: 200px !important;
     }
 
     .vertical-rule {
-        height: 0px !important; /* Reduce height of the vertical rule on mobile */
+        height: 0px !important;
     }
 
     .settings-wheel {
@@ -90,7 +88,7 @@ button:hover {
     }
 
     .settings-wheel mat-icon {
-        font-size: 20px !important; /* Smaller icon size for mobile */
+        font-size: 20px !important;
     }
 
     .button-container {

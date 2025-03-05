@@ -96,3 +96,46 @@ button:disabled {
   color: #006600;
   border: 2px solid #78fd95;
 }
+
+@media screen and (max-width: 600px) {
+  .container {
+      flex-direction: column !important;
+      padding-left: 5%;
+      padding-right: 5%;
+  }
+
+  .container button {
+      font-size: 12px !important;
+      padding: 10px 20px !important;
+      width: 200px !important;
+  }
+
+  .vertical-rule {
+      height: 0px !important;
+  }
+
+  .settings-wheel {
+      top: 5%;
+      right: 5%;
+      padding: 8px;
+  }
+
+  .settings-wheel mat-icon {
+      font-size: 20px !important;
+  }
+
+  .home-icon {
+    top: 5% !important;
+    left: 5% !important;
+    padding: 8px !important;
+  }
+  
+  .home-icon mat-icon {
+    font-size: 20px !important;
+  }
+
+  .button-container {
+      padding-top: 10px;
+      padding-bottom: 10px;
+  }
+}
