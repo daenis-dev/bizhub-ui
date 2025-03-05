@@ -65,6 +65,13 @@ export class MyCalendarComponent implements OnInit {
     this.visibleHourStart = Math.max(0, Math.min(this.visibleHourStart + direction, maxHour));
   }
   
+  onScroll(event: WheelEvent, day: any): void {
+    const direction = event.deltaY < 0 ? -1 : 1;
+  
+    this.navigateHours(direction);
+  
+    event.preventDefault();
+  }
 
   navigateHome() {
     this.router.navigateByUrl('/home');

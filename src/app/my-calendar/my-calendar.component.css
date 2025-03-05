@@ -91,12 +91,14 @@ html, body {
   flex-direction: column;
   align-items: center;
   height: 100%;
+  width: 140%;
   gap: 1px;
   margin-top: 2px;
+  margin-left: -20px;
 }
 
 .time-label {
-  font-size: 14px;
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;

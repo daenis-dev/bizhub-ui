@@ -94,6 +94,14 @@ export class EventDialogComponent implements OnInit {
       startWith(''),
       map(value => this.filterEndTimes(value))
     );
+
+    if (this.data.mode === 'create') {
+      this.eventForm.controls['startTime'].valueChanges.subscribe(startTimeValue => {
+        if (!this.eventForm.controls['endTime'].value && startTimeValue) {
+          this.eventForm.controls['endTime'].setValue(startTimeValue);
+        }
+      });
+    }
   }
 
   private filterTimes(value: string): string[] {
