@@ -1,55 +1,62 @@
-<h2 mat-dialog-title style="text-align: center; font-size: 25px; font-weight: bold; padding-top: 30px; padding-bottom: 20px; color: #006600;">{{ title }}</h2>
-<mat-dialog-content style="padding-top: 2%;">
-  <form [formGroup]="eventForm" (ngSubmit)="save()">
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+<h2 mat-dialog-title class="dialog-title">
+  {{ title }}
+</h2>
 
-      <div style="display: flex; flex-direction: row;">
-        <mat-form-field appearance="fill" style="width: 250px; padding-right: 10px;">
-          <mat-label>Event Name</mat-label>
-          <input matInput formControlName="name" required />
-        </mat-form-field>
-        <mat-form-field appearance="fill" style="width: 250px; padding-left: 10px;">
-          <mat-label>Event Date</mat-label>
-          <input matInput [matDatepicker]="startDatePicker" formControlName="startDate" />
-          <mat-datepicker-toggle matIconSuffix [for]="startDatePicker"></mat-datepicker-toggle>
-          <mat-datepicker #startDatePicker></mat-datepicker>
-        </mat-form-field>
-      </div>
+<mat-dialog-content class="main-content">
+  <form [formGroup]="eventForm" (ngSubmit)="save()" class="form-container">
 
-      <div style="display: flex; flex-direction: row;">
-        <mat-form-field appearance="fill" style="width: 250px; padding-right: 10px;">
-          <mat-label>Start Time</mat-label>
-          <input type="text" matInput formControlName="startTime" [matAutocomplete]="startTimeAuto">
-          <mat-autocomplete #startTimeAuto="matAutocomplete">
-            <mat-option *ngFor="let time of filteredTimes | async" [value]="time">
-              {{ time }}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-      
-        <mat-form-field appearance="fill" style="width: 250px; padding-left: 10px;">
-          <mat-label>End Time</mat-label>
-          <input type="text" matInput formControlName="endTime" [matAutocomplete]="endTimeAuto">
-          <mat-autocomplete #endTimeAuto="matAutocomplete">
-            <mat-option *ngFor="let time of filteredEndTimes | async" [value]="time">
-              {{ time }}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-      </div>
-      
-      <div style="width: 250px;">
-        <mat-form-field appearance="fill">
-          <mat-label>Timezone</mat-label>
-          <input matInput formControlName="timezone" [attr.disabled]="'disabled'" />
-        </mat-form-field>
-      </div>
+    <div class="row">
+      <mat-form-field appearance="fill">
+        <mat-label>Event Name</mat-label>
+        <input matInput formControlName="name" required />
+      </mat-form-field>
     </div>
+
+    <div class="row">
+      <mat-form-field appearance="fill">
+        <mat-label>Event Date</mat-label>
+        <input matInput [matDatepicker]="startDatePicker" formControlName="startDate" />
+        <mat-datepicker-toggle matIconSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #startDatePicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="fill">
+        <mat-label>Start Time</mat-label>
+        <input type="text" matInput formControlName="startTime" [matAutocomplete]="startTimeAuto">
+        <mat-autocomplete #startTimeAuto="matAutocomplete">
+          <mat-option *ngFor="let time of filteredTimes | async" [value]="time">
+            {{ time }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="fill">
+        <mat-label>End Time</mat-label>
+        <input type="text" matInput formControlName="endTime" [matAutocomplete]="endTimeAuto">
+        <mat-autocomplete #endTimeAuto="matAutocomplete">
+          <mat-option *ngFor="let time of filteredEndTimes | async" [value]="time">
+            {{ time }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="fill">
+        <mat-label>Timezone</mat-label>
+        <input matInput formControlName="timezone" [attr.disabled]="" />
+      </mat-form-field>
+    </div>
+
   </form>
 </mat-dialog-content>
 
 <mat-dialog-actions>
   <button mat-button (click)="dialogRef.close()">Cancel</button>
   <button mat-raised-button *ngIf="this.title === 'Edit Event'" class="delete-button" (click)="onDelete()" [disabled]="this.auth.hasRole('demo_user')">Delete</button>
-  <button mat-raised-button color="primary" (click)="save()" [disabled]="!eventForm.valid" [disabled]="this.auth.hasRole('demo_user')">Save</button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="!eventForm.valid || this.auth.hasRole('demo_user')">Save</button>
 </mat-dialog-actions>

@@ -74,3 +74,20 @@ mat-error {
     background-color: rgba(139, 0, 0, 0.267) !important;
     color: white !important;
 }
+
+@media screen and (max-width: 600px) {
+    .main-content {
+        overflow-y: scroll;
+    }
+
+    mat-dialog-actions {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    mat-dialog-actions button {
+        flex: 1;
+        width: 100px;
+    }
+}
