@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, Renderer2 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -42,10 +42,25 @@ export class MyCalendarComponent implements OnInit {
   visibleHourStart: number = 8;
   visibleHourCount: number = 5;
 
-  constructor(private router: Router, private dialog: MatDialog, private http: HttpClient, public auth: AuthService, private snackBar: MatSnackBar) {}
+  private isDragging = false;
+  private isTap = false;
+  private startX = 0;
+  private startY = 0;
+  private currentX = 0;
+  private currentY = 0;
+  private calendarContainer: HTMLElement | null = null;
+  private dragThreshold = 10;
+
+  constructor(private router: Router, private dialog: MatDialog, private http: HttpClient, public auth: AuthService, private snackBar: MatSnackBar, private renderer: Renderer2) {}
 
   ngOnInit(): void {
     this.loadEvents();
+    this.calendarContainer = document.querySelector('.calendar-container');
+    if (this.calendarContainer) {
+      this.calendarContainer.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+      this.calendarContainer.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+      this.calendarContainer.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
   }
 
   loadEvents(): void {
@@ -352,5 +367,88 @@ export class MyCalendarComponent implements OnInit {
         this.generateCalendar();
       }
     });
+  }
+
+  @HostListener('mousedown', ['$event'])
+  @HostListener('touchstart', ['$event'])
+  onDragStart(event: MouseEvent | TouchEvent) {
+    if (window.innerWidth > 600) return;
+
+    this.isDragging = true;
+
+    if (event instanceof MouseEvent) {
+      this.startX = event.clientX - this.currentX;
+      this.startY = event.clientY - this.currentY;
+    } else if (event instanceof TouchEvent) {
+      this.startX = event.touches[0].clientX - this.currentX;
+      this.startY = event.touches[0].clientY - this.currentY;
+    }
+
+    event.preventDefault();
+  }
+
+  @HostListener('mousemove', ['$event'])
+  @HostListener('touchmove', ['$event'])
+  onDrag(event: MouseEvent | TouchEvent) {
+    if (!this.isDragging || window.innerWidth > 600) return; 
+
+    if (event instanceof MouseEvent) {
+      this.currentX = event.clientX - this.startX;
+      this.currentY = event.clientY - this.startY;
+    } else if (event instanceof TouchEvent) {
+      this.currentX = event.touches[0].clientX - this.startX;
+      this.currentY = event.touches[0].clientY - this.startY;
+    }
+
+    if (this.calendarContainer) {
+      this.renderer.setStyle(this.calendarContainer, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
+    }
+  }
+
+  @HostListener('mouseup')
+  @HostListener('touchend')
+  @HostListener('touchcancel')
+  onDragEnd() {
+    this.isDragging = false;
+  }
+
+  onTouchStart(event: TouchEvent) {
+    if (window.innerWidth > 600) return;
+
+    this.isDragging = false;
+    this.isTap = true;
+
+    this.startX = event.touches[0].clientX - this.currentX;
+    this.startY = event.touches[0].clientY - this.currentY;
+
+    event.preventDefault();
+  }
+
+  onTouchMove(event: TouchEvent) {
+    if (window.innerWidth > 600) return;
+
+    const moveX = Math.abs(event.touches[0].clientX - this.startX);
+    const moveY = Math.abs(event.touches[0].clientY - this.startY);
+
+    if (moveX > this.dragThreshold || moveY > this.dragThreshold) {
+      this.isDragging = true;
+      this.isTap = false;
+    }
+
+    if (this.isDragging && this.calendarContainer) {
+      this.currentX = event.touches[0].clientX - this.startX;
+      this.currentY = event.touches[0].clientY - this.startY;
+      this.renderer.setStyle(this.calendarContainer, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
+    }
+  }
+
+  onTouchEnd(event: TouchEvent) {
+    if (this.isTap) {
+      const target = event.target as HTMLElement;
+      if (target.closest('.hour-cell, .event-cell')) {
+        target.click();
+      }
+    }
+    this.isDragging = false;
   }
 }
