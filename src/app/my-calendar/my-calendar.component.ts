@@ -54,62 +54,15 @@ export class MyCalendarComponent implements OnInit {
   private scrollWeekButton: HTMLElement | null = null;
   private scrollDayButton: HTMLElement | null = null;
   private hourCell: HTMLElement | null = null;
-  private createEventContainer: HTMLElement | null = null;
-  private shareScheduleContainer: HTMLElement | null = null;
+  private createEventButton: HTMLElement | null = null;
+  private shareScheduleButton: HTMLElement | null = null;
   private dragThreshold = 10;
 
   constructor(private router: Router, private dialog: MatDialog, private http: HttpClient, public auth: AuthService, private snackBar: MatSnackBar, private renderer: Renderer2) {}
 
   ngOnInit(): void {
     this.loadEvents();
-    this.calendarContainer = document.querySelector('.calendar-container');
-    if (this.calendarContainer) {
-      this.calendarContainer.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
-      this.calendarContainer.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-      this.calendarContainer.addEventListener('touchend', this.onTouchEnd.bind(this));
-    }
-    this.homeIcon = document.querySelector('.home-icon');
-    if (this.homeIcon) {
-      this.homeIcon.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
-      this.homeIcon.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-      this.homeIcon.addEventListener('touchend', this.onTouchEnd.bind(this));
-    }
-    this.settingsWheel = document.querySelector('.settings-wheel');
-    if (this.settingsWheel) {
-      this.settingsWheel.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
-      this.settingsWheel.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-      this.settingsWheel.addEventListener('touchend', this.onTouchEnd.bind(this));
-    }
-    this.scrollWeekButton = document.querySelector('.scroll-week-button');
-    if (this.scrollWeekButton) {
-      this.scrollWeekButton.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
-      this.scrollWeekButton.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-      this.scrollWeekButton.addEventListener('touchend', this.onTouchEnd.bind(this));
-    }
-    this.scrollDayButton = document.querySelector('.nav-arrow');
-    if (this.scrollDayButton) {
-      this.scrollDayButton.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
-      this.scrollDayButton.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-      this.scrollDayButton.addEventListener('touchend', this.onTouchEnd.bind(this));
-    }
-    this.hourCell = document.querySelector('.hour-cell');
-    if (this.hourCell) {
-      this.hourCell.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
-      this.hourCell.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-      this.hourCell.addEventListener('touchend', this.onTouchEnd.bind(this));
-    }
-    this.createEventContainer = document.querySelector('.create-event-container');
-    if (this.createEventContainer) {
-      this.createEventContainer.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
-      this.createEventContainer.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-      this.createEventContainer.addEventListener('touchend', this.onTouchEnd.bind(this));
-    }
-    this.shareScheduleContainer = document.querySelector('.share-schedule-container');
-    if (this.shareScheduleContainer) {
-      this.shareScheduleContainer.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
-      this.shareScheduleContainer.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-      this.shareScheduleContainer.addEventListener('touchend', this.onTouchEnd.bind(this));
-    }
+    this.initializeMobileDeviceControls();
   }
 
   loadEvents(): void {
@@ -418,6 +371,57 @@ export class MyCalendarComponent implements OnInit {
     });
   }
 
+  private initializeMobileDeviceControls(): void {
+    this.calendarContainer = document.querySelector('.calendar-container');
+    if (this.calendarContainer) {
+      this.calendarContainer.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+      this.calendarContainer.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+      this.calendarContainer.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
+    this.homeIcon = document.querySelector('.home-icon');
+    if (this.homeIcon) {
+      this.homeIcon.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+      this.homeIcon.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+      this.homeIcon.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
+    this.settingsWheel = document.querySelector('.settings-wheel');
+    if (this.settingsWheel) {
+      this.settingsWheel.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+      this.settingsWheel.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+      this.settingsWheel.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
+    this.scrollWeekButton = document.querySelector('.scroll-week-button');
+    if (this.scrollWeekButton) {
+      this.scrollWeekButton.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+      this.scrollWeekButton.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+      this.scrollWeekButton.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
+    this.scrollDayButton = document.querySelector('.nav-arrow');
+    if (this.scrollDayButton) {
+      this.scrollDayButton.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+      this.scrollDayButton.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+      this.scrollDayButton.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
+    this.hourCell = document.querySelector('.hour-cell');
+    if (this.hourCell) {
+      this.hourCell.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+      this.hourCell.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+      this.hourCell.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
+    this.createEventButton = document.querySelector('.create-event-button');
+    if (this.createEventButton) {
+      this.createEventButton.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+      this.createEventButton.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+      this.createEventButton.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
+    this.shareScheduleButton = document.querySelector('.share-schedule-button');
+    if (this.shareScheduleButton) {
+      this.shareScheduleButton.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+      this.shareScheduleButton.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+      this.shareScheduleButton.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
+  }
+
   @HostListener('mousedown', ['$event'])
   @HostListener('touchstart', ['$event'])
   onDragStart(event: MouseEvent | TouchEvent) {
@@ -439,7 +443,7 @@ export class MyCalendarComponent implements OnInit {
   @HostListener('mousemove', ['$event'])
   @HostListener('touchmove', ['$event'])
   onDrag(event: MouseEvent | TouchEvent) {
-    if (!this.isDragging || window.innerWidth > 600) return; 
+    if (!this.isDragging || window.innerWidth > 600) return;
 
     if (event instanceof MouseEvent) {
       this.currentX = event.clientX - this.startX;
@@ -449,30 +453,18 @@ export class MyCalendarComponent implements OnInit {
       this.currentY = event.touches[0].clientY - this.startY;
     }
 
-    if (this.calendarContainer) {
-      this.renderer.setStyle(this.calendarContainer, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
-    }
-    if (this.homeIcon) {
-      this.renderer.setStyle(this.homeIcon, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
-    }
-    if (this.settingsWheel) {
-      this.renderer.setStyle(this.settingsWheel, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
-    }
-    if (this.scrollWeekButton) {
-      this.renderer.setStyle(this.scrollWeekButton, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
-    }
-    if (this.scrollDayButton) {
-      this.renderer.setStyle(this.scrollDayButton, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
-    }
-    if (this.hourCell) {
-      this.renderer.setStyle(this.hourCell, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
-    }
-    if (this.createEventContainer) {
-      this.renderer.setStyle(this.createEventContainer, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
-    }
-    if (this.shareScheduleContainer) {
-      this.renderer.setStyle(this.shareScheduleContainer, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
-    }
+    this.setRendererStyle(this.calendarContainer);
+    this.setRendererStyle(this.homeIcon);
+    this.setRendererStyle(this.settingsWheel);
+    this.setRendererStyle(this.scrollWeekButton);
+    this.setRendererStyle(this.scrollDayButton);
+    this.setRendererStyle(this.hourCell);
+    this.setRendererStyle(this.createEventButton);
+    this.setRendererStyle(this.shareScheduleButton);
+  }
+
+  private setRendererStyle(element: HTMLElement | null):void {
+    if (element) this.renderer.setStyle(element, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
   }
 
   @HostListener('mouseup')
@@ -490,56 +482,22 @@ export class MyCalendarComponent implements OnInit {
   }
   
   onTouchMove(event: TouchEvent) {
-    const targetElement = event.target as HTMLElement;
-    if (targetElement.closest('.home-icon') || targetElement.closest('.settings-wheel')) {
-      this.isDragging = false;
-      this.isTap = true;
-    } else {
-      this.currentX = event.touches[0].clientX;
-      this.currentY = event.touches[0].clientY;
+    this.currentX = event.touches[0].clientX;
+    this.currentY = event.touches[0].clientY;
     
-      if (Math.abs(this.currentY - this.startY) > this.dragThreshold) {
-        this.isDragging = true;
-        this.isTap = false;
-        event.preventDefault();
-      }
-    } 
+    if (Math.abs(this.currentY - this.startY) > this.dragThreshold) {
+      this.isDragging = true;
+      this.isTap = false;
+      event.preventDefault();
+    }
   }
   
   onTouchEnd(event: TouchEvent) {
-    console.log('Touch')
+    event.stopPropagation();
+    event.preventDefault();
     if (this.isTap) {
       const targetElement = event.target as HTMLElement;
-
-      console.log("Closest: ", targetElement.closest);
-      if (targetElement.closest('.home-icon')) {
-        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
-      }
-
-      if (targetElement.closest('.settings-wheel')) {
-        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
-      }
-
-      if (targetElement.closest('.scroll-week-button')) {
-        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
-      }
-
-      if (targetElement.closest('.nav-arrow')) {
-        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
-      }
-
-      if (targetElement.closest('.hour-cell')) {
-        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
-      }
-
-      if (targetElement.closest('.create-event-container')) {
-        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
-      }
-
-      if (targetElement.closest('.share-schedule-container')) {
-        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
-      }
-      
+      targetElement.dispatchEvent(new Event('click', { bubbles: true }));      
       return;
     }
   

@@ -9,12 +9,12 @@
   <div class="calendar-header">
     <div class="calendar-container-buttons">
       <div class="create-event-container">
-        <button mat-button color="primary" (click)="createEvent()" [disabled]="this.auth.hasRole('demo_user')">
+        <button mat-button class="create-event-button" color="primary" (click)="createEvent()" [disabled]="this.auth.hasRole('demo_user')">
           &nbsp;Create Event&nbsp;
         </button>
       </div>
       <div class="share-schedule-container">
-        <button mat-button color="primary" (click)="openShareScheduleForm()">
+        <button mat-button class="share-schedule-button" color="primary" (click)="openShareScheduleForm()">
           Share Schedule
         </button>
       </div>
