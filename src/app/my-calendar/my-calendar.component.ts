@@ -51,10 +51,12 @@ export class MyCalendarComponent implements OnInit {
   private calendarContainer: HTMLElement | null = null;
   private homeIcon: HTMLElement | null = null;
   private settingsWheel: HTMLElement | null = null;
+  private scrollWeekButton: HTMLElement | null = null;
+  private scrollDayButton: HTMLElement | null = null;
+  private hourCell: HTMLElement | null = null;
+  private createEventContainer: HTMLElement | null = null;
+  private shareScheduleContainer: HTMLElement | null = null;
   private dragThreshold = 10;
-
-  private touchStartTime: number = 0;
-  private touchEndTime: number = 0;
 
   constructor(private router: Router, private dialog: MatDialog, private http: HttpClient, public auth: AuthService, private snackBar: MatSnackBar, private renderer: Renderer2) {}
 
@@ -77,6 +79,36 @@ export class MyCalendarComponent implements OnInit {
       this.settingsWheel.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
       this.settingsWheel.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
       this.settingsWheel.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
+    this.scrollWeekButton = document.querySelector('.scroll-week-button');
+    if (this.scrollWeekButton) {
+      this.scrollWeekButton.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+      this.scrollWeekButton.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+      this.scrollWeekButton.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
+    this.scrollDayButton = document.querySelector('.nav-arrow');
+    if (this.scrollDayButton) {
+      this.scrollDayButton.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+      this.scrollDayButton.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+      this.scrollDayButton.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
+    this.hourCell = document.querySelector('.hour-cell');
+    if (this.hourCell) {
+      this.hourCell.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+      this.hourCell.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+      this.hourCell.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
+    this.createEventContainer = document.querySelector('.create-event-container');
+    if (this.createEventContainer) {
+      this.createEventContainer.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+      this.createEventContainer.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+      this.createEventContainer.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
+    this.shareScheduleContainer = document.querySelector('.share-schedule-container');
+    if (this.shareScheduleContainer) {
+      this.shareScheduleContainer.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+      this.shareScheduleContainer.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+      this.shareScheduleContainer.addEventListener('touchend', this.onTouchEnd.bind(this));
     }
   }
 
@@ -426,6 +458,21 @@ export class MyCalendarComponent implements OnInit {
     if (this.settingsWheel) {
       this.renderer.setStyle(this.settingsWheel, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
     }
+    if (this.scrollWeekButton) {
+      this.renderer.setStyle(this.scrollWeekButton, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
+    }
+    if (this.scrollDayButton) {
+      this.renderer.setStyle(this.scrollDayButton, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
+    }
+    if (this.hourCell) {
+      this.renderer.setStyle(this.hourCell, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
+    }
+    if (this.createEventContainer) {
+      this.renderer.setStyle(this.createEventContainer, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
+    }
+    if (this.shareScheduleContainer) {
+      this.renderer.setStyle(this.shareScheduleContainer, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
+    }
   }
 
   @HostListener('mouseup')
@@ -468,13 +515,20 @@ export class MyCalendarComponent implements OnInit {
       if (targetElement.closest('.home-icon')) {
         targetElement.dispatchEvent(new Event('click', { bubbles: true }));
       }
+
       if (targetElement.closest('.settings-wheel')) {
         targetElement.dispatchEvent(new Event('click', { bubbles: true }));
       }
-      if (targetElement.closest('.hour-cell')) {
+
+      if (targetElement.closest('.scroll-week-button')) {
         targetElement.dispatchEvent(new Event('click', { bubbles: true }));
       }
+
       if (targetElement.closest('.nav-arrow')) {
+        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
+      }
+
+      if (targetElement.closest('.hour-cell')) {
         targetElement.dispatchEvent(new Event('click', { bubbles: true }));
       }
 
@@ -485,16 +539,6 @@ export class MyCalendarComponent implements OnInit {
       if (targetElement.closest('.share-schedule-container')) {
         targetElement.dispatchEvent(new Event('click', { bubbles: true }));
       }
-
-      if (targetElement.closest('.home-icon')) {
-        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
-      }
-      
-      if (targetElement.closest('.settings-wheel')) {
-        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
-      }
-
-      
       
       return;
     }
