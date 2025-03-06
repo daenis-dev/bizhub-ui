@@ -1,0 +1,29 @@
+<div class="accordion-container">
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let day of calendarDays" [expanded]="false" class="day-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title style="font-size: 14px; max-width: 90px; min-width: 90px;">
+            {{ day.date.format('ddd: MM/DD') }}
+          </mat-panel-title>
+          <mat-panel-description style="font-size: 14px;">
+            {{ day.events.length === 1 ? '1 event' : day.events.length + ' events' }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+  
+        <div *ngFor="let event of day.events">
+          <mat-card class="event-card" (click)="updateEvent(event)">
+            <mat-card-title class="event-card-title">{{ event.name }}</mat-card-title>
+            <mat-card-content class="event-card-content">
+              <div class="event-time">
+                <strong>Start:&nbsp;</strong> <span>{{ formatEventTime(event.startDateTime) }}</span>
+              </div>
+              <div class="event-time">
+                <strong>End:&nbsp;</strong> <span>{{ formatEventTime(event.endDateTime) }}</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+  

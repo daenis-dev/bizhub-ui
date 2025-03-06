@@ -2,6 +2,19 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ScreenSizeService } from '../services/screen-size.service';
 import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatButtonModule } from '@angular/material/button';
+import dayjs from 'dayjs';
+import { EventDetails } from '../my-calendar/event-details.model';
+import { environment } from '../../environments/environment';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AuthService } from '../services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { CommonModule } from '@angular/common';
+import { EventDialogComponent } from '../my-calendar/event-dialog/event-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-my-calendar-mobile',
@@ -9,6 +22,11 @@ import { Router } from '@angular/router';
   styleUrl: './my-calendar-mobile.component.css',
   standalone: true,
   imports: [
+    CommonModule,
+    MatCardModule,
+    MatExpansionModule,
+    MatIconModule,
+    MatButtonModule
   ]
 })
 export class MyCalendarMobileComponent implements OnInit, OnDestroy {
@@ -16,7 +34,13 @@ export class MyCalendarMobileComponent implements OnInit, OnDestroy {
   private screenWidthSub?: Subscription;
   private screenHeightSub?: Subscription;
 
-  constructor(private router: Router, private screenSizeService: ScreenSizeService) {
+  apiUrl: string = environment.apiUrl;
+  events: EventDetails[] = [];
+  calendarDays: any[] = [];
+  currentDate: dayjs.Dayjs = dayjs();
+  hours: number[] = Array.from({ length: 24 }, (_, i) => i);
+
+  constructor(private router: Router, private screenSizeService: ScreenSizeService, private http: HttpClient, private auth: AuthService, private snackBar: MatSnackBar, private dialog: MatDialog) {
 
   }
 
@@ -31,6 +55,36 @@ export class MyCalendarMobileComponent implements OnInit, OnDestroy {
         this.router.navigate(['/my-calendar']);
       }
     });
+    this.loadEvents();
+  }
+
+  loadEvents(): void {
+    this.http.get<EventDetails[]>(`${this.apiUrl}/v1/events`, { 
+      headers: new HttpHeaders({ 'Authorization': this.auth.getToken() }) 
+    }).subscribe({
+      next: (data) => {
+        this.events = data.sort((a, b) => new Date(b.startDateTime).getTime() - new Date(a.startDateTime).getTime());
+        this.generateCalendar();
+      },
+      error: () => this.showErrorMessage('An error occurred while getting the events')
+    });
+  }
+
+  generateCalendar(): void {
+    const startDate = this.currentDate.startOf('week');
+    this.calendarDays = Array.from({ length: 7 }, (_, i) => {
+      const date = startDate.add(i, 'day');
+      const eventsForDay = this.events.filter(event => dayjs(event.startDateTime).isSame(date, 'day'));
+      return { date, events: eventsForDay };
+    });
+  }
+
+  showErrorMessage(message: string) {
+    this.snackBar.open(message, 'Close', {
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['mat-snackbar-error']
+    });
   }
 
   ngOnDestroy() {
@@ -40,5 +94,46 @@ export class MyCalendarMobileComponent implements OnInit, OnDestroy {
     if (this.screenHeightSub) {
       this.screenHeightSub.unsubscribe();
     }
+  }
+
+  formatEventTime(dateTime: string): string {
+    return dayjs(dateTime).format('hh:mm A');
+  }
+  
+  updateEvent(event: EventDetails | null): void {
+    if (!event) return;
+  
+    const dialogRef = this.dialog.open(EventDialogComponent, {
+      data: { mode: 'edit', title: 'Edit Event', event, id: event.id },
+    });
+  
+    dialogRef.afterClosed().subscribe((result: EventDetails | { deleted: true }) => {
+      if (result && 'deleted' in result) {
+        this.events = this.events.filter((e) => e.id !== event.id);
+        this.generateCalendar();
+      } else if (result) {
+        const index = this.events.findIndex((e) => e.id === result.id);
+        if (index !== -1) {
+          this.events[index] = result;
+          this.generateCalendar();
+        }
+      }
+    });
+  }
+
+  getEventStartHour(event: EventDetails): number {
+    return dayjs(event.startDateTime).hour();
+  }
+
+  getEventStartMinute(event: EventDetails): number {
+    return dayjs(event.startDateTime).minute();
+  }
+
+  getEventEndHour(event: EventDetails): number {
+    return dayjs(event.endDateTime).hour();
+  }
+
+  getEventEndMinute(event: EventDetails): number {
+    return dayjs(event.endDateTime).minute();
   }
 }
