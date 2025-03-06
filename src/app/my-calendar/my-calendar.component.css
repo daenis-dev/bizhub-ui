@@ -171,6 +171,7 @@ html, body {
       top: 5%;
       right: 5%;
       padding: 8px;
+      z-index: 9999;
   }
 
   .settings-wheel mat-icon {
@@ -181,6 +182,7 @@ html, body {
     top: 5% !important;
     left: 5% !important;
     padding: 8px !important;
+    z-index: 9999;
   }
   
   .home-icon mat-icon {

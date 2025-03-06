@@ -57,10 +57,10 @@
       </div>      
     </div>
     <div style="position: relative; top: 0; right: -180px; display: flex; flex-direction: column; justify-content: center;">
-      <button mat-icon-button (click)="navigateHours(-1)" [disabled]="visibleHourStart === 0">
+      <button mat-icon-button class="nav-arrow" (click)="navigateHours(-1)" [disabled]="visibleHourStart === 0">
         <mat-icon>arrow_upward</mat-icon>
       </button>
-      <button mat-icon-button (click)="navigateHours(1)" [disabled]="visibleHourStart + visibleHourCount >= 24">
+      <button mat-icon-button class="nav-arrow" (click)="navigateHours(1)" [disabled]="visibleHourStart + visibleHourCount >= 24">
         <mat-icon>arrow_downward</mat-icon>
       </button>
     </div>

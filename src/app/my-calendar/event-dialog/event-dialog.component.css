@@ -1,3 +1,13 @@
+.main-content {
+    overflow-y: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.container::-webkit-scrollbar {
+    display: none;
+}
+
 .submit-button {
     width: 500px;
     background-color: #78fd95;

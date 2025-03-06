@@ -1,10 +1,10 @@
 <h2 mat-dialog-title style="text-align: center; font-size: 25px; font-weight: bold; padding-top: 30px; padding-bottom: 20px; color: #006600;">Share Schedule</h2>
-<mat-dialog-content style="padding-top: 2%;">
+<mat-dialog-content class="main-content" style="padding-top: 2%;">
 
-  <div *ngIf="!this.shareUrl" style="text-align: center; padding-bottom: 10px;">
+  <div *ngIf="!this.shareUrl" class="instructions-container">
     Generate a URL to share your schedule!
   </div>
-  <div *ngIf="this.shareUrl" style="text-align: center; padding-bottom: 10px;">
+  <div *ngIf="this.shareUrl" class="share-container" style="text-align: center; padding-bottom: 10px;">
     <span style="font-weight: bold;">Share URL:</span>&nbsp;{{ this.shareUrl }}
   </div>
   

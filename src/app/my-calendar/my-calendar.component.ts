@@ -49,7 +49,12 @@ export class MyCalendarComponent implements OnInit {
   private currentX = 0;
   private currentY = 0;
   private calendarContainer: HTMLElement | null = null;
+  private homeIcon: HTMLElement | null = null;
+  private settingsWheel: HTMLElement | null = null;
   private dragThreshold = 10;
+
+  private touchStartTime: number = 0;
+  private touchEndTime: number = 0;
 
   constructor(private router: Router, private dialog: MatDialog, private http: HttpClient, public auth: AuthService, private snackBar: MatSnackBar, private renderer: Renderer2) {}
 
@@ -60,6 +65,18 @@ export class MyCalendarComponent implements OnInit {
       this.calendarContainer.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
       this.calendarContainer.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
       this.calendarContainer.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
+    this.homeIcon = document.querySelector('.home-icon');
+    if (this.homeIcon) {
+      this.homeIcon.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+      this.homeIcon.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+      this.homeIcon.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
+    this.settingsWheel = document.querySelector('.settings-wheel');
+    if (this.settingsWheel) {
+      this.settingsWheel.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+      this.settingsWheel.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+      this.settingsWheel.addEventListener('touchend', this.onTouchEnd.bind(this));
     }
   }
 
@@ -403,6 +420,12 @@ export class MyCalendarComponent implements OnInit {
     if (this.calendarContainer) {
       this.renderer.setStyle(this.calendarContainer, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
     }
+    if (this.homeIcon) {
+      this.renderer.setStyle(this.homeIcon, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
+    }
+    if (this.settingsWheel) {
+      this.renderer.setStyle(this.settingsWheel, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
+    }
   }
 
   @HostListener('mouseup')
@@ -413,42 +436,73 @@ export class MyCalendarComponent implements OnInit {
   }
 
   onTouchStart(event: TouchEvent) {
-    if (window.innerWidth > 600) return;
-
     this.isDragging = false;
     this.isTap = true;
-
-    this.startX = event.touches[0].clientX - this.currentX;
-    this.startY = event.touches[0].clientY - this.currentY;
-
-    event.preventDefault();
+    this.startX = event.touches[0].clientX;
+    this.startY = event.touches[0].clientY;
   }
-
+  
   onTouchMove(event: TouchEvent) {
-    if (window.innerWidth > 600) return;
-
-    const moveX = Math.abs(event.touches[0].clientX - this.startX);
-    const moveY = Math.abs(event.touches[0].clientY - this.startY);
-
-    if (moveX > this.dragThreshold || moveY > this.dragThreshold) {
-      this.isDragging = true;
-      this.isTap = false;
-    }
-
-    if (this.isDragging && this.calendarContainer) {
-      this.currentX = event.touches[0].clientX - this.startX;
-      this.currentY = event.touches[0].clientY - this.startY;
-      this.renderer.setStyle(this.calendarContainer, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
-    }
-  }
-
-  onTouchEnd(event: TouchEvent) {
-    if (this.isTap) {
-      const target = event.target as HTMLElement;
-      if (target.closest('.hour-cell, .event-cell')) {
-        target.click();
+    const targetElement = event.target as HTMLElement;
+    if (targetElement.closest('.home-icon') || targetElement.closest('.settings-wheel')) {
+      this.isDragging = false;
+      this.isTap = true;
+    } else {
+      this.currentX = event.touches[0].clientX;
+      this.currentY = event.touches[0].clientY;
+    
+      if (Math.abs(this.currentY - this.startY) > this.dragThreshold) {
+        this.isDragging = true;
+        this.isTap = false;
+        event.preventDefault();
       }
-    }
-    this.isDragging = false;
+    } 
   }
+  
+  onTouchEnd(event: TouchEvent) {
+    console.log('Touch')
+    if (this.isTap) {
+      const targetElement = event.target as HTMLElement;
+
+      console.log("Closest: ", targetElement.closest);
+      if (targetElement.closest('.home-icon')) {
+        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
+      }
+      if (targetElement.closest('.settings-wheel')) {
+        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
+      }
+      if (targetElement.closest('.hour-cell')) {
+        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
+      }
+      if (targetElement.closest('.nav-arrow')) {
+        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
+      }
+
+      if (targetElement.closest('.create-event-container')) {
+        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
+      }
+
+      if (targetElement.closest('.share-schedule-container')) {
+        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
+      }
+
+      if (targetElement.closest('.home-icon')) {
+        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
+      }
+      
+      if (targetElement.closest('.settings-wheel')) {
+        targetElement.dispatchEvent(new Event('click', { bubbles: true }));
+      }
+
+      
+      
+      return;
+    }
+  
+    if (this.isDragging) {
+      this.isDragging = false;
+    }
+  }
+  
+  
 }
