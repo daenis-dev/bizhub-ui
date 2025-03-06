@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { AccountDialogComponent } from '../account-dialog/account-dialog.component';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
 import { FileSelectionDialogComponent } from '../file-selection-dialog/file-selection-dialog.component';
@@ -47,13 +46,6 @@ export class MyBackupsComponent implements OnInit {
         this.showErrorMessage('An error occurred while getting the backup file names');
       }
     });
-  }
-
-  openAccountDialog() {
-      this.dialog.open(AccountDialogComponent, {
-        width: '800px',
-        height: '225px'
-      });
   }
 
   async selectFilesAndUpload() {
@@ -136,9 +128,5 @@ export class MyBackupsComponent implements OnInit {
         verticalPosition: 'top',
         panelClass: ['mat-snackbar-error']
       });
-    }
-
-    navigateHome() {
-      this.router.navigateByUrl('/home');
     }
 }

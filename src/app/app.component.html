@@ -2,5 +2,11 @@
     <div class="title-container">
         <div class="title">BizHub</div>
     </div>
+    <div class="home-icon" (click)="navigateHome()">
+        <mat-icon>home</mat-icon>
+    </div>
+    <div class="settings-wheel" (click)="openAccountDialog()">
+        <mat-icon>settings</mat-icon>
+    </div>
     <router-outlet></router-outlet>
 </div>

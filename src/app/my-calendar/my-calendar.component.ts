@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { AccountDialogComponent } from '../account-dialog/account-dialog.component';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EventDetails } from './event-details.model';
 import dayjs from 'dayjs';
@@ -15,6 +14,8 @@ import { environment } from '../../environments/environment';
 import { AuthService } from '../services/auth.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ShareScheduleComponent } from '../share-schedule/share-schedule.component';
+import { Subscription } from 'rxjs';
+import { ScreenSizeService } from '../services/screen-size.service';
 
 @Component({
   selector: 'app-my-calendar',
@@ -31,7 +32,10 @@ import { ShareScheduleComponent } from '../share-schedule/share-schedule.compone
     MatSnackBarModule
   ]
 })
-export class MyCalendarComponent implements OnInit {
+export class MyCalendarComponent implements OnInit, OnDestroy {
+
+  private screenWidthSub?: Subscription;
+  private screenHeightSub?: Subscription;
 
   apiUrl: string = environment.apiUrl;
   events: EventDetails[] = [];
@@ -42,27 +46,20 @@ export class MyCalendarComponent implements OnInit {
   visibleHourStart: number = 8;
   visibleHourCount: number = 5;
 
-  private isDragging = false;
-  private isTap = false;
-  private startX = 0;
-  private startY = 0;
-  private currentX = 0;
-  private currentY = 0;
-  private calendarContainer: HTMLElement | null = null;
-  private homeIcon: HTMLElement | null = null;
-  private settingsWheel: HTMLElement | null = null;
-  private scrollWeekButton: HTMLElement | null = null;
-  private scrollDayButton: HTMLElement | null = null;
-  private hourCell: HTMLElement | null = null;
-  private createEventButton: HTMLElement | null = null;
-  private shareScheduleButton: HTMLElement | null = null;
-  private dragThreshold = 10;
-
-  constructor(private router: Router, private dialog: MatDialog, private http: HttpClient, public auth: AuthService, private snackBar: MatSnackBar, private renderer: Renderer2) {}
+  constructor(private router: Router, private dialog: MatDialog, private http: HttpClient, public auth: AuthService, private snackBar: MatSnackBar, private renderer: Renderer2, private screenSizeService: ScreenSizeService) {}
 
   ngOnInit(): void {
+    this.screenWidthSub = this.screenSizeService.isMobile$.subscribe(isMobile => {
+      if (isMobile) {
+        this.router.navigate(['/my-calendar-mobile']);
+      }
+    });
+    this.screenHeightSub = this.screenSizeService.isMobile$.subscribe(isMobile => {
+      if (isMobile) {
+        this.router.navigate(['/my-calendar-mobile']);
+      }
+    });
     this.loadEvents();
-    this.initializeMobileDeviceControls();
   }
 
   loadEvents(): void {
@@ -86,17 +83,6 @@ export class MyCalendarComponent implements OnInit {
     const direction = event.deltaY < 0 ? -1 : 1;
     this.navigateHours(direction);
     event.preventDefault();
-  }
-
-  navigateHome() {
-    this.router.navigateByUrl('/home');
-  }
-
-  openAccountDialog() {
-    this.dialog.open(AccountDialogComponent, {
-      width: '800px',
-      height: '225px'
-    });
   }
 
   showErrorMessage(message: string) {
@@ -371,140 +357,12 @@ export class MyCalendarComponent implements OnInit {
     });
   }
 
-  private initializeMobileDeviceControls(): void {
-    this.calendarContainer = document.querySelector('.calendar-container');
-    if (this.calendarContainer) {
-      this.calendarContainer.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
-      this.calendarContainer.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-      this.calendarContainer.addEventListener('touchend', this.onTouchEnd.bind(this));
+  ngOnDestroy() {
+    if (this.screenWidthSub) {
+      this.screenWidthSub.unsubscribe();
     }
-    this.homeIcon = document.querySelector('.home-icon');
-    if (this.homeIcon) {
-      this.homeIcon.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
-      this.homeIcon.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-      this.homeIcon.addEventListener('touchend', this.onTouchEnd.bind(this));
+    if (this.screenHeightSub) {
+      this.screenHeightSub.unsubscribe();
     }
-    this.settingsWheel = document.querySelector('.settings-wheel');
-    if (this.settingsWheel) {
-      this.settingsWheel.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
-      this.settingsWheel.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-      this.settingsWheel.addEventListener('touchend', this.onTouchEnd.bind(this));
-    }
-    this.scrollWeekButton = document.querySelector('.scroll-week-button');
-    if (this.scrollWeekButton) {
-      this.scrollWeekButton.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
-      this.scrollWeekButton.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-      this.scrollWeekButton.addEventListener('touchend', this.onTouchEnd.bind(this));
-    }
-    this.scrollDayButton = document.querySelector('.nav-arrow');
-    if (this.scrollDayButton) {
-      this.scrollDayButton.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
-      this.scrollDayButton.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-      this.scrollDayButton.addEventListener('touchend', this.onTouchEnd.bind(this));
-    }
-    this.hourCell = document.querySelector('.hour-cell');
-    if (this.hourCell) {
-      this.hourCell.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
-      this.hourCell.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-      this.hourCell.addEventListener('touchend', this.onTouchEnd.bind(this));
-    }
-    this.createEventButton = document.querySelector('.create-event-button');
-    if (this.createEventButton) {
-      this.createEventButton.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
-      this.createEventButton.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-      this.createEventButton.addEventListener('touchend', this.onTouchEnd.bind(this));
-    }
-    this.shareScheduleButton = document.querySelector('.share-schedule-button');
-    if (this.shareScheduleButton) {
-      this.shareScheduleButton.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
-      this.shareScheduleButton.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-      this.shareScheduleButton.addEventListener('touchend', this.onTouchEnd.bind(this));
-    }
-  }
-
-  @HostListener('mousedown', ['$event'])
-  @HostListener('touchstart', ['$event'])
-  onDragStart(event: MouseEvent | TouchEvent) {
-    if (window.innerWidth > 600) return;
-
-    this.isDragging = true;
-
-    if (event instanceof MouseEvent) {
-      this.startX = event.clientX - this.currentX;
-      this.startY = event.clientY - this.currentY;
-    } else if (event instanceof TouchEvent) {
-      this.startX = event.touches[0].clientX - this.currentX;
-      this.startY = event.touches[0].clientY - this.currentY;
-    }
-
-    event.preventDefault();
-  }
-
-  @HostListener('mousemove', ['$event'])
-  @HostListener('touchmove', ['$event'])
-  onDrag(event: MouseEvent | TouchEvent) {
-    if (!this.isDragging || window.innerWidth > 600) return;
-
-    if (event instanceof MouseEvent) {
-      this.currentX = event.clientX - this.startX;
-      this.currentY = event.clientY - this.startY;
-    } else if (event instanceof TouchEvent) {
-      this.currentX = event.touches[0].clientX - this.startX;
-      this.currentY = event.touches[0].clientY - this.startY;
-    }
-
-    this.setRendererStyle(this.calendarContainer);
-    this.setRendererStyle(this.homeIcon);
-    this.setRendererStyle(this.settingsWheel);
-    this.setRendererStyle(this.scrollWeekButton);
-    this.setRendererStyle(this.scrollDayButton);
-    this.setRendererStyle(this.hourCell);
-    this.setRendererStyle(this.createEventButton);
-    this.setRendererStyle(this.shareScheduleButton);
-  }
-
-  private setRendererStyle(element: HTMLElement | null):void {
-    if (element) this.renderer.setStyle(element, 'transform', `translate(${this.currentX}px, ${this.currentY}px)`);
-  }
-
-  @HostListener('mouseup')
-  @HostListener('touchend')
-  @HostListener('touchcancel')
-  onDragEnd() {
-    this.isDragging = false;
-  }
-
-  onTouchStart(event: TouchEvent) {
-    this.isDragging = false;
-    this.isTap = true;
-    this.startX = event.touches[0].clientX;
-    this.startY = event.touches[0].clientY;
-  }
-  
-  onTouchMove(event: TouchEvent) {
-    this.currentX = event.touches[0].clientX;
-    this.currentY = event.touches[0].clientY;
-    
-    if (Math.abs(this.currentY - this.startY) > this.dragThreshold) {
-      this.isDragging = true;
-      this.isTap = false;
-      event.preventDefault();
-    }
-  }
-  
-  onTouchEnd(event: TouchEvent) {
-    event.stopPropagation();
-    event.preventDefault();
-    if (this.isTap) {
-      const targetElement = event.target as HTMLElement;
-      targetElement.dispatchEvent(new Event('click', { bubbles: true }));      
-      return;
-    }
-  
-    if (this.isDragging) {
-      this.isDragging = false;
-    }
-  }
-  
-  
+  } 
 }

@@ -42,6 +42,14 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'my-calendar-mobile',
+    loadComponent: () =>
+      import('./my-calendar-mobile/my-calendar-mobile.component').then(
+        (m) => m.MyCalendarMobileComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: 'schedules',
     loadComponent: () =>
       import('./schedule/schedule.component').then(

@@ -2,9 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { AccountDialogComponent } from '../account-dialog/account-dialog.component';
 import { Router } from '@angular/router';
 
 @Component({
@@ -22,14 +21,7 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent {
 
-  constructor(private dialog: MatDialog, private router: Router) {
-  }
-
-  openAccountDialog() {
-    this.dialog.open(AccountDialogComponent, {
-      width: '800px',
-      height: '225px'
-    });
+  constructor(private router: Router) {
   }
 
   openMyFiles() {
