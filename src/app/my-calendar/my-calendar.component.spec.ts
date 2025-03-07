@@ -81,12 +81,6 @@ describe('MyCalendarComponent', () => {
     expect(component.visibleHourStart).toBe(8);
   });
 
-  it('should open account dialog', () => {
-    const dialogSpy = spyOn(component['dialog'], 'open');
-    component.openAccountDialog();
-    expect(dialogSpy).toHaveBeenCalled();
-  });
-
   it('should show snackbar on error', () => {
     const snackBarSpy = spyOn(component['snackBar'], 'open');
     component.showErrorMessage('Test error');

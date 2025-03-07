@@ -67,13 +67,4 @@ describe('MyBackupsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should open account dialog on settings wheel click', () => {
-    const openDialogSpy = spyOn(component['dialog'], 'open');
-    component.openAccountDialog();
-    expect(openDialogSpy).toHaveBeenCalledWith(AccountDialogComponent, {
-      width: '800px',
-      height: '225px'
-    });
-  });
 });

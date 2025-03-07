@@ -3,12 +3,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router, RouterModule } from '@angular/router';
 import { AccountDialogComponent } from './account-dialog/account-dialog.component';
 import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
-  imports: [RouterModule, MatIconModule]
+  imports: [RouterModule, MatIconModule, CommonModule]
 })
 export class AppComponent {
   title = 'bizhub-ui';
