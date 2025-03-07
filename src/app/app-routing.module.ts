@@ -55,6 +55,13 @@ export const routes: Routes = [
       import('./schedule/schedule.component').then(
         (m) => m.ScheduleComponent
       )
+  },
+  {
+    path: 'schedule-mobile',
+    loadComponent: () =>
+      import('./schedule-mobile/schedule-mobile.component').then(
+        (m) => m.ScheduleMobileComponent
+      )
   }
 ];
 

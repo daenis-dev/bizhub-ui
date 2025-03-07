@@ -27,4 +27,12 @@ export class AppComponent {
       height: '225px'
     });
   }
+
+  showHomeIcon() {
+    this.router.url !== 'home' && this.router.url !== 'schedules' && this.router.url !== 'schedule-mobile';
+  }
+
+  showSettingsIcon() {
+    this.router.url !== 'schedules' && this.router.url !== 'schedule-mobile';
+  }
 }

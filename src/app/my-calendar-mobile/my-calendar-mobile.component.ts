@@ -64,7 +64,7 @@ export class MyCalendarMobileComponent implements OnInit, OnDestroy {
       headers: new HttpHeaders({ 'Authorization': this.auth.getToken() }) 
     }).subscribe({
       next: (data) => {
-        this.events = data.sort((a, b) => new Date(b.startDateTime).getTime() - new Date(a.startDateTime).getTime());
+        this.events = data.sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
         this.generateCalendar();
       },
       error: () => this.showErrorMessage('An error occurred while getting the events')

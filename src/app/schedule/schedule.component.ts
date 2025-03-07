@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -13,6 +13,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
 import { ScheduleDetails } from './schedule-details.model';
+import { Subscription } from 'rxjs';
+import { ScreenSizeService } from '../services/screen-size.service';
 
 @Component({
   selector: 'app-schedule',
@@ -29,7 +31,10 @@ import { ScheduleDetails } from './schedule-details.model';
     MatSnackBarModule
   ]
 })
-export class ScheduleComponent {
+export class ScheduleComponent implements OnInit, OnDestroy {
+
+  private screenWidthSub?: Subscription;
+  private screenHeightSub?: Subscription;
 
   username: string = '';
   scheduleKey: string = '';
@@ -43,14 +48,34 @@ export class ScheduleComponent {
   visibleHourStart: number = 8;
   visibleHourCount: number = 5;
 
-  constructor(private route: ActivatedRoute, private http: HttpClient, public auth: AuthService, private snackBar: MatSnackBar) {}
+  constructor(private route: ActivatedRoute, private http: HttpClient, public auth: AuthService, private snackBar: MatSnackBar, private screenSizeService: ScreenSizeService, private router: Router) {}
 
   ngOnInit(): void {
+    this.screenWidthSub = this.screenSizeService.isMobile$.subscribe(isMobile => {
+      if (isMobile) {
+        this.router.navigate(['/schedule-mobile']);
+      }
+    });
+    this.screenHeightSub = this.screenSizeService.isMobile$.subscribe(isMobile => {
+      if (isMobile) {
+        this.router.navigate(['/schedule-mobile']);
+      }
+    });
+
     this.route.queryParams.subscribe(params => {
       this.username = params['username'];
       this.scheduleKey = params['schedule-key'];
       this.loadEvents();
     });
+  }
+
+  ngOnDestroy() {
+    if (this.screenWidthSub) {
+      this.screenWidthSub.unsubscribe();
+    }
+    if (this.screenHeightSub) {
+      this.screenHeightSub.unsubscribe();
+    }
   }
 
   loadEvents(): void {

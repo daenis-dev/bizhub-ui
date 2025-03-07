@@ -1,0 +1,46 @@
+<div class="calendar-header">
+    <div style="padding-bottom: 10px; padding-top: 16px;">
+        <mat-card class="email-container">
+          <mat-card-content>
+            <span class="email-label">{{ username.length > 25 ? (username.substring(0, 25) + '...') : username }}</span>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    <div class="calendar-container-scroll">
+        <button mat-button class="scroll-week-button" (click)="navigate(-1)" style="color: #006600;">
+            &lt;
+        </button>
+        <button mat-button class="scroll-week-button" (click)="navigate(1)" style="color: #006600;">
+            &gt;
+        </button>
+    </div>
+</div>
+<div class="accordion-container">
+    <mat-accordion>
+        <mat-expansion-panel *ngFor="let day of calendarDays" [expanded]="false" class="day-panel">
+        <mat-expansion-panel-header>
+            <mat-panel-title style="font-size: 14px; max-width: 95px; min-width: 90px;">
+            {{ day.date.format('ddd: MM/DD') }}
+            </mat-panel-title>
+            <mat-panel-description style="font-size: 14px; white-space: nowrap;">
+            {{ day.events.length === 1 ? '1 event' : day.events.length + ' events' }}&nbsp;&nbsp;&nbsp;&nbsp;
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div *ngFor="let event of day.events">
+            <mat-card class="event-card">
+            <mat-card-title class="event-card-title">{{ 'Busy' }}</mat-card-title>
+            <mat-card-content class="event-card-content">
+                <div class="event-time">
+                <strong>Start:&nbsp;</strong> <span>{{ formatEventTime(event.startDateTime) }}</span>
+                </div>
+                <div class="event-time">
+                <strong>End:&nbsp;</strong> <span>{{ formatEventTime(event.endDateTime) }}</span>
+                </div>
+            </mat-card-content>
+            </mat-card>
+        </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>
+  

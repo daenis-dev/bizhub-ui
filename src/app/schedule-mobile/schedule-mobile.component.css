@@ -1,0 +1,109 @@
+.accordion-container {
+    padding-top: 5%;
+    max-height: 55vh;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+
+.accordion-container::-webkit-scrollbar {
+    width: 0px;
+}
+
+.accordion-container::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+.calendar-header {
+    display: flex;
+    flex-direction: column;
+}
+
+.day-panel {
+    padding: 3%;
+    width: 94%;
+}
+
+.event-card {
+    background-color: #ffffff;
+    border: 1px solid #006600;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
+    padding: 12px;
+    transition: box-shadow 0.2s ease, border 0.2s ease;
+}
+
+.event-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 102, 0, 0.2);
+    border-color: #004d00;
+}
+
+.event-card-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #006600;
+    margin-bottom: 8px;
+}
+
+.event-card-content {
+    font-size: 14px;
+    color: #333333;
+}
+
+.event-card-content div {
+    margin-bottom: 8px;
+}
+
+.event-card-content strong {
+    color: #006600;
+}
+
+.event-card .event-time {
+    font-size: 14px;
+    color: #555555;
+}
+
+.event-card .event-time span {
+    color: #006600;
+}
+
+.calendar-container-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.calendar-container-scroll {
+    display: flex;
+    justify-content: center;
+}
+
+.create-event-container button {
+    font-size: 12px;
+    color: #006600;
+    width: 120px;
+    max-width: 120px;
+}
+
+.create-event-container button:disabled {
+    color: #00660077 !important;
+    cursor: not-allowed;
+}
+
+.share-schedule-container button {
+    font-size: 12px;
+    color: #006600;
+    width: 120px;
+    max-width: 120px;
+}
+
+.email-container {
+    text-align: center;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.email-label {
+    font-weight: bold;
+}
