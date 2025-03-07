@@ -1,12 +1,34 @@
+<div class="calendar-header">
+    <div class="calendar-container-buttons">
+        <div class="create-event-container">
+            <button mat-button class="create-event-button" color="primary" (click)="createEvent()" [disabled]="this.auth.hasRole('demo_user')">
+              &nbsp;Create Event&nbsp;
+            </button>
+          </div>
+          <div class="share-schedule-container">
+            <button mat-button class="share-schedule-button" color="primary" (click)="openShareScheduleForm()">
+              Share Schedule
+            </button>
+          </div>
+    </div>
+    <div class="calendar-container-scroll">
+        <button mat-button class="scroll-week-button" (click)="navigate(-1)" style="color: #006600;">
+            &lt;
+        </button>
+        <button mat-button class="scroll-week-button" (click)="navigate(1)" style="color: #006600;">
+            &gt;
+        </button>
+    </div>
+</div>
 <div class="accordion-container">
     <mat-accordion>
       <mat-expansion-panel *ngFor="let day of calendarDays" [expanded]="false" class="day-panel">
         <mat-expansion-panel-header>
-          <mat-panel-title style="font-size: 14px; max-width: 90px; min-width: 90px;">
+          <mat-panel-title style="font-size: 14px; max-width: 95px; min-width: 90px;">
             {{ day.date.format('ddd: MM/DD') }}
           </mat-panel-title>
-          <mat-panel-description style="font-size: 14px;">
-            {{ day.events.length === 1 ? '1 event' : day.events.length + ' events' }}
+          <mat-panel-description style="font-size: 14px; white-space: nowrap;">
+            {{ day.events.length === 1 ? '1 event' : day.events.length + ' events' }}&nbsp;&nbsp;&nbsp;&nbsp;
           </mat-panel-description>
         </mat-expansion-panel-header>
   

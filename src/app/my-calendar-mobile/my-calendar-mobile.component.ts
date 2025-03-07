@@ -15,6 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { EventDialogComponent } from '../my-calendar/event-dialog/event-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { ShareScheduleComponent } from '../share-schedule/share-schedule.component';
 
 @Component({
   selector: 'app-my-calendar-mobile',
@@ -40,7 +41,7 @@ export class MyCalendarMobileComponent implements OnInit, OnDestroy {
   currentDate: dayjs.Dayjs = dayjs();
   hours: number[] = Array.from({ length: 24 }, (_, i) => i);
 
-  constructor(private router: Router, private screenSizeService: ScreenSizeService, private http: HttpClient, private auth: AuthService, private snackBar: MatSnackBar, private dialog: MatDialog) {
+  constructor(private router: Router, private screenSizeService: ScreenSizeService, private http: HttpClient, public auth: AuthService, private snackBar: MatSnackBar, private dialog: MatDialog) {
 
   }
 
@@ -135,5 +136,29 @@ export class MyCalendarMobileComponent implements OnInit, OnDestroy {
 
   getEventEndMinute(event: EventDetails): number {
     return dayjs(event.endDateTime).minute();
+  }
+
+  navigate(direction: number): void {
+    this.currentDate = this.currentDate.add(direction, 'week');
+    this.generateCalendar();
+  }
+
+  createEvent(): void {
+    const dialogRef = this.dialog.open(EventDialogComponent, { data: { mode: 'create', title: 'Create Event' } });
+    dialogRef.afterClosed().subscribe((newEvent) => {
+      if (newEvent) {
+        if (this.events.length === 0 || this.events[0].startDateTime > newEvent.startDateTime) {
+          this.events.push(newEvent);
+        }
+        else {
+          this.events.unshift(newEvent);
+        }
+        this.generateCalendar();
+      }
+    });
+  }
+
+  openShareScheduleForm(): void {
+    this.dialog.open(ShareScheduleComponent);
   }
 }
