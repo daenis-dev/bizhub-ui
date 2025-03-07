@@ -5,14 +5,6 @@ html, body {
 }
 
 .account-registration-container {
-    /* background-color: #b3ffc4;
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-sizing: border-box;
-    overflow: hidden; */
     background-color: #b3ffc4;
     width: 100%;
     min-height: 100vh;
@@ -24,11 +16,6 @@ html, body {
 }
 
 .account-registration-title {
-    /* text-align: center;
-    font-size: 70px;
-    font-weight: bold;
-    color: #006600;
-    margin-bottom: 20px; */
     text-align: center;
     font-size: 70px;
     font-weight: bold;
@@ -37,13 +24,6 @@ html, body {
 }
 
 .account-registration-form {
-    /* background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 500px;
-    margin-top: 3%; */
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
