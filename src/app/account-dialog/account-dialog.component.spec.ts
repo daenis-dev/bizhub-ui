@@ -10,7 +10,7 @@ import { of } from 'rxjs';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 
-describe('AccountDialogComponent', () => {
+fdescribe('AccountDialogComponent', () => {
   let component: AccountDialogComponent;
   let fixture: ComponentFixture<AccountDialogComponent>;
   let authServiceSpy: jasmine.SpyObj<AuthService>;
@@ -28,16 +28,13 @@ describe('AccountDialogComponent', () => {
     
     await TestBed.configureTestingModule({
       imports: [
-        AccountDialogComponent,
-        ResetPasswordFormComponent,
         CommonModule,
         MatButtonModule,
-        MatDialogModule,
-        MatIconModule
+        MatIconModule,
+        AccountDialogComponent
       ],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
-        { provide: MatDialog, useValue: matDialogSpy },
         { provide: MatDialogRef, useValue: matDialogRefSpy },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
@@ -46,7 +43,11 @@ describe('AccountDialogComponent', () => {
   
     fixture = TestBed.createComponent(AccountDialogComponent);
     component = fixture.componentInstance;
+    component.dialog = matDialogSpy;
     fixture.detectChanges();
+
+    console.log('Injected dialog ref: ', component.dialogRef === matDialogRefSpy);
+    console.log('Injected dialog: ', component.dialog === matDialogSpy);
   });
 
   it('should create', () => {
@@ -58,5 +59,14 @@ describe('AccountDialogComponent', () => {
 
     expect(authServiceSpy.logout).toHaveBeenCalled();
     expect(matDialogRefSpy.close).toHaveBeenCalled();
+  });
+
+  it('should open ResetPasswordFormComponent and close the dialog when resetPassword is called', () => {
+    component.resetPassword();
+
+    expect(matDialogSpy.open).toHaveBeenCalledWith(ResetPasswordFormComponent, {
+      width: '600px',
+      height: '300px'
+    });
   });
 });

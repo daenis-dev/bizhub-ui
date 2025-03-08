@@ -20,7 +20,7 @@ import { ResetPasswordFormComponent } from '../reset-password-form/reset-passwor
 })
 export class AccountDialogComponent {
 
-  constructor(private auth: AuthService, public dialogRef: MatDialogRef<AccountDialogComponent>, private dialog: MatDialog) {}
+  constructor(private auth: AuthService, public dialogRef: MatDialogRef<AccountDialogComponent>, public dialog: MatDialog) {}
 
   resetPassword() {
     this.dialog.open(ResetPasswordFormComponent, {
