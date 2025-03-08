@@ -10,7 +10,6 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClient, HttpHeaders, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AuthService } from '../services/auth.service';
-import { AccountDialogComponent } from '../account-dialog/account-dialog.component';
 import { FileSelectionDialogComponent } from '../file-selection-dialog/file-selection-dialog.component';
 import { of } from 'rxjs';
 
@@ -67,4 +66,6 @@ describe('MyBackupsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  // TODO: test
 });

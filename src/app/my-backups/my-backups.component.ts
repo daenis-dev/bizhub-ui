@@ -49,84 +49,84 @@ export class MyBackupsComponent implements OnInit {
   }
 
   async selectFilesAndUpload() {
-      try {
-        const fileHandles = await (window as any).showOpenFilePicker({
-          multiple: true
-        });
-    
-        if (!fileHandles.length) {
-          this.showErrorMessage('No files selected.');
-          return;
-        }
-        
-        const formData = new FormData();
+    try {
+      const fileHandles = await (window as any).showOpenFilePicker({
+        multiple: true
+      });
+  
+      if (!fileHandles.length) {
+        this.showErrorMessage('No files selected.');
+        return;
+      }
+      
+      const formData = new FormData();
 
-        for (const handle of fileHandles) {
-          const file = await handle.getFile();
-          formData.append('files', file); 
-          this.backupFileNames.push(file.name);
+      for (const handle of fileHandles) {
+        const file = await handle.getFile();
+        formData.append('files', file); 
+        this.backupFileNames.push(file.name);
+      }
+  
+      this.http.post<void>(this.apiUrl + '/v1/backups', formData, {
+        headers: new HttpHeaders({ 'Authorization': this.auth.getToken() })
+      }).subscribe({
+        next: () => {
+          this.showSuccessMessage(`Files successfully backed up`);
+        },
+        error: () => {
+          this.showErrorMessage('An error occurred while registering system files');
         }
-    
-        this.http.post<void>(this.apiUrl + '/v1/backups', formData, {
-          headers: new HttpHeaders({ 'Authorization': this.auth.getToken() })
-        }).subscribe({
-          next: () => {
-            this.showSuccessMessage(`Files successfully backed up`);
+      });
+  
+    } catch (error) {
+      this.showErrorMessage('File selection was canceled or failed.');
+    }
+  }
+
+  async selectFilesAndDownload() {
+    const dialogRef = this.dialog.open(FileSelectionDialogComponent, {
+      width: '400px',
+      data: { fileNames: this.backupFileNames }
+    });
+  
+    dialogRef.afterClosed().subscribe((selectedFiles: string[] | undefined) => {
+      if (selectedFiles && selectedFiles.length > 0) {
+        const fileNamesParam = selectedFiles.join(',');
+        const url = this.apiUrl + `/v1/backups?file-names=${encodeURIComponent(fileNamesParam)}`;
+        const headers = new HttpHeaders({ Authorization: this.auth.getToken() });
+  
+        this.http.get(url, { headers, responseType: 'blob' }).subscribe({
+          next: (blob) => {
+            const blobUrl = window.URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = blobUrl;
+            anchor.download = 'bizhub-backup.zip';
+            document.body.appendChild(anchor);
+            anchor.click();
+            document.body.removeChild(anchor);
+            window.URL.revokeObjectURL(blobUrl);
           },
           error: () => {
-            this.showErrorMessage('An error occurred while registering system files');
+            this.showErrorMessage('Failed to download the ZIP file.');
           }
         });
-    
-      } catch (error) {
-        this.showErrorMessage('File selection was canceled or failed.');
       }
-    }
+    });
+  }
 
-    async selectFilesAndDownload() {
-      const dialogRef = this.dialog.open(FileSelectionDialogComponent, {
-        width: '400px',
-        data: { fileNames: this.backupFileNames }
-      });
-    
-      dialogRef.afterClosed().subscribe((selectedFiles: string[] | undefined) => {
-        if (selectedFiles && selectedFiles.length > 0) {
-          const fileNamesParam = selectedFiles.join(',');
-          const url = this.apiUrl + `/v1/backups?file-names=${encodeURIComponent(fileNamesParam)}`;
-          const headers = new HttpHeaders({ Authorization: this.auth.getToken() });
-    
-          this.http.get(url, { headers, responseType: 'blob' }).subscribe({
-            next: (blob) => {
-              const blobUrl = window.URL.createObjectURL(blob);
-              const anchor = document.createElement('a');
-              anchor.href = blobUrl;
-              anchor.download = 'bizhub-backup.zip';
-              document.body.appendChild(anchor);
-              anchor.click();
-              document.body.removeChild(anchor);
-              window.URL.revokeObjectURL(blobUrl);
-            },
-            error: () => {
-              this.showErrorMessage('Failed to download the ZIP file.');
-            }
-          });
-        }
-      });
-    }
+  showSuccessMessage(message: string) {
+    this.snackBar.open(message, 'Close', {
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['mat-snackbar-success']
+    });
+  }
 
-    showSuccessMessage(message: string) {
-      this.snackBar.open(message, 'Close', {
-        horizontalPosition: 'end',
-        verticalPosition: 'top',
-        panelClass: ['mat-snackbar-success']
-      });
-    }
-  
-    showErrorMessage(message: string) {
-      this.snackBar.open(message, 'Close', {
-        horizontalPosition: 'end',
-        verticalPosition: 'top',
-        panelClass: ['mat-snackbar-error']
-      });
-    }
+  showErrorMessage(message: string) {
+    this.snackBar.open(message, 'Close', {
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['mat-snackbar-error']
+    });
+  }
 }
