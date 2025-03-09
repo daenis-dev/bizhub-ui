@@ -30,10 +30,10 @@ export class AppComponent {
   }
 
   showHomeIcon() {
-    this.router.url !== 'home' && this.router.url !== 'schedules' && this.router.url !== 'schedule-mobile';
+    return this.router.url !== '/home' && this.router.url !== '/schedules' && this.router.url !== '/schedule-mobile';
   }
 
   showSettingsIcon() {
-    this.router.url !== 'schedules' && this.router.url !== 'schedule-mobile';
+    return this.router.url !== '/schedules' && this.router.url !== '/schedule-mobile';
   }
 }

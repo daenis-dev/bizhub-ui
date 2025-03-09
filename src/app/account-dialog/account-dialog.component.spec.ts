@@ -45,9 +45,6 @@ describe('AccountDialogComponent', () => {
     component = fixture.componentInstance;
     component.dialog = matDialogSpy;
     fixture.detectChanges();
-
-    console.log('Injected dialog ref: ', component.dialogRef === matDialogRefSpy);
-    console.log('Injected dialog: ', component.dialog === matDialogSpy);
   });
 
   it('should create', () => {
