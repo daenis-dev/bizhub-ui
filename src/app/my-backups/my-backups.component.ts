@@ -31,7 +31,7 @@ export class MyBackupsComponent implements OnInit {
   backupFileNames: String[] = [];
   apiUrl: string = environment.apiUrl;
 
-  constructor(private dialog: MatDialog, private http: HttpClient, public auth: AuthService, private snackBar: MatSnackBar, private router: Router) {
+  constructor(public dialog: MatDialog, private http: HttpClient, public auth: AuthService, private snackBar: MatSnackBar, private router: Router) {
 
   }
 
@@ -50,9 +50,11 @@ export class MyBackupsComponent implements OnInit {
 
   async selectFilesAndUpload() {
     try {
+      console.log('Start file handles assignment'); // prints
       const fileHandles = await (window as any).showOpenFilePicker({
         multiple: true
       });
+      console.log('End file handles assignment'); // does not print
   
       if (!fileHandles.length) {
         this.showErrorMessage('No files selected.');

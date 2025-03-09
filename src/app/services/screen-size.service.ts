@@ -6,8 +6,8 @@ import { combineLatest } from 'rxjs';
   providedIn: 'root'
 })
 export class ScreenSizeService {
-  private screenWidthSubject = new BehaviorSubject<boolean>(window.innerWidth < 1120);
-  private screenHeightSubject = new BehaviorSubject<boolean>(window.innerHeight < 530);
+  screenWidthSubject = new BehaviorSubject<boolean>(window.innerWidth < 1120);
+  screenHeightSubject = new BehaviorSubject<boolean>(window.innerHeight < 530);
 
   isMobile$ = combineLatest([
     this.screenWidthSubject.asObservable(),
